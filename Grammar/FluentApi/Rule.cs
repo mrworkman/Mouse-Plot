@@ -40,15 +40,6 @@ namespace Renfrew.Grammar.FluentApi {
          _chainStack = new Stack<dynamic>();
       }
 
-      #region old
-      /*internal void AddExpressionComponent(IRuleExpressionComponent component) {
-         if (component == null)
-            throw new ArgumentNullException(nameof(component));
-
-         exp.Add(component);
-      }*/
-      #endregion
-
       public IElementContainer Elements {
          get { return _container; }
       }
@@ -170,7 +161,7 @@ namespace Renfrew.Grammar.FluentApi {
          //
          // Example of a "chain" (probably not the best term):
          // 
-         // |-- 1 --|------------ 2 ------------|-- 3 --| // <-- Chain #
+         // |-- 0 --|------------ 1 ------------|-- 2 --| // <-- Chain #
          // Say("X").Optionally(r => r.Say("Y")).Say("Z")
          
          if (_countInChain == 1) {
