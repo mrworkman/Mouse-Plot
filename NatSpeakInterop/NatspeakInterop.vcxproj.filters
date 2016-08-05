@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{a3993e88-c707-4900-bfaa-ea1f6995f9c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Dragon">
+      <UniqueIdentifier>{ff92dcf0-3389-48af-addc-c3225a5ce28e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Dragon\ComInterfaces">
+      <UniqueIdentifier>{320ea833-9942-4d03-a34c-3268591068fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sinks">
+      <UniqueIdentifier>{96eb9270-bf3a-43f1-ac85-914981506f36}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NatSpeakService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NatSpeakService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnGetSinkFlags.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSREngineNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSSvcActionNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISRNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NatSpeakInterop.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
