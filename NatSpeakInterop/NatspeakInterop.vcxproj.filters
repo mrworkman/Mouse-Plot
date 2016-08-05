@@ -21,6 +21,9 @@
     <Filter Include="Header Files\Sinks">
       <UniqueIdentifier>{96eb9270-bf3a-43f1-ac85-914981506f36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Sinks">
+      <UniqueIdentifier>{bc94cdb4-57fa-4356-b256-dbc04e86788e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Stdafx.cpp">
@@ -31,6 +34,12 @@
     </ClCompile>
     <ClCompile Include="NatSpeakService.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SrNotifySink.cpp">
+      <Filter>Source Files\Sinks</Filter>
+    </ClCompile>
+    <ClCompile Include="SSvcActionNotifySink.cpp">
+      <Filter>Source Files\Sinks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +63,12 @@
     </ClInclude>
     <ClInclude Include="ISRNotifySink.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="SrNotifySink.h">
+      <Filter>Header Files\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="SSvcActionNotifySink.h">
+      <Filter>Header Files\Sinks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

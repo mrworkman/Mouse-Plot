@@ -15,8 +15,5 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-#pragma once
-
-#include <Windows.h>
-
-typedef unsigned __int64 QWORD, *PQWORD;
+#include "stdafx.h"
+#include "SrNotifySink.h"

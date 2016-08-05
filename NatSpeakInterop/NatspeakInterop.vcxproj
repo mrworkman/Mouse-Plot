@@ -126,6 +126,8 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="NatSpeakService.cpp" />
+    <ClCompile Include="SrNotifySink.cpp" />
+    <ClCompile Include="SSvcActionNotifySink.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -143,10 +145,15 @@
       </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SrNotifySink.h" />
+    <ClInclude Include="SSvcActionNotifySink.h" />
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
