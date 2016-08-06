@@ -24,13 +24,24 @@
 
 namespace Renfrew::NatSpeakInterop {
    using namespace System;
+   using namespace System::Diagnostics;
+   using namespace System::Runtime::InteropServices::ComTypes;
+
+   using namespace Renfrew::Helpers;
+   using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
+   using namespace Renfrew::NatSpeakInterop::Sinks;
 
    public ref class NatSpeakService {
       private:
          ::IServiceProvider *_piServiceProvider;
 
-         DWORD key; // <-- Investigate the purpose of this
+         ISrCentral ^_isrCentral = nullptr;
+         IDgnSpeechServices  ^_idgnSpeechServices = nullptr;
+         IDgnSSvcOutputEvent ^_idgnSSvcOutputEvent = nullptr;
+         IDgnSSvcInterpreter ^_idgnSSvcInterpreter = nullptr;
 
+         DWORD key;
+         
       private:
          void RegisterEngineSink();
          void RegisterSpeechServiceSinks();
@@ -64,18 +75,16 @@ namespace Renfrew::NatSpeakInterop {
    }
 
    void NatSpeakService::Connect(::IServiceProvider *site) {
-      _piServiceProvider = site;
-
-      if (_piServiceProvider == nullptr)
+      if (site == nullptr)
          throw gcnew ArgumentNullException();
 
-      try {
-         RegisterEngineSink();
-         RegisterSpeechServiceSinks();
-      } catch (...) {
-         
-      }
+      _piServiceProvider = site;
 
+      ISrCentral ^*ptr = ComHelper::QueryService<IDgnDictate^, ISrCentral^>(_piServiceProvider);
+      _isrCentral = (ISrCentral^) Marshal::GetObjectForIUnknown(IntPtr(ptr));
+
+      RegisterEngineSink();
+      RegisterSpeechServiceSinks();
    }
 
    void NatSpeakService::Disconnect() {
@@ -83,10 +92,39 @@ namespace Renfrew::NatSpeakInterop {
    }
 
    void NatSpeakService::RegisterEngineSink() {
-      throw gcnew System::NotImplementedException();
+      // Create an engine sink
+      ISrNotifySink ^isrNotifySink = gcnew SrNotifySink();
+
+      // https://msdn.microsoft.com/en-us/library/1dz8byfh.aspx
+      pin_ptr<DWORD> _key = &key;
+
+      IntPtr i = Marshal::GetIUnknownForObject(isrNotifySink);
+
+      // try {
+      //    Apparently does not work on Dragon 12 even though the interface is registered...
+      //   _isrCentral->Register(piDgnSREngineNotifySink, __uuidof(IDgnSREngineNotifySink^), _key);
+      // } catch () {
+         // So far this works on Dragon 12:
+         _isrCentral->Register(i, __uuidof(ISrNotifySink^), _key);
+      // }
+
+      Marshal::Release(i);
    }
 
    void NatSpeakService::RegisterSpeechServiceSinks() {
-      throw gcnew System::NotImplementedException();
+      IDgnSSvcActionNotifySink ^playbackSink = gcnew SSvcActionNotifySink();
+
+      // Speech Services
+      IDgnSpeechServices ^*ptr = ComHelper::QueryService<ISpchServices^, IDgnSpeechServices^>(_piServiceProvider);
+      _idgnSpeechServices = (IDgnSpeechServices^) Marshal::GetObjectForIUnknown(IntPtr(ptr));
+      _idgnSSvcOutputEvent = (IDgnSSvcOutputEvent ^) _idgnSpeechServices;
+      _idgnSSvcInterpreter = (IDgnSSvcInterpreter ^) _idgnSSvcOutputEvent;
+
+      IntPtr i = Marshal::GetIUnknownForObject(playbackSink);
+
+      _idgnSSvcOutputEvent->Register(i);
+      _idgnSSvcInterpreter->Register(i);
+      
+      Marshal::Release(i);
    }
 }

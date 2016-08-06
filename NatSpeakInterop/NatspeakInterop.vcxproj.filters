@@ -24,6 +24,9 @@
     <Filter Include="Source Files\Sinks">
       <UniqueIdentifier>{bc94cdb4-57fa-4356-b256-dbc04e86788e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Helpers">
+      <UniqueIdentifier>{79881184-170d-47b9-94df-2d9793f32d5f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Stdafx.cpp">
@@ -61,14 +64,35 @@
     <ClInclude Include="IDgnSSvcActionNotifySink.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
-    <ClInclude Include="ISRNotifySink.h">
-      <Filter>Header Files\Dragon\ComInterfaces</Filter>
-    </ClInclude>
     <ClInclude Include="SrNotifySink.h">
       <Filter>Header Files\Sinks</Filter>
     </ClInclude>
     <ClInclude Include="SSvcActionNotifySink.h">
       <Filter>Header Files\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="ISrCentral.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISrNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ComHelper.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnDictate.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSpeechServices.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSSvcOutputEvent.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSSvcInterpreter.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISpchServices.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

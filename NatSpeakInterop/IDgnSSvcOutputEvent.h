@@ -17,16 +17,29 @@
 
 #pragma once
 
+#define IDgnSSvcOutputEventGUID "dd109201-6205-11cf-ae61-0000e8a28647"
+                         
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
+   using namespace System;
    using namespace System::Runtime::InteropServices;
 
-   [ComImport, Guid("dd108001-6205-11cf-ae61-0000e8a28647")]
+   // TODO: Move this elsewhere
+   typedef struct {
+      DWORD    message;
+      DWORD    paramL;
+      DWORD    paramH;
+   } HOOK_EVENTMSG;
+
+   [ComImport, Guid(IDgnSSvcOutputEventGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
-   public interface class IDgnSREngineNotifySink {
-      void AttribChanged2(DWORD);
-      void Paused(QWORD);
-      void MimicDone(DWORD, LPUNKNOWN);
-      void ErrorHappened(LPUNKNOWN);
-      void Progress(int, const char*);
+   public interface class
+      DECLSPEC_UUID(IDgnSSvcOutputEventGUID) IDgnSSvcOutputEvent {
+   
+      void Register(/* IDgnSSvcActionNotifySink **/ IntPtr);
+      void PlayString(const PWCHAR, DWORD, DWORD, DWORD, DWORD*);
+      void NameFromKey(DWORD, DWORD, DWORD, DWORD, PWCHAR, DWORD*);
+      void PlayEvents(DWORD, const HOOK_EVENTMSG[], DWORD, DWORD);
+
    };
+
 }

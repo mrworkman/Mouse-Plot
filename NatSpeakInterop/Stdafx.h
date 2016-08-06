@@ -20,3 +20,19 @@
 #include <Windows.h>
 
 typedef unsigned __int64 QWORD, *PQWORD;
+
+#include  "ComHelper.h"
+
+#include "IDgnDictate.h"
+#include "IDgnGetSinkFlags.h"
+#include "IDgnSpeechServices.h"
+#include "IDgnSREngineNotifySink.h"
+#include "IDgnSSvcActionNotifySink.h"
+#include "IDgnSSvcInterpreter.h"
+#include "IDgnSSvcOutputEvent.h"
+#include "ISpchServices.h"
+#include "ISRCentral.h"
+#include "ISRNotifySink.h"
+
+#include "SrNotifySink.h"
+#include "SSvcActionNotifySink.h"

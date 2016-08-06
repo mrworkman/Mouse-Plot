@@ -134,10 +134,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ComHelper.h" />
+    <ClInclude Include="IDgnDictate.h" />
     <ClInclude Include="IDgnGetSinkFlags.h" />
+    <ClInclude Include="IDgnSpeechServices.h" />
     <ClInclude Include="IDgnSREngineNotifySink.h" />
     <ClInclude Include="IDgnSSvcActionNotifySink.h" />
-    <ClInclude Include="ISRNotifySink.h" />
+    <ClInclude Include="IDgnSSvcInterpreter.h" />
+    <ClInclude Include="IDgnSSvcOutputEvent.h" />
+    <ClInclude Include="ISpchServices.h" />
+    <ClInclude Include="ISrCentral.h" />
+    <ClInclude Include="ISrNotifySink.h" />
     <ClInclude Include="NatSpeakService.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>

@@ -17,16 +17,23 @@
 
 #pragma once
 
-namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
-   using namespace System::Runtime::InteropServices;
+namespace Renfrew::Helpers {
+   using namespace System;
 
-   [ComImport, Guid("dd108001-6205-11cf-ae61-0000e8a28647")]
-   [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
-   public interface class IDgnSREngineNotifySink {
-      void AttribChanged2(DWORD);
-      void Paused(QWORD);
-      void MimicDone(DWORD, LPUNKNOWN);
-      void ErrorHappened(LPUNKNOWN);
-      void Progress(int, const char*);
+   public ref class ComHelper {
+      public:
+         template <typename _ServiceType, typename _ReturnType, typename _ServicePtr>
+         static _ReturnType *QueryService(_ServicePtr instance) {
+            HRESULT r;
+            _ReturnType *ptr;
+
+            r = instance->QueryService(__uuidof(_ServiceType), __uuidof(_ReturnType), (void**)&ptr);
+
+            if (FAILED(r))
+               throw gcnew Exception(r.ToString());
+
+            return static_cast<_ReturnType*>(ptr);
+         }
+
    };
 }

@@ -49,7 +49,6 @@ namespace Renfrew.Launcher {
          Trace.WriteLine("Success!");
          Trace.WriteLine("");
 
-         MessageBox.Show("WOOT!");
       }
 
       public void Terminate() {
@@ -65,10 +64,10 @@ namespace Renfrew.Launcher {
       private void CreateSiteObject() {
          Guid iServiceProviderGuid = new Guid("6d5140c1-7436-11ce-8034-00aa006009fa");
          Guid dgnSiteGuid = new Guid("dd100006-6205-11cf-ae61-0000e8a28647");
-
+         
          Type dgnSiteType = Type.GetTypeFromCLSID(dgnSiteGuid);
-         Object dgnSite = Activator.CreateInstance(dgnSiteType);
-
+         var dgnSite = Activator.CreateInstance(dgnSiteType);
+         
          IntPtr pUnknown = Marshal.GetIUnknownForObject(dgnSite);
 
          try {

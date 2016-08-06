@@ -17,16 +17,29 @@
 
 #pragma once
 
+#define ISrCentralGUID "b9bd3860-44db-101b-90a8-00aa003e4b50"
+
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    using namespace System::Runtime::InteropServices;
 
-   [ComImport, Guid("dd108001-6205-11cf-ae61-0000e8a28647")]
+   typedef struct {} PSRMODEINFOW;
+   typedef struct {} SRGRMFMT;
+   typedef struct {} SDATA;
+
+   [ComImport, Guid(ISrCentralGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
-   public interface class IDgnSREngineNotifySink {
-      void AttribChanged2(DWORD);
-      void Paused(QWORD);
-      void MimicDone(DWORD, LPUNKNOWN);
-      void ErrorHappened(LPUNKNOWN);
-      void Progress(int, const char*);
+   public interface class 
+      DECLSPEC_UUID(ISrCentralGUID) ISrCentral {
+
+      void ModeGet(PSRMODEINFOW);
+      void GrammarLoad(SRGRMFMT, SDATA, PVOID, IID, LPUNKNOWN *);
+      void Pause();
+      void PosnGet(PQWORD);
+      void Resume();
+      void ToFileTime(PQWORD, ::FILETIME *);
+      void Register(IntPtr, IID, DWORD*);
+      void UnRegister(DWORD);
+
    };
+
 }

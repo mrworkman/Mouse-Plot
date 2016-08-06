@@ -28,7 +28,7 @@ namespace Renfrew::NatSpeakInterop::Sinks {
    public ref class SrNotifySink :
       public Dragon::ComInterfaces::IDgnGetSinkFlags,
       public Dragon::ComInterfaces::IDgnSREngineNotifySink,
-      public Dragon::ComInterfaces::ISRNotifySink {
+      public Dragon::ComInterfaces::ISrNotifySink {
 
       public:
          SrNotifySink() {
