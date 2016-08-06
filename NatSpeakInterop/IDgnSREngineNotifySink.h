@@ -17,12 +17,16 @@
 
 #pragma once
 
+#define IDgnSREngineNotifySinkGUID "dd108001-6205-11cf-ae61-0000e8a28647"
+
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    using namespace System::Runtime::InteropServices;
 
-   [ComImport, Guid("dd108001-6205-11cf-ae61-0000e8a28647")]
+   [ComImport, Guid(IDgnSREngineNotifySinkGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
-   public interface class IDgnSREngineNotifySink {
+   public interface class 
+      DECLSPEC_UUID(IDgnSREngineNotifySinkGUID) IDgnSREngineNotifySink {
+
       void AttribChanged2(DWORD);
       void Paused(QWORD);
       void MimicDone(DWORD, LPUNKNOWN);

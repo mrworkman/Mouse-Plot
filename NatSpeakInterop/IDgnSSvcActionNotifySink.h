@@ -17,12 +17,16 @@
 
 #pragma once
 
+#define IDgnGetSinkFlagsGUID "dd108202-6205-11cf-ae61-0000e8a28647"
+
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    using namespace System::Runtime::InteropServices;
 
-   [ComImport, Guid("dd108202-6205-11cf-ae61-0000e8a28647")]
+   [ComImport, Guid(IDgnGetSinkFlagsGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
-   public interface class IDgnSSvcActionNotifySink {
+   public interface class DECLSPEC_UUID(IDgnDictateGUID) 
+      IDgnSSvcActionNotifySink {
+
       void PlaybackDone(DWORD);
       void PlaybackAborted(DWORD, HRESULT);
       void ExecutionDone(DWORD);
