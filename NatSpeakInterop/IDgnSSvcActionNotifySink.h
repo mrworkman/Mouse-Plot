@@ -15,17 +15,22 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
+// NOTE: 
+// Original dragon interfaces (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright 1997-1999 by Joel Gould.
+
 #pragma once
 
-#define IDgnGetSinkFlagsGUID "dd108202-6205-11cf-ae61-0000e8a28647"
+#define IDgnSSvcActionNotifySinkGUID "dd108202-6205-11cf-ae61-0000e8a28647"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    using namespace System::Runtime::InteropServices;
 
-   [ComImport, Guid(IDgnGetSinkFlagsGUID)]
+   [ComImport, Guid(IDgnSSvcActionNotifySinkGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
-   public interface class DECLSPEC_UUID(IDgnDictateGUID) 
-      IDgnSSvcActionNotifySink {
+   public interface class 
+      DECLSPEC_UUID(IDgnSSvcActionNotifySinkGUID) IDgnSSvcActionNotifySink {
 
       void PlaybackDone(DWORD);
       void PlaybackAborted(DWORD, HRESULT);

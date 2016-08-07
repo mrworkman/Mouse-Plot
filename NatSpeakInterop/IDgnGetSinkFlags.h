@@ -15,6 +15,11 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
+// NOTE: 
+// Original dragon interfaces (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright 1997-1999 by Joel Gould.
+
 #pragma once
 
 #define IDgnGetSinkFlagsGUID "dd108010-6205-11cf-ae61-0000e8a28647"
@@ -25,7 +30,7 @@ namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    [ComImport, Guid(IDgnGetSinkFlagsGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
    public interface class 
-      DECLSPEC_UUID(IDgnDictateGUID) IDgnGetSinkFlags {
+      DECLSPEC_UUID(IDgnGetSinkFlagsGUID) IDgnGetSinkFlags {
 
       void SinkFlagsGet(DWORD*);
    };
