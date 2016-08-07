@@ -135,10 +135,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComHelper.h" />
+    <ClInclude Include="IDgnAppSupport.h" />
     <ClInclude Include="IDgnDictate.h" />
     <ClInclude Include="IDgnGetSinkFlags.h" />
     <ClInclude Include="IDgnSpeechServices.h" />
-    <ClInclude Include="IDgnSREngineNotifySink.h" />
+    <ClInclude Include="IDgnSrEngineNotifySink.h" />
     <ClInclude Include="IDgnSSvcActionNotifySink.h" />
     <ClInclude Include="IDgnSSvcInterpreter.h" />
     <ClInclude Include="IDgnSSvcOutputEvent.h" />

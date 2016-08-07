@@ -1,6 +1,5 @@
 // Project Renfrew
 // Copyright(C) 2016  Stephen Workman (workman.stephen@gmail.com)
-//   Portions (c) Copyright 1997-1999 by Joel Gould.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
+
+// NOTE:
+//   Portions (c) Copyright 1997-1999 by Joel Gould.
 
 #pragma once
 
@@ -54,7 +56,6 @@ namespace Renfrew::NatSpeakInterop {
          NatSpeakService();
          ~NatSpeakService();
 
-         void Connect(void *site);
          void Connect(IntPtr site);
          void Connect(::IServiceProvider *site);
          void Disconnect();
@@ -67,16 +68,10 @@ namespace Renfrew::NatSpeakInterop {
       key = 0;
    }
 
-   NatSpeakService::~NatSpeakService() {
-
-   }
-
-   void NatSpeakService::Connect(void *site) {
-      Connect(reinterpret_cast<::IServiceProvider*>(site));
-   }
+   NatSpeakService::~NatSpeakService() { }
 
    void NatSpeakService::Connect(IntPtr site) {
-      Connect(site.ToPointer());
+      Connect(reinterpret_cast<::IServiceProvider*>(site.ToPointer()));
    }
 
    void NatSpeakService::Connect(::IServiceProvider *site) {
@@ -124,13 +119,8 @@ namespace Renfrew::NatSpeakInterop {
 
       IntPtr i = Marshal::GetIUnknownForObject(isrNotifySink);
 
-      // try {
-      //    Apparently does not work on Dragon 12 even though the interface is registered...
-      //   _isrCentral->Register(piDgnSREngineNotifySink, __uuidof(IDgnSREngineNotifySink^), _key);
-      // } catch () {
-         // So far this works on Dragon 12:
-         _isrCentral->Register(i, __uuidof(ISrNotifySink^), _key);
-      // }
+      // Register our notification sink
+      _isrCentral->Register(i, __uuidof(ISrNotifySink^), _key);
 
       Marshal::Release(i);
    }

@@ -51,6 +51,7 @@ namespace Renfrew.Launcher {
 
       public void Terminate() {
          _service.ReleaseSiteObject(_sitePtr);
+         _service.Disconnect();
       }
 
    }

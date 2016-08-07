@@ -23,6 +23,7 @@ typedef unsigned __int64 QWORD, *PQWORD;
 
 #include  "ComHelper.h"
 
+#include "IDgnAppSupport.h"
 #include "IDgnDictate.h"
 #include "IDgnGetSinkFlags.h"
 #include "IDgnSpeechServices.h"

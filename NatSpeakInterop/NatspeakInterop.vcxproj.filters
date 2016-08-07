@@ -58,9 +58,6 @@
     <ClInclude Include="IDgnGetSinkFlags.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
-    <ClInclude Include="IDgnSREngineNotifySink.h">
-      <Filter>Header Files\Dragon\ComInterfaces</Filter>
-    </ClInclude>
     <ClInclude Include="IDgnSSvcActionNotifySink.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
@@ -92,6 +89,12 @@
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
     <ClInclude Include="ISpchServices.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSrEngineNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnAppSupport.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
   </ItemGroup>
