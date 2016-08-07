@@ -1,5 +1,6 @@
 // Project Renfrew
 // Copyright(C) 2016  Stephen Workman (workman.stephen@gmail.com)
+//   Portions (c) Copyright 1997-1999 by Joel Gould.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,6 +20,9 @@
 
 // Native types are private by default with /clr
 #pragma make_public(::IServiceProvider)
+
+#define IServiceProviderGUID "6d5140c1-7436-11ce-8034-00aa006009fa"
+#define IDgnSiteGUID "dd100006-6205-11cf-ae61-0000e8a28647"
 
 #include "Stdafx.h"
 
@@ -45,7 +49,7 @@ namespace Renfrew::NatSpeakInterop {
       private:
          void RegisterEngineSink();
          void RegisterSpeechServiceSinks();
-
+         
       public:
          NatSpeakService();
          ~NatSpeakService();
@@ -53,9 +57,10 @@ namespace Renfrew::NatSpeakInterop {
          void Connect(void *site);
          void Connect(IntPtr site);
          void Connect(::IServiceProvider *site);
-
          void Disconnect();
 
+         IntPtr CreateSiteObject();
+         void ReleaseSiteObject(IntPtr sitePtr);
    };
 
    NatSpeakService::NatSpeakService() {
@@ -85,6 +90,25 @@ namespace Renfrew::NatSpeakInterop {
 
       RegisterEngineSink();
       RegisterSpeechServiceSinks();
+   }
+
+   IntPtr NatSpeakService::CreateSiteObject() {
+      IntPtr sitePtr;
+      
+      Guid iServiceProviderGuid(IServiceProviderGUID);
+      Type ^type = Type::GetTypeFromCLSID(Guid(IDgnSiteGUID));
+
+      Object ^idgnSite = Activator::CreateInstance(type);      
+      IntPtr i = Marshal::GetIUnknownForObject(idgnSite);
+
+      try {
+         // http://stackoverflow.com/a/22160325/1254575
+         Marshal::QueryInterface(i, iServiceProviderGuid, sitePtr);
+      } finally {
+         Marshal::Release(i);
+      }
+
+      return sitePtr;
    }
 
    void NatSpeakService::Disconnect() {
@@ -126,5 +150,9 @@ namespace Renfrew::NatSpeakInterop {
       _idgnSSvcInterpreter->Register(i);
       
       Marshal::Release(i);
+   }
+
+   void NatSpeakService::ReleaseSiteObject(IntPtr sitePtr) {
+      Marshal::Release(sitePtr);
    }
 }

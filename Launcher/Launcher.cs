@@ -37,10 +37,8 @@ namespace Renfrew.Launcher {
          _service = new NatSpeakService();
       }
 
-      #region Launch Control
       public void Launch() {
-
-         CreateSiteObject();
+         _sitePtr = _service.CreateSiteObject();
 
          Trace.WriteLine("Calling Connect()...");
 
@@ -52,36 +50,8 @@ namespace Renfrew.Launcher {
       }
 
       public void Terminate() {
-         _service.Disconnect();
-         ReleaseSiteObject();
+         _service.ReleaseSiteObject(_sitePtr);
       }
-      #endregion
-
-      #region Interop
-
-      // TODO: Move to NatspeakInterop.
-
-      private void CreateSiteObject() {
-         Guid iServiceProviderGuid = new Guid("6d5140c1-7436-11ce-8034-00aa006009fa");
-         Guid dgnSiteGuid = new Guid("dd100006-6205-11cf-ae61-0000e8a28647");
-         
-         Type dgnSiteType = Type.GetTypeFromCLSID(dgnSiteGuid);
-         var dgnSite = Activator.CreateInstance(dgnSiteType);
-         
-         IntPtr pUnknown = Marshal.GetIUnknownForObject(dgnSite);
-
-         try {
-            // http://stackoverflow.com/a/22160325/1254575
-            Marshal.QueryInterface(pUnknown, ref iServiceProviderGuid, out _sitePtr);
-         } finally {
-            Marshal.Release(pUnknown);
-         }
-      }
-
-      private void ReleaseSiteObject() {
-         Marshal.Release(_sitePtr);
-      }
-      #endregion
 
    }
 }
