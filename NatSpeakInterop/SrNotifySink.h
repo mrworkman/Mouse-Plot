@@ -27,7 +27,7 @@ using namespace System::Diagnostics;
 namespace Renfrew::NatSpeakInterop::Sinks {
    public ref class SrNotifySink :
       public Dragon::ComInterfaces::IDgnGetSinkFlags,
-      public Dragon::ComInterfaces::IDgnSREngineNotifySink,
+      public Dragon::ComInterfaces::IDgnSrEngineNotifySink,
       public Dragon::ComInterfaces::ISrNotifySink {
 
       public:

@@ -30,7 +30,7 @@ namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    [ComImport, Guid(IDgnSREngineNotifySinkGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
    public interface class 
-      DECLSPEC_UUID(IDgnSREngineNotifySinkGUID) IDgnSREngineNotifySink {
+      DECLSPEC_UUID(IDgnSREngineNotifySinkGUID) IDgnSrEngineNotifySink {
 
       void AttribChanged2(DWORD);
       void Paused(QWORD);
