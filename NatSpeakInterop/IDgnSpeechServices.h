@@ -15,6 +15,11 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
+// NOTE: 
+// Original dragon interfaces (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright 1997-1999 by Joel Gould.
+
 #pragma once
 
 #define IDgnSpeechServicesGUID "dd108200-6205-11cf-ae61-0000e8a28647"
