@@ -23,7 +23,6 @@ using System.Windows.Forms;
 namespace Renfrew.Launcher {
    class LauncherApplicationContext : ApplicationContext {
       private Launcher _launcher;
-      private ResourceManager _resourceManager;
 
       private NotifyIcon _notifyIcon;
       private ContextMenuStrip _contextMenuStrip;
@@ -31,19 +30,11 @@ namespace Renfrew.Launcher {
 
       // Constructor
       public LauncherApplicationContext(Launcher launcher) {
-         _launcher = launcher;
-
          if (launcher == null)
             throw new ArgumentNullException();
 
-         // Create a new system tray icon
+         _launcher = launcher;
          _notifyIcon = new NotifyIcon();
-
-         // Get a handle to the managed resources file
-         _resourceManager = new ResourceManager(
-            "NatLink4Net.Resources",
-            Assembly.GetExecutingAssembly()
-         );
 
          InitializeComponent();
       }
