@@ -28,8 +28,7 @@ namespace Renfrew.Launcher {
    using System.Diagnostics;
 
    public class Launcher {
-
-      //private NatLink4NetEngine engine;
+      
       private NatSpeakService _service;
       private IntPtr _sitePtr;
 
@@ -38,7 +37,21 @@ namespace Renfrew.Launcher {
       }
 
       public void Launch() {
-         _sitePtr = _service.CreateSiteObject();
+         try {
+            _sitePtr = _service.CreateSiteObject();
+         } catch (COMException e) {
+            Trace.WriteLine($"COM Exception: {e.Message}");
+
+            MessageBox.Show(
+               "Could not connect to Dragon Naturally Speaking. Please " +
+              $"make sure it's installed correctly!\r\r {e.Message}", 
+               "COM Error", 
+               MessageBoxButtons.OK, 
+               MessageBoxIcon.Error
+            );
+
+            Environment.Exit(-1);
+         }
 
          Trace.WriteLine("Calling Connect()...");
 
@@ -46,7 +59,6 @@ namespace Renfrew.Launcher {
 
          Trace.WriteLine("Success!");
          Trace.WriteLine("");
-
       }
 
       public void Terminate() {
