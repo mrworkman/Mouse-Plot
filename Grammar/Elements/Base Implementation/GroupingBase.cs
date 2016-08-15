@@ -39,7 +39,7 @@ namespace Renfrew.Grammar.Elements {
 
       public virtual IEnumerable<IElement> Elements {
          get {
-            return _subElements.Where(e => e != null);
+            return _subElements.Where(e => e != null).ToList();
          }
       }
 
