@@ -57,6 +57,10 @@ namespace Renfrew.Launcher {
 
          _service.Connect(_sitePtr);
 
+         String profileName;
+         Debug.WriteLine($"User Profile: {profileName = _service.GetCurrentUserProfileName()}");
+         Debug.WriteLine($"Profile Path: {_service.GetUserDirectory(profileName)}");
+         
          Trace.WriteLine("Success!");
          Trace.WriteLine("");
       }

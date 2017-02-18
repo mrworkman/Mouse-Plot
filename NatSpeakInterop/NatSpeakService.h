@@ -23,10 +23,14 @@
 // Native types are private by default with /clr
 #pragma make_public(::IServiceProvider)
 
+#include "Stdafx.h"
+#include <vcclr.h>
+
 #define IServiceProviderGUID "6d5140c1-7436-11ce-8034-00aa006009fa"
 #define IDgnSiteGUID "dd100006-6205-11cf-ae61-0000e8a28647"
 
-#include "Stdafx.h"
+#define  E_BUFFERTOOSMALL     0x8004020D
+#define  SRERR_NOUSERSELECTED 0x8004041A
 
 namespace Renfrew::NatSpeakInterop {
    using namespace System;
@@ -62,6 +66,10 @@ namespace Renfrew::NatSpeakInterop {
 
          IntPtr CreateSiteObject();
          void ReleaseSiteObject(IntPtr sitePtr);
+
+         String ^GetCurrentUserProfileName();
+         String ^GetUserDirectory(String ^userProfile);
+
    };
 
    NatSpeakService::NatSpeakService() {
@@ -108,6 +116,83 @@ namespace Renfrew::NatSpeakInterop {
 
    void NatSpeakService::Disconnect() {
 	   Trace::WriteLine(__FUNCTION__);
+   }
+
+   /// <summary>
+   /// Gets the the profile name of the current Dragon user.
+   /// </summary>
+   /// <returns>The dragon profile name, if available. null otherwise.</returns>
+   String ^NatSpeakService::GetCurrentUserProfileName() {
+      ISrSpeaker ^isrSpeaker = (ISrSpeaker ^) _isrCentral;
+      
+      DWORD dwSize, dwNeeded = 0;
+      PWSTR profileName = nullptr;
+
+      // Find out how big our buffer should be
+      try {
+         isrSpeaker->Query(profileName, 0, &dwNeeded);
+      } catch (COMException ^e) {
+         if (!(e->ErrorCode == EVENT_E_CANT_MODIFY_OR_DELETE_CONFIGURED_OBJECT ||
+               e->ErrorCode == E_BUFFERTOOSMALL || e->ErrorCode == SRERR_NOUSERSELECTED)) {
+            throw;
+         }
+      }
+
+      if (dwNeeded == 0)
+         return nullptr;
+
+      // Allocate a buffer to hold the string
+      dwSize = dwNeeded;
+      profileName = new WCHAR[dwSize];
+
+      // Get the string
+      isrSpeaker->Query(profileName, dwSize, &dwNeeded);
+
+      try {
+         return gcnew String(profileName);
+      } finally {
+         delete profileName;
+      }
+   }
+
+   /// <summary>
+   /// Gets the the file system path to the specified Dragon user's profile directory.
+   /// </summary>
+   /// <param name="userProfile">The name of the user profile to look up.</param>
+   /// <returns>The dragon profile path, if available. null otherwise.</returns>
+   String ^NatSpeakService::GetUserDirectory(String ^userProfile) {
+      IDgnSrSpeaker ^idgnSrSpeaker = (IDgnSrSpeaker ^) _isrCentral;
+
+      DWORD dwSize, dwNeeded = 0;
+      PWSTR path = nullptr;
+
+      pin_ptr<const WCHAR> user = PtrToStringChars(userProfile);
+
+      // Find out how big our buffer should be
+      try {
+         idgnSrSpeaker->GetSpeakerDirectory(user, path, 0, &dwNeeded);
+      } catch (COMException ^e) {
+         if (!(e->ErrorCode == EVENT_E_CANT_MODIFY_OR_DELETE_CONFIGURED_OBJECT ||
+               e->ErrorCode == E_BUFFERTOOSMALL || e->ErrorCode == SRERR_NOUSERSELECTED)) {
+            throw;
+         }
+      }
+
+      if (dwNeeded == 0)
+         return nullptr;
+
+      // Allocate a buffer to hold the string
+      dwSize = dwNeeded;
+      path = new WCHAR[dwSize];
+
+      // Get the string
+      idgnSrSpeaker->GetSpeakerDirectory(user, path, dwSize, &dwNeeded);
+
+      try {
+         return gcnew String(path) + "\\current";
+      } finally {
+         delete path;
+      }
    }
 
    void NatSpeakService::RegisterEngineSink() {

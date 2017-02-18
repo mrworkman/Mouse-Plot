@@ -100,6 +100,12 @@
     <ClInclude Include="SinkFlags.h">
       <Filter>Header Files\Sinks</Filter>
     </ClInclude>
+    <ClInclude Include="ISrSpeaker.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSrSpeaker.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

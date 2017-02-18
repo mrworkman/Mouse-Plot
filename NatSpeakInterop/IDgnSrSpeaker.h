@@ -15,27 +15,25 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
+// NOTE: 
+// Original dragon interfaces (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright 1997-1999 by Joel Gould.
+
 #pragma once
 
-#include <Windows.h>
+#define IDgnSrSpeakerGUID "DD10901C-6205-11CF-AE61-0000E8A28647"
 
-typedef unsigned __int64 QWORD, *PQWORD;
+namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
+   using namespace System::Runtime::InteropServices;
 
-#include  "ComHelper.h"
+   [ComImport, Guid(IDgnSrSpeakerGUID)]
+   [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
+   public interface class
+      DECLSPEC_UUID(IDgnSrSpeakerGUID) IDgnSrSpeaker {
 
-#include "IDgnAppSupport.h"
-#include "IDgnDictate.h"
-#include "IDgnGetSinkFlags.h"
-#include "IDgnSpeechServices.h"
-#include "IDgnSrEngineNotifySink.h"
-#include "IDgnSrSpeaker.h"
-#include "IDgnSSvcActionNotifySink.h"
-#include "IDgnSSvcInterpreter.h"
-#include "IDgnSSvcOutputEvent.h"
-#include "ISpchServices.h"
-#include "ISRCentral.h"
-#include "ISRNotifySink.h"
-#include "ISrSpeaker.h"
-
-#include "SrNotifySink.h"
-#include "SSvcActionNotifySink.h"
+      void EnumBaseModels(WCHAR**, DWORD*);
+      void New(const WCHAR*, const WCHAR*);
+      void GetSpeakerDirectory(const WCHAR*, WCHAR*, DWORD, DWORD*);
+   };
+}
