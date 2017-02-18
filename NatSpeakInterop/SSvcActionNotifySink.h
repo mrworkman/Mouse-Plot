@@ -32,19 +32,19 @@ namespace Renfrew::NatSpeakInterop::Sinks {
          }
 
          void virtual PlaybackDone(DWORD) {
-            Debug::WriteLine(L"PlaybackDone\r\n");
+            Debug::WriteLine(__FUNCTION__);
          }
          void virtual PlaybackAborted(DWORD, HRESULT) {
-            Debug::WriteLine(L"PlaybackAborted\r\n");
+            Debug::WriteLine(__FUNCTION__);
          }
          void virtual ExecutionDone(DWORD) {
-            Debug::WriteLine(L"ExecutionDone\r\n");
+            Debug::WriteLine(__FUNCTION__);
          }
          void virtual ExecutionStatus(DWORD, DWORD) {
-            Debug::WriteLine(L"ExecutionStatus\r\n");
+            Debug::WriteLine(__FUNCTION__);
          }
          void virtual ExecutionAborted(DWORD, HRESULT, DWORD) {
-            Debug::WriteLine(L"ExecutionAborted\r\n");
+            Debug::WriteLine(__FUNCTION__);
          }
    };
 }

@@ -107,7 +107,7 @@ namespace Renfrew::NatSpeakInterop {
    }
 
    void NatSpeakService::Disconnect() {
-      throw gcnew System::NotImplementedException();
+	   Trace::WriteLine(__FUNCTION__);
    }
 
    void NatSpeakService::RegisterEngineSink() {

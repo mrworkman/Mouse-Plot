@@ -153,6 +153,7 @@
       </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SinkFlags.h" />
     <ClInclude Include="SrNotifySink.h" />
     <ClInclude Include="SSvcActionNotifySink.h" />
     <ClInclude Include="Stdafx.h" />

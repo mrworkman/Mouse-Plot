@@ -21,6 +21,8 @@
 #include "IDgnSREngineNotifySink.h"
 #include "ISRNotifySink.h"
 
+#include "SinkFlags.h"
+
 using namespace System;
 using namespace System::Diagnostics;
 
@@ -32,56 +34,68 @@ namespace Renfrew::NatSpeakInterop::Sinks {
 
       public:
          SrNotifySink() {
-            Debug::WriteLine(L" constructor \n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual SinkFlagsGet(DWORD *pdwFlags) {
-            Debug::WriteLine(L"sink flags get\n");
+            Debug::WriteLine(__FUNCTION__);
+
+            if (pdwFlags == nullptr)
+               return;
+
+            // These are the notifications handled by this sink
+            *pdwFlags = DGNSRSINKFLAG_SENDJITPAUSED |
+                        DGNSRSINKFLAG_SENDATTRIB    |
+                        #ifdef _DEBUG
+                        DGNSRSINKFLAG_SENDBEGINUTT  |
+                        DGNSRSINKFLAG_SENDENDUTT    |
+                        #endif
+                        DGNSRSINKFLAG_SENDMIMICDONE;
          }
 
          // IDgnSREngineNotifySink Methods
          void virtual AttribChanged2(DWORD) {
-            Debug::WriteLine(L"attribute changed 2\n");
+            Debug::WriteLine(__FUNCTION__);
          }
          void virtual Paused(QWORD) {
-            Debug::WriteLine(L"paused\n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual MimicDone(DWORD, LPUNKNOWN) {
-            Debug::WriteLine(L"mimic done\n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual ErrorHappened(LPUNKNOWN) {
-            Debug::WriteLine(L"error happened\n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual Progress(int, const char *) {
-            Debug::WriteLine(L"progress\n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          // ISRNotifySink Methods
          void virtual AttribChanged(DWORD) {
-            Debug::WriteLine(L"attribute changed\n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual Interference(QWORD, QWORD, DWORD) {
-            Debug::WriteLine(L" interference \n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual Sound(QWORD, QWORD) {
-            Debug::WriteLine(L" sound \n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual UtteranceBegin(QWORD) {
-            Debug::WriteLine(L" utterance begin \n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual UtteranceEnd(QWORD, QWORD) {
-            Debug::WriteLine(L" utterance end \n");
+            Debug::WriteLine(__FUNCTION__);
          }
 
          void virtual VUMeter(QWORD, WORD) {
-            Debug::WriteLine(L" vu meter \n");
+            Debug::WriteLine(__FUNCTION__);
          }
    };
 }
