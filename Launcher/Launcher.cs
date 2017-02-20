@@ -17,6 +17,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Renfrew.Launcher {
@@ -41,26 +42,32 @@ namespace Renfrew.Launcher {
          Application.ThreadExit      += OnApplicationExit;
 
          try {
+            Debug.WriteLine("Creating 'site object'...");
             _sitePtr = _natSpeakService.CreateSiteObject();
+
+            Debug.WriteLine("Calling Connect()...");
+            _natSpeakService.Connect(_sitePtr);
+
+            Debug.WriteLine("Starting Core Application...");
+            CoreApplication.Instance.Start(_natSpeakService);
          } catch (COMException e) {
             Trace.WriteLine($"COM Exception: {e.Message}");
+            Trace.WriteLine($"COM Exception: {e.StackTrace}");
 
             MessageBox.Show(
-               "Could not connect to Dragon Naturally Speaking. Please " +
-              $"make sure it's installed correctly!\r\r {e.Message}", 
-               "COM Error", 
-               MessageBoxButtons.OK, 
-               MessageBoxIcon.Error
+               "There was an error connecting to Dragon Naturally Speaking:\r\n" +
+              $"  >> COM Error: {e.Message}\r\n" + 
+               "\r\n" +
+               "Please make sure Dragon is running!",
+               "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error
             );
 
+            Trace.WriteLine("Failure!");
+
+            // Kill the application
+            Application.ExitThread();
             Environment.Exit(-1);
          }
-
-         Trace.WriteLine("Calling Connect()...");
-
-         _natSpeakService.Connect(_sitePtr);
-
-         CoreApplication.Instance.Start(_natSpeakService);
 
          Trace.WriteLine("Success!");
          Trace.WriteLine("");
@@ -74,11 +81,14 @@ namespace Renfrew.Launcher {
          if (_isTerminated == true)
             return;
 
+         // Stop the application
          CoreApplication.Instance.Stop();
 
+         // Disconnect from Dragon properly
          _natSpeakService.Disconnect();
          _natSpeakService.ReleaseSiteObject(_sitePtr);
 
+         // Prevent re-entry
          _isTerminated = true;
       }
 
