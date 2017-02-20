@@ -50,7 +50,7 @@ namespace Renfrew::NatSpeakInterop {
          IDgnSSvcOutputEvent ^_idgnSSvcOutputEvent = nullptr;
          IDgnSSvcInterpreter ^_idgnSSvcInterpreter = nullptr;
 
-         DWORD key;
+         DWORD _key;
          
       private:
          void RegisterEngineSink();
@@ -73,7 +73,7 @@ namespace Renfrew::NatSpeakInterop {
    };
 
    NatSpeakService::NatSpeakService() {
-      key = 0;
+      _key = 0;
    }
 
    NatSpeakService::~NatSpeakService() { }
@@ -90,6 +90,8 @@ namespace Renfrew::NatSpeakInterop {
 
       ISrCentral ^*ptr = ComHelper::QueryService<IDgnDictate^, ISrCentral^>(_piServiceProvider);
       _isrCentral = (ISrCentral^) Marshal::GetObjectForIUnknown(IntPtr(ptr));
+
+      Marshal::Release(IntPtr(ptr));
 
       RegisterEngineSink();
       RegisterSpeechServiceSinks();
@@ -116,6 +118,14 @@ namespace Renfrew::NatSpeakInterop {
 
    void NatSpeakService::Disconnect() {
 	   Trace::WriteLine(__FUNCTION__);
+     
+      if (_key != 0) {
+         _isrCentral->UnRegister(_key);
+         _key = 0;
+      }
+
+      Marshal::ReleaseComObject(_isrCentral);
+      Marshal::ReleaseComObject(_idgnSpeechServices);
    }
 
    /// <summary>
@@ -200,12 +210,12 @@ namespace Renfrew::NatSpeakInterop {
       ISrNotifySink ^isrNotifySink = gcnew SrNotifySink();
 
       // https://msdn.microsoft.com/en-us/library/1dz8byfh.aspx
-      pin_ptr<DWORD> _key = &key;
+      pin_ptr<DWORD> key = &_key;
 
       IntPtr i = Marshal::GetIUnknownForObject(isrNotifySink);
 
       // Register our notification sink
-      _isrCentral->Register(i, __uuidof(ISrNotifySink^), _key);
+      _isrCentral->Register(i, __uuidof(ISrNotifySink^), key);
 
       Marshal::Release(i);
    }
@@ -224,6 +234,7 @@ namespace Renfrew::NatSpeakInterop {
       _idgnSSvcOutputEvent->Register(i);
       _idgnSSvcInterpreter->Register(i);
       
+      Marshal::Release(IntPtr(ptr));
       Marshal::Release(i);
    }
 
