@@ -16,6 +16,7 @@
 //
 
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Threading;
 using System.Windows.Forms;
@@ -109,13 +110,18 @@ namespace Renfrew.Core {
          while (_console == null)
             Thread.Sleep(100);
 
-         var profileName = natSpeakService.GetCurrentUserProfileName();
-         var profilePath = natSpeakService.GetUserDirectory(profileName);
-         
-         _console.WriteLine("Starting...");
+         _console.WriteLine("Querying Dragon Naturally Speaking...");
 
-         _console.WriteLine($"Dragon Profile Loaded: {profileName}");
-         _console.WriteLine($"Dragon Profile Path: {profilePath}");
+         try {
+            var profileName = natSpeakService.GetCurrentUserProfileName();
+            var profilePath = natSpeakService.GetUserDirectory(profileName);
+
+            _console.WriteLine($"Dragon Profile Loaded: {profileName}");
+            _console.WriteLine($"Dragon Profile Path: {profilePath}");
+         } catch (COMException e) {
+            _console.WriteLine($"Fatal error: {e.Message}! Cannot continue!");
+            throw;
+         }
 
          //_console.Dispatcher.BeginInvoke(
          //   DispatcherPriority.Background, new Action(() => { }));
