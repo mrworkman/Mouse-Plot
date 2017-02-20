@@ -16,17 +16,11 @@
 //
 
 using System;
-using System.Reflection;
-using System.Resources;
 using System.Windows.Forms;
 
 namespace Renfrew.Launcher {
    class LauncherApplicationContext : ApplicationContext {
-      private Launcher _launcher;
-
-      private NotifyIcon _notifyIcon;
-      private ContextMenuStrip _contextMenuStrip;
-      private ToolStripMenuItem _exitMenuItem;
+      private readonly Launcher _launcher;
 
       // Constructor
       public LauncherApplicationContext(Launcher launcher) {
@@ -34,46 +28,13 @@ namespace Renfrew.Launcher {
             throw new ArgumentNullException();
 
          _launcher = launcher;
-         _notifyIcon = new NotifyIcon();
 
          InitializeComponent();
       }
 
       private void InitializeComponent() {
-         // Add add exit event handler
-         Application.ApplicationExit += new EventHandler(OnApplicationExit);
-         Application.ThreadExit += new EventHandler(OnApplicationExit);
-
-         // Add menu items to system tray icon menu
-         _exitMenuItem = new ToolStripMenuItem();
-         _exitMenuItem.Text = "E&xit";
-         _exitMenuItem.Click += new EventHandler(ExitMenu_OnClick);
-
-         // Create a new context menu for the system tray icon
-         _contextMenuStrip = new ContextMenuStrip();
-         _contextMenuStrip.Items.Add(_exitMenuItem);
-
-         _notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-         _notifyIcon.Text = "Project Renfrew";
-         _notifyIcon.Icon = Resources.SystemTrayIcon;
-
-         // Assigned the context menu to the system tray icon
-         _notifyIcon.ContextMenuStrip = _contextMenuStrip;
-
-         _notifyIcon.Visible = true;
-
          // Let's fire up the Quattro!
          _launcher.Launch();
-      }
-
-      private void OnApplicationExit(Object sender, EventArgs e) {
-         _notifyIcon.Visible = false;
-         _launcher.Terminate();
-      }
-
-      private void ExitMenu_OnClick(Object sender, EventArgs e) {
-         Application.Exit();
-         Application.ExitThread();
       }
    }
 }

@@ -16,29 +16,32 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Renfrew.Launcher {
+   using Core;
    using NatSpeakInterop;
    using System.Diagnostics;
 
    public class Launcher {
       
-      private NatSpeakService _service;
+      private NatSpeakService _natSpeakService;
       private IntPtr _sitePtr;
 
+      private bool _isTerminated = false;
+
       public Launcher() {
-         _service = new NatSpeakService();
+         _natSpeakService = new NatSpeakService();
       }
 
       public void Launch() {
+
+         Application.ApplicationExit += OnApplicationExit;
+         Application.ThreadExit      += OnApplicationExit;
+
          try {
-            _sitePtr = _service.CreateSiteObject();
+            _sitePtr = _natSpeakService.CreateSiteObject();
          } catch (COMException e) {
             Trace.WriteLine($"COM Exception: {e.Message}");
 
@@ -55,19 +58,28 @@ namespace Renfrew.Launcher {
 
          Trace.WriteLine("Calling Connect()...");
 
-         _service.Connect(_sitePtr);
+         _natSpeakService.Connect(_sitePtr);
 
-         String profileName;
-         Debug.WriteLine($"User Profile: {profileName = _service.GetCurrentUserProfileName()}");
-         Debug.WriteLine($"Profile Path: {_service.GetUserDirectory(profileName)}");
-         
+         CoreApplication.Instance.Start(_natSpeakService);
+
          Trace.WriteLine("Success!");
          Trace.WriteLine("");
       }
 
-      public void Terminate() {
-         _service.ReleaseSiteObject(_sitePtr);
-         _service.Disconnect();
+      private void OnApplicationExit(Object sender, EventArgs eventArgs) {
+         Terminate();
+      }
+
+      private void Terminate() {
+         if (_isTerminated == true)
+            return;
+
+         CoreApplication.Instance.Stop();
+
+         _natSpeakService.Disconnect();
+         _natSpeakService.ReleaseSiteObject(_sitePtr);
+
+         _isTerminated = true;
       }
 
    }

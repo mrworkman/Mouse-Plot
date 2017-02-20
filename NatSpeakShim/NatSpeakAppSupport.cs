@@ -16,9 +16,12 @@
 //
 
 using System;
+using System.Dynamic;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Renfrew.NatSpeakShim {
+   using Core;
    using NatSpeakInterop;
    using NatSpeakInterop.Dragon.ComInterfaces;
 
@@ -43,9 +46,11 @@ namespace Renfrew.NatSpeakShim {
 
       public unsafe void Register(IServiceProvider* site) {
          _natSpeakService.Connect(site);
+         CoreApplication.Instance.Start(_natSpeakService);
       }
 
       public void UnRegister() {
+         CoreApplication.Instance.Stop();
          _natSpeakService.Disconnect();
       }
       

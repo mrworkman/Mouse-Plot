@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RegisterForComInterop>false</RegisterForComInterop>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,6 +49,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{d97e5809-476b-4001-a1fb-edae7235276d}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NatSpeakInterop\NatspeakInterop.vcxproj">
       <Project>{0b7df2f5-d3ad-415d-8b73-b8b9b9efe75d}</Project>
       <Name>NatSpeakInterop</Name>
