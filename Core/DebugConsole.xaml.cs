@@ -16,6 +16,7 @@
 //
 
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -26,14 +27,7 @@ namespace Renfrew.Core {
    /// Interaction logic for MainWindow.xaml
    /// </summary>
    public partial class DebugConsole : Window {
-
-      private const int GWL_STYLE = -16;
-      private const int WS_SYSMENU = 0x80000;
-      [DllImport("user32.dll", SetLastError = true)]
-      private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-      [DllImport("user32.dll")]
-      private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-      
+     
       public DebugConsole() {
           InitializeComponent();
       }
@@ -44,9 +38,16 @@ namespace Renfrew.Core {
          }));
       }
 
-      private void DebugConsole_OnLoaded(Object sender, RoutedEventArgs e) {
-         //var hwnd = new WindowInteropHelper(this).Handle;
-         //SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);
+      public new void Focus() {
+         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+            base.Focus();
+            Activate();
+         }));
+      }
+
+      protected override void OnClosing(CancelEventArgs e) {
+         e.Cancel = true;
+         Visibility = Visibility.Hidden;
       }
 
       public new void Show() {

@@ -18,10 +18,13 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows;
 using System.Windows.Threading;
 using System.Windows.Forms;
 
 using Renfrew.Core.Properties;
+
+using Application = System.Windows.Forms.Application;
 
 namespace Renfrew.Core {
    using NatSpeakInterop;
@@ -45,27 +48,31 @@ namespace Renfrew.Core {
       }
 
       private void InitializeComponent() {
-
-         // Add add exit event handler(s)
+         // Add application exit event handler(s)
          Application.ApplicationExit += OnApplicationExit;
          Application.ThreadExit      += OnApplicationExit;
 
-         // Add menu items to system tray icon menu
-         _exitMenuItem = new ToolStripMenuItem();
-         _exitMenuItem.Text = "E&xit";
-         _exitMenuItem.Click += new EventHandler(OnApplicationExit);
-
-         // Create a new context menu for the system tray icon
-         _contextMenuStrip = new ContextMenuStrip();
-         _contextMenuStrip.Items.Add(_exitMenuItem);
-
+         // Set up the system tray icon
          _notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
          _notifyIcon.Text = "Project Renfrew";
          _notifyIcon.Icon = Resources.SystemTrayIcon;
 
-         // Assigned the context menu to the system tray icon
+         // Create a new context menu for the system tray icon
+         _contextMenuStrip = new ContextMenuStrip();
+
+         // Assign the context menu to the system tray icon
          _notifyIcon.ContextMenuStrip = _contextMenuStrip;
 
+         // Add menu items to system tray icon menu
+         _contextMenuStrip.Items.Add("&Show Debug Console", null, delegate(Object sender, EventArgs e) {
+            if (_console.Visibility == Visibility.Hidden)
+               _console.ShowDialog();
+            else
+               _console.Focus();
+         });
+         _contextMenuStrip.Items.Add("-");
+         _contextMenuStrip.Items.Add("E&xit Project Renfrew", null, OnApplicationExit);
+         
          _notifyIcon.Visible = true;
 
       }
@@ -96,12 +103,12 @@ namespace Renfrew.Core {
          if (_console != null)
             return;
          
-         _thread = new Thread(new ThreadStart(() => {
+         _thread = new Thread(() => {
             _console = new DebugConsole();
             _console.ShowDialog();
 
             Dispatcher.Run();
-         }));
+         });
 
          _thread.SetApartmentState(ApartmentState.STA);
          _thread.IsBackground = true;
