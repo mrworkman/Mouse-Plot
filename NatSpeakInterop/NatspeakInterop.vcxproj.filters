@@ -106,6 +106,9 @@
     <ClInclude Include="IDgnSrSpeaker.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
+    <ClInclude Include="IDgnSrEngineControl.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

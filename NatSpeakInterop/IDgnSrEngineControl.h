@@ -1,5 +1,5 @@
 // Project Renfrew
-// Copyright(C) 2016  Stephen Workman (workman.stephen@gmail.com)
+// Copyright(C) 2017  Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,25 +22,24 @@
 
 #pragma once
 
-#define ISrCentralGUID "b9bd3860-44db-101b-90a8-00aa003e4b50"
+#define IDgnSrEngineControlGUID "dd109000-6205-11cf-ae61-0000e8a28647"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    using namespace System::Runtime::InteropServices;
 
-   [ComImport, Guid(ISrCentralGUID)]
+   [ComImport, Guid(IDgnSrEngineControlGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
-   public interface class 
-      DECLSPEC_UUID(ISrCentralGUID) ISrCentral {
+   public interface class
+      DECLSPEC_UUID(IDgnSrEngineControlGUID) IDgnSrEngineControl {
 
-      void ModeGet(PSRMODEINFOW);
-      void GrammarLoad(SRGRMFMT, SDATA, PVOID, IID, LPUNKNOWN *);
-      void Pause();
-      void PosnGet(PQWORD);
-      void Resume();
-      void ToFileTime(PQWORD, ::FILETIME *);
-      void Register(IntPtr, IID, DWORD*);
-      void UnRegister(DWORD);
-
+      void GetVersion(WORD*, WORD*, WORD*);
+      void GetMicState(WORD*);
+      void SetMicState(WORD, BOOL);
+      void SaveSpeaker(BOOL);
+      void GetChangedInfo(BOOL*, DWORD*);
+      void Resume(QWORD);
+      void RecognitionMimic(DWORD, SDATA, DWORD);
+      void Preinitialize();
+      void SpeakerRename(const WCHAR*, const WCHAR*);
    };
-
 }

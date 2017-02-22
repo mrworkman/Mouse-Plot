@@ -23,10 +23,15 @@ typedef unsigned __int64 QWORD, *PQWORD;
 
 #include  "ComHelper.h"
 
+typedef struct {} PSRMODEINFOW;
+typedef struct {} SRGRMFMT;
+typedef struct {} SDATA;
+
 #include "IDgnAppSupport.h"
 #include "IDgnDictate.h"
 #include "IDgnGetSinkFlags.h"
 #include "IDgnSpeechServices.h"
+#include "IDgnSrEngineControl.h"
 #include "IDgnSrEngineNotifySink.h"
 #include "IDgnSrSpeaker.h"
 #include "IDgnSSvcActionNotifySink.h"

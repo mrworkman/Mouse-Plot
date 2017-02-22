@@ -140,6 +140,7 @@
     <ClInclude Include="IDgnDictate.h" />
     <ClInclude Include="IDgnGetSinkFlags.h" />
     <ClInclude Include="IDgnSpeechServices.h" />
+    <ClInclude Include="IDgnSrEngineControl.h" />
     <ClInclude Include="IDgnSrEngineNotifySink.h" />
     <ClInclude Include="IDgnSrSpeaker.h" />
     <ClInclude Include="IDgnSSvcActionNotifySink.h" />

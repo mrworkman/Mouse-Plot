@@ -46,15 +46,19 @@ namespace Renfrew::NatSpeakInterop {
          ::IServiceProvider *_piServiceProvider;
 
          ISrCentral ^_isrCentral = nullptr;
-         IDgnSpeechServices  ^_idgnSpeechServices = nullptr;
+         IDgnSpeechServices  ^_idgnSpeechServices  = nullptr;
+         IDgnSrEngineControl ^_idgnSrEngineControl = nullptr;
          IDgnSSvcOutputEvent ^_idgnSSvcOutputEvent = nullptr;
          IDgnSSvcInterpreter ^_idgnSSvcInterpreter = nullptr;
 
          DWORD _key;
          
       private:
+         void InitializeIsrCentral(::IServiceProvider *);
+         void InitializeSpeechServicesInterfaces();
+         void InitializeSrEngineControlInterface();
          void RegisterEngineSink();
-         void RegisterSpeechServiceSinks();
+         void RegisterPlaybackSink();
          
       public:
          NatSpeakService();
@@ -78,23 +82,20 @@ namespace Renfrew::NatSpeakInterop {
 
    NatSpeakService::~NatSpeakService() { }
 
-   void NatSpeakService::Connect(IntPtr site) {
-      Connect(reinterpret_cast<::IServiceProvider*>(site.ToPointer()));
+   void NatSpeakService::Connect(IntPtr serviceProviderPtr) {
+      Connect(reinterpret_cast<::IServiceProvider*>(serviceProviderPtr.ToPointer()));
    }
 
-   void NatSpeakService::Connect(::IServiceProvider *site) {
-      if (site == nullptr)
+   void NatSpeakService::Connect(::IServiceProvider *pServiceProvider) {
+      if (pServiceProvider == nullptr)
          throw gcnew ArgumentNullException();
 
-      _piServiceProvider = site;
-
-      ISrCentral ^*ptr = ComHelper::QueryService<IDgnDictate^, ISrCentral^>(_piServiceProvider);
-      _isrCentral = (ISrCentral^) Marshal::GetObjectForIUnknown(IntPtr(ptr));
-
-      Marshal::Release(IntPtr(ptr));
-
+      InitializeIsrCentral(pServiceProvider);
       RegisterEngineSink();
-      RegisterSpeechServiceSinks();
+      InitializeSrEngineControlInterface();
+      InitializeSpeechServicesInterfaces();
+      RegisterPlaybackSink();
+
    }
 
    IntPtr NatSpeakService::CreateSiteObject() {
@@ -205,36 +206,58 @@ namespace Renfrew::NatSpeakInterop {
       }
    }
 
-   void NatSpeakService::RegisterEngineSink() {
-      // Create an engine sink
-      ISrNotifySink ^isrNotifySink = gcnew SrNotifySink();
+   void NatSpeakService::InitializeIsrCentral(::IServiceProvider *pServiceProvider) {
+      _piServiceProvider = pServiceProvider;
 
-      // https://msdn.microsoft.com/en-us/library/1dz8byfh.aspx
-      pin_ptr<DWORD> key = &_key;
+      ISrCentral ^*ptr = ComHelper::QueryService<IDgnDictate^, ISrCentral^>(_piServiceProvider);
+      _isrCentral = (ISrCentral^)Marshal::GetObjectForIUnknown(IntPtr(ptr));
 
-      IntPtr i = Marshal::GetIUnknownForObject(isrNotifySink);
-
-      // Register our notification sink
-      _isrCentral->Register(i, __uuidof(ISrNotifySink^), key);
-
-      Marshal::Release(i);
+      Marshal::Release(IntPtr(ptr));
    }
 
-   void NatSpeakService::RegisterSpeechServiceSinks() {
-      IDgnSSvcActionNotifySink ^playbackSink = gcnew SSvcActionNotifySink();
-
+   void NatSpeakService::InitializeSpeechServicesInterfaces() {
       // Speech Services
       IDgnSpeechServices ^*ptr = ComHelper::QueryService<ISpchServices^, IDgnSpeechServices^>(_piServiceProvider);
-      _idgnSpeechServices = (IDgnSpeechServices^) Marshal::GetObjectForIUnknown(IntPtr(ptr));
-      _idgnSSvcOutputEvent = (IDgnSSvcOutputEvent ^) _idgnSpeechServices;
-      _idgnSSvcInterpreter = (IDgnSSvcInterpreter ^) _idgnSSvcOutputEvent;
+      _idgnSpeechServices = (IDgnSpeechServices^)Marshal::GetObjectForIUnknown(IntPtr(ptr));
+      _idgnSSvcOutputEvent = (IDgnSSvcOutputEvent ^)_idgnSpeechServices;
+      _idgnSSvcInterpreter = (IDgnSSvcInterpreter ^)_idgnSSvcOutputEvent;
 
+      Marshal::Release(IntPtr(ptr));
+   }
+
+   void NatSpeakService::InitializeSrEngineControlInterface() {
+      _idgnSrEngineControl = (IDgnSrEngineControl ^) _isrCentral;
+   }
+
+   void NatSpeakService::RegisterEngineSink() {
+      IntPtr /*isrNotifySinkPtr,*/ idgnSrEngineNotifySinkPtr;
+      pin_ptr<DWORD> key = &_key; // https://msdn.microsoft.com/en-us/library/1dz8byfh.aspx
+      
+      // Create an engine sink
+      auto sink = gcnew SrNotifySink();
+
+      // ISrNotifySink ^isrNotifySink = sink;
+      IDgnSrEngineNotifySink ^idgnSrEngineNotifySink = sink;
+
+      // isrNotifySinkPtr          = Marshal::GetIUnknownForObject(isrNotifySink);
+      idgnSrEngineNotifySinkPtr = Marshal::GetIUnknownForObject(idgnSrEngineNotifySink);
+
+      // Register our notification sinks
+      // _isrCentral->Register(isrNotifySinkPtr, __uuidof(ISrNotifySink^), key);
+      _isrCentral->Register(idgnSrEngineNotifySinkPtr, __uuidof(IDgnSrEngineNotifySink^), key);
+
+      // Marshal::Release(isrNotifySinkPtr);
+      Marshal::Release(idgnSrEngineNotifySinkPtr);
+   }
+
+   void NatSpeakService::RegisterPlaybackSink() {
+      // Playback sink
+      IDgnSSvcActionNotifySink ^playbackSink = gcnew SSvcActionNotifySink();
       IntPtr i = Marshal::GetIUnknownForObject(playbackSink);
 
       _idgnSSvcOutputEvent->Register(i);
       _idgnSSvcInterpreter->Register(i);
       
-      Marshal::Release(IntPtr(ptr));
       Marshal::Release(i);
    }
 
