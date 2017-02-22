@@ -22,7 +22,8 @@
 
 #pragma once
 
-#define IDgnSREngineNotifySinkGUID "dd108001-6205-11cf-ae61-0000e8a28647"
+// #define IDgnSREngineNotifySinkGUID "dd108001-6205-11cf-ae61-0000e8a28647"
+#define IDgnSREngineNotifySinkGUID "dd109001-6205-11cf-ae61-0000e8a28647"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    using namespace System::Runtime::InteropServices;
@@ -36,6 +37,6 @@ namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
       void Paused(QWORD);
       void MimicDone(DWORD, LPUNKNOWN);
       void ErrorHappened(LPUNKNOWN);
-      void Progress(int, const char*);
+      void Progress(int, const WCHAR*);
    };
 }

@@ -27,6 +27,8 @@ using namespace System;
 using namespace System::Diagnostics;
 
 namespace Renfrew::NatSpeakInterop::Sinks {
+   using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
+
    public ref class SrNotifySink :
       public Dragon::ComInterfaces::IDgnGetSinkFlags,
       public Dragon::ComInterfaces::IDgnSrEngineNotifySink,
@@ -57,6 +59,7 @@ namespace Renfrew::NatSpeakInterop::Sinks {
          void virtual AttribChanged2(DWORD) {
             Debug::WriteLine(__FUNCTION__);
          }
+
          void virtual Paused(QWORD) {
             Debug::WriteLine(__FUNCTION__);
          }
@@ -69,7 +72,7 @@ namespace Renfrew::NatSpeakInterop::Sinks {
             Debug::WriteLine(__FUNCTION__);
          }
 
-         void virtual Progress(int, const char *) {
+         void virtual Progress(int, const WCHAR *) {
             Debug::WriteLine(__FUNCTION__);
          }
 
