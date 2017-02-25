@@ -26,6 +26,7 @@ typedef unsigned __int64 QWORD, *PQWORD;
 typedef struct {} PSRMODEINFOW;
 typedef struct {} SRGRMFMT;
 typedef struct {} SDATA;
+typedef struct {} *PSRPHRASEW;
 
 #include "IDgnAppSupport.h"
 #include "IDgnDictate.h"
@@ -38,8 +39,9 @@ typedef struct {} SDATA;
 #include "IDgnSSvcInterpreter.h"
 #include "IDgnSSvcOutputEvent.h"
 #include "ISpchServices.h"
-#include "ISRCentral.h"
-#include "ISRNotifySink.h"
+#include "ISrCentral.h"
+#include "ISrGramNotifySink.h"
+#include "ISrNotifySink.h"
 #include "ISrSpeaker.h"
 
 #include "SrNotifySink.h"

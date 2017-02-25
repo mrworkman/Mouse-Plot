@@ -109,6 +109,9 @@
     <ClInclude Include="IDgnSrEngineControl.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
+    <ClInclude Include="ISrGramNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">
