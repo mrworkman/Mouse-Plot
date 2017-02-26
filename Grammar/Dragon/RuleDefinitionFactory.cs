@@ -19,8 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Renfrew.Dragon {
-   using Grammar.Elements;
+namespace Renfrew.Grammar.Dragon {
+   using Elements;
 
    public class RuleDefinitionFactory {
       private RuleDirectiveFactory _ruleDirectiveFactory;

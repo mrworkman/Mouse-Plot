@@ -15,7 +15,7 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-namespace Renfrew.Dragon {
+namespace Renfrew.Grammar.Dragon {
 
    public enum ElementGroupings {
       SRCFGO_SEQUENCE = 1,

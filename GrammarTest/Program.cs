@@ -17,7 +17,7 @@
 
 using System;
 
-using Renfrew.Dragon;
+using Renfrew.Grammar.Dragon;
 using Renfrew.Grammar.FluentApi;
 
 namespace Renfrew.GrammarTest {
