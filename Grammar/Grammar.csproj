@@ -40,6 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dragon\DirectiveTypes.cs" />
+    <Compile Include="Dragon\ElementGroupings.cs" />
+    <Compile Include="Dragon\RuleDefinitionFactory.cs" />
+    <Compile Include="Dragon\RuleDirective.cs" />
+    <Compile Include="Dragon\RuleDirectiveFactory.cs" />
     <Compile Include="Elements\Element Container Interfaces\ISequence.cs" />
     <Compile Include="Elements\Element Container Interfaces\IOptionals.cs" />
     <Compile Include="Elements\Element Container Interfaces\IRepeats.cs" />
