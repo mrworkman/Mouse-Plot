@@ -34,7 +34,7 @@ namespace Renfrew.GrammarTest {
          /*rule.Say("hello").Do(() => {
             Debug.WriteLine("Well, hello to you!!");
          });*/
-
+         
          rule.OneOf(r => r.Say("Hi"));
 
          var x =  defFactory.CreateDefinitionTable(rule.Elements);

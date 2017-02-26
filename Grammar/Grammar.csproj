@@ -57,6 +57,7 @@
     <Compile Include="FluentApi\ActionableRule.cs" />
     <Compile Include="FluentApi\Interfaces\IActionableRule.cs" />
     <Compile Include="FluentApi\Interfaces\IRule.cs" />
+    <Compile Include="Grammar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FluentApi\Rule.cs" />
     <Compile Include="FluentApi\RuleFactory.cs" />
