@@ -115,6 +115,9 @@
     <ClInclude Include="SrGramNotifySink.h">
       <Filter>Header Files\Sinks</Filter>
     </ClInclude>
+    <ClInclude Include="ISrGramCommon.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

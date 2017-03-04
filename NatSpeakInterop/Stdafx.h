@@ -59,6 +59,7 @@ typedef struct {
 #include "IDgnSSvcOutputEvent.h"
 #include "ISpchServices.h"
 #include "ISrCentral.h"
+#include "ISrGramCommon.h"
 #include "ISrGramNotifySink.h"
 #include "ISrNotifySink.h"
 #include "ISrSpeaker.h"

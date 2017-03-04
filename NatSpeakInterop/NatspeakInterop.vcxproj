@@ -148,6 +148,7 @@
     <ClInclude Include="IDgnSSvcOutputEvent.h" />
     <ClInclude Include="ISpchServices.h" />
     <ClInclude Include="ISrCentral.h" />
+    <ClInclude Include="ISrGramCommon.h" />
     <ClInclude Include="ISrGramNotifySink.h" />
     <ClInclude Include="ISrNotifySink.h" />
     <ClInclude Include="ISrSpeaker.h" />
