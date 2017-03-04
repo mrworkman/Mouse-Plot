@@ -54,7 +54,7 @@ namespace Renfrew.Grammar {
          Int32 ruleNumber = 1;
          foreach (var table in tables) {
 
-            // The SRCFGRULE is 8 bytes long
+            // The SRCFGRULE struct is 8 bytes long
             var length = table.Count() * (sizeof(Int32) * 2);
 
             stream.Write(length + sizeof(Int32) * 2);
@@ -63,13 +63,13 @@ namespace Renfrew.Grammar {
             foreach (var row in table) {
                Debug.WriteLine(row);
 
-               stream.Write((UInt16)row.DirectiveType);
-               stream.Write((UInt16)0); // Assume probability of Zero
+               stream.Write((UInt16) row.DirectiveType);
+               stream.Write((UInt16) 0); // Assume probability of Zero
 
                if (row.ElementGrouping == ElementGroupings.NOT_APPLICABLE) {
-                  stream.Write((UInt32)row.Id);
+                  stream.Write((UInt32) row.Id);
                } else {
-                  stream.Write((UInt32)row.ElementGrouping);
+                  stream.Write((UInt32) row.ElementGrouping);
                }
             }
 
