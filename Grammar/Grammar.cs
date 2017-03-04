@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Renfrew.Grammar.FluentApi;
 
 namespace Renfrew.Grammar {
@@ -27,7 +27,13 @@ namespace Renfrew.Grammar {
    }
 
    public class Grammar : IGrammar {
-      private Dictionary<String, IRule> _rules;
+      private readonly Dictionary<String, IRule> _rules;
+      private readonly HashSet<String> _words;
+
+      public Grammar() {
+         _rules = new Dictionary<String, IRule>();
+         _words = new HashSet<String>();
+      }
 
       public void AddRule(String name, IRule rule) {
 
@@ -57,5 +63,13 @@ namespace Renfrew.Grammar {
             _rules.Remove(name);
       }
 
+      internal IList<String> RuleNames =>
+         Rules.Keys.OrderBy(e => e).ToList();
+
+      // Expose internally for serialization
+      internal IDictionary<String, IRule> Rules => _rules;
+
+      internal IList<String> Words =>
+         _words.OrderBy(e => e).ToList();
    }
 }
