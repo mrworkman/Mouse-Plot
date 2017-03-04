@@ -23,10 +23,14 @@ using System.Windows.Threading;
 using System.Windows.Forms;
 
 using Renfrew.Core.Properties;
+using Renfrew.Grammar.Dragon;
+using Renfrew.Grammar.FluentApi;
+using Renfrew.NatSpeakInterop.Sinks;
 
 using Application = System.Windows.Forms.Application;
 
 namespace Renfrew.Core {
+   using Grammar;
    using NatSpeakInterop;
 
    public class CoreApplication : ApplicationContext {
@@ -133,6 +137,22 @@ namespace Renfrew.Core {
          //_console.Dispatcher.BeginInvoke(
          //   DispatcherPriority.Background, new Action(() => { }));
 
+         //
+         // Grammar Test
+         var ruleFactory = new RuleFactory();
+         var definitionFactory = new RuleDefinitionFactory(new RuleDirectiveFactory());
+         var grammar = new Grammar();
+
+         grammar.AddRule("hello_rule", ruleFactory.CreateActionableRule(e =>
+            e.Say("hello")
+         ));
+
+         var grammarSerializer = new GrammarSerializer();
+
+         natSpeakService.LoadGrammar(grammarSerializer.Serialize(grammar), new SrGramNotifySink());
+
+         // End Grammar Test
+         //
       }
 
       public void Stop() {
@@ -140,4 +160,5 @@ namespace Renfrew.Core {
       }
 
    }
+
 }
