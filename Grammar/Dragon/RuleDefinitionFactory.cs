@@ -23,10 +23,8 @@ namespace Renfrew.Grammar.Dragon {
    using Elements;
 
    public class RuleDefinitionFactory {
-      private RuleDirectiveFactory _ruleDirectiveFactory;
-
-      private UInt32 _nextWordIndex = 1;
-      private Dictionary<String, UInt32> _wordLookup = new Dictionary<String, UInt32>();
+      private readonly RuleDirectiveFactory _ruleDirectiveFactory;
+      private Dictionary<String, Int32> _wordLookup;
 
       public RuleDefinitionFactory(RuleDirectiveFactory ruleDirectiveFactory) {
          _ruleDirectiveFactory = ruleDirectiveFactory;
@@ -35,14 +33,10 @@ namespace Renfrew.Grammar.Dragon {
       public IEnumerable<RuleDirective> CreateDefinitionTable(IElementContainer elementContainer) {
          var tmp = GenerateRuleDirectives(elementContainer);
 
-         // Reset for each rule parsed
-         _nextWordIndex = 1;
-         _wordLookup = new Dictionary<String, UInt32>();
-
          // If the "top-level" grouping (aka the start of the rule) has more
          // than ONE sub-element, then it must be a SEQUENCE, otherwise it
          // it must be any one of the other IElements.
-         if (elementContainer.Elements.Count(e => e != null) > 1) {
+         if (elementContainer.Elements.Count() > 1) {
             var directives = new List<RuleDirective>();
 
             directives.Add(_ruleDirectiveFactory.CreateStartDirective(elementContainer as ISequence));
@@ -55,6 +49,23 @@ namespace Renfrew.Grammar.Dragon {
          return tmp;
       }
 
+      public IEnumerable<RuleDirective> CreateDefinitionTables(Grammar grammar) {
+         var ruleDirectives = new List<RuleDirective>();
+
+         _wordLookup = grammar.Words
+            .Select((e, i) => new { Word = e, Index = i })
+            .ToDictionary(e => e.Word, e => e.Index);
+         
+         // Sort the rules by name
+         var rules = grammar.Rules.OrderBy(e => e.Key).Select(e => e.Value);
+
+         foreach (var rule in rules) {
+            ruleDirectives.AddRange( CreateDefinitionTable(rule.Elements) );
+         }
+
+         return ruleDirectives;
+      }
+      
       private IEnumerable<RuleDirective> GenerateRuleDirectives(IElementContainer elementContainer) {
          var directives = new List<RuleDirective>();
 
@@ -72,18 +83,11 @@ namespace Renfrew.Grammar.Dragon {
                   directives.Add(_ruleDirectiveFactory.CreateEndDirective(subGroup));
 
             } else {
-               UInt32 id = _nextWordIndex;
-               String word = element.ToString();
+               String word = element.ToString().ToLower();
 
-               // This should probably be done in another class, no?
-               if (_wordLookup.ContainsKey(word) == true) {
-                  id = _wordLookup[word];
-               } else {
-                  _wordLookup[word] = _nextWordIndex;
-                  _nextWordIndex++;
-               }
-
-               directives.Add(_ruleDirectiveFactory.CreateElementDirective(element, id));
+               directives.Add(
+                  _ruleDirectiveFactory.CreateElementDirective(element, _wordLookup[word])
+               );
             }
 
          }

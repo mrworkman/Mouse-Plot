@@ -18,24 +18,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Renfrew.Grammar.Elements;
 using Renfrew.Grammar.FluentApi;
 
 namespace Renfrew.Grammar {
 
    public interface IGrammar {
-      void AddRule(String name, IRule rule);
+      void AddRule(String name, IActionableRule rule);
    }
 
    public class Grammar : IGrammar {
-      private readonly Dictionary<String, IRule> _rules;
+      private readonly Dictionary<String, IActionableRule> _rules;
       private readonly HashSet<String> _words;
 
       public Grammar() {
-         _rules = new Dictionary<String, IRule>();
+         _rules = new Dictionary<String, IActionableRule>();
          _words = new HashSet<String>();
       }
 
-      public void AddRule(String name, IRule rule) {
+      public void AddRule(String name, IActionableRule rule) {
 
          if (String.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
@@ -63,13 +65,38 @@ namespace Renfrew.Grammar {
             _rules.Remove(name);
       }
 
+
+      private IList<String> GetWords() {
+         _words.Clear();
+
+         foreach (var ruleName in RuleNames) {
+            var rule = _rules[ruleName];
+            UpdateWordsFrom(rule.Elements.Elements);
+         }
+
+         return _words.OrderBy(e => e).ToList();
+      }
+
+      private void UpdateWordsFrom(IEnumerable<IElement> elements) {
+         foreach (var element in elements) {
+            if (element is IElementContainer == false) {
+               var word = element.ToString().ToLower();
+
+               if (_words.Contains(word) == false)
+                  _words.Add(word);
+
+            } else {
+               UpdateWordsFrom((element as IElementContainer).Elements);
+            }
+         }
+      }
+
       internal IList<String> RuleNames =>
          Rules.Keys.OrderBy(e => e).ToList();
 
       // Expose internally for serialization
-      internal IDictionary<String, IRule> Rules => _rules;
+      internal IDictionary<String, IActionableRule> Rules => _rules;
 
-      internal IList<String> Words =>
-         _words.OrderBy(e => e).ToList();
+      public IList<String> Words => GetWords();
    }
 }
