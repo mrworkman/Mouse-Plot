@@ -19,11 +19,11 @@ namespace Renfrew.Grammar.Dragon {
 
    public enum DirectiveTypes {
       SRCFG_STARTOPERATION = 1,
-      SRCFG_ENDOPERATION = 2,
-      SRCFG_WORD = 3,
-      SRCFG_RULE = 4,
-      SRCFG_WILDCARD = 5,
-      SRCFG_LIST = 6
+      SRCFG_ENDOPERATION   = 2,
+      SRCFG_WORD           = 3,
+      SRCFG_RULE           = 4,
+      SRCFG_WILDCARD       = 5,
+      SRCFG_LIST           = 6,
    }
    
 }

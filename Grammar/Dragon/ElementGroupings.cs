@@ -18,12 +18,12 @@
 namespace Renfrew.Grammar.Dragon {
 
    public enum ElementGroupings {
-      SRCFGO_SEQUENCE = 1,
+      SRCFGO_SEQUENCE    = 1,
       SRCFGO_ALTERNATIVE = 2,
-      SRCFGO_REPEAT = 3,
-      SRCFGO_OPTIONAL = 4,
+      SRCFGO_REPEAT      = 3,
+      SRCFGO_OPTIONAL    = 4,
 
-      NOT_APPLICABLE = 0
+      NOT_APPLICABLE     = 0
    }
 
 }
