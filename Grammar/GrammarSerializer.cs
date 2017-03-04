@@ -49,19 +49,31 @@ namespace Renfrew.Grammar {
 
          var definitionFactory = new RuleDefinitionFactory(new RuleDirectiveFactory());
 
-         var table = definitionFactory.CreateDefinitionTables(grammar);
-         
-         foreach (var row in table) {
-            Debug.WriteLine(row);
+         var tables = definitionFactory.CreateDefinitionTables(grammar);
 
-            stream.Write((UInt16) row.DirectiveType);
-            stream.Write((UInt16) 0); // Assume probability of Zero
+         Int32 ruleNumber = 1;
+         foreach (var table in tables) {
 
-            if (row.ElementGrouping == ElementGroupings.NOT_APPLICABLE) {
-               stream.Write((UInt32) row.Id);
-            } else {
-               stream.Write((UInt32) row.ElementGrouping);
+            // The SRCFGRULE is 8 bytes long
+            var length = table.Count() * (sizeof(Int32) * 2);
+
+            stream.Write(length + sizeof(Int32) * 2);
+            stream.Write(ruleNumber);
+
+            foreach (var row in table) {
+               Debug.WriteLine(row);
+
+               stream.Write((UInt16)row.DirectiveType);
+               stream.Write((UInt16)0); // Assume probability of Zero
+
+               if (row.ElementGrouping == ElementGroupings.NOT_APPLICABLE) {
+                  stream.Write((UInt32)row.Id);
+               } else {
+                  stream.Write((UInt32)row.ElementGrouping);
+               }
             }
+
+            ruleNumber++;
          }
          
          try {
@@ -76,7 +88,7 @@ namespace Renfrew.Grammar {
          var memoryStream = new MemoryStream();
          var stream = new BinaryWriter(memoryStream);
 
-         Int32 wordNumber = 0;
+         Int32 wordNumber = 1;
          foreach (var e in words) {
             var length = GetPaddedStringLength(e);
             var nameBytes = Encoding.Unicode.GetBytes(e);
@@ -102,7 +114,7 @@ namespace Renfrew.Grammar {
       }
 
       private Int32 GetPaddedStringLength(String s) {
-         var numBytes = Encoding.Unicode.GetByteCount(s) + 1;
+         var numBytes = Encoding.Unicode.GetByteCount(s) + 2;
          var diff = numBytes % sizeof(Int32);
 
          // Pad to 4-byte boundary

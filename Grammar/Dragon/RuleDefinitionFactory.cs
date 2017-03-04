@@ -49,19 +49,18 @@ namespace Renfrew.Grammar.Dragon {
          return tmp;
       }
 
-      public IEnumerable<RuleDirective> CreateDefinitionTables(Grammar grammar) {
-         var ruleDirectives = new List<RuleDirective>();
+      public IEnumerable<IEnumerable<RuleDirective>> CreateDefinitionTables(Grammar grammar) {
+         var ruleDirectives = new List<IEnumerable<RuleDirective>>();
 
          _wordLookup = grammar.Words
-            .Select((e, i) => new { Word = e, Index = i })
+            .Select((e, i) => new { Word = e, Index = i + 1 })
             .ToDictionary(e => e.Word, e => e.Index);
          
          // Sort the rules by name
          var rules = grammar.Rules.OrderBy(e => e.Key).Select(e => e.Value);
 
-         foreach (var rule in rules) {
-            ruleDirectives.AddRange( CreateDefinitionTable(rule.Elements) );
-         }
+         foreach (var rule in rules)
+            ruleDirectives.Add( CreateDefinitionTable(rule.Elements) );
 
          return ruleDirectives;
       }
