@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using Renfrew.Grammar.Elements;
 using Renfrew.Grammar.FluentApi;
@@ -44,15 +45,29 @@ namespace Renfrew.Grammar {
 
          if (rule == null)
             throw new ArgumentNullException(nameof(rule));
-
-         // TODO: Enforce rule naming convention
-
+         
          name = name.ToLower();
 
+         try {
+            EnforceRuleNaming(name);
+         } catch { throw; }
+         
          if (_rules.ContainsKey(name) == true)
             throw new ArgumentException($"Grammar already contains a rule called '{name}'.", nameof(name));
          
          _rules.Add(name, rule);
+      }
+
+      private void EnforceRuleNaming(String ruleName) {
+         var validChars = @"[a-z0-9_]";
+
+         if (Regex.IsMatch(ruleName, $@"^{validChars}+$") == false) {
+            throw new ArgumentOutOfRangeException(nameof(ruleName), 
+               $@"Rule name '{ruleName}' contains invalid character(s): '{
+                  Regex.Replace(ruleName, validChars, String.Empty)
+               }'"
+            );
+         }  
       }
 
       public void RemoveRule(String name) {
