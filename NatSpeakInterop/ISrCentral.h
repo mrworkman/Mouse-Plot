@@ -33,7 +33,7 @@ namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
       DECLSPEC_UUID(ISrCentralGUID) ISrCentral {
 
       void ModeGet(PSRMODEINFOW);
-      void GrammarLoad(SRGRMFMT, SDATA, PVOID, IID, LPUNKNOWN *);
+      void GrammarLoad(SRGRMFMT, SDATA, IntPtr, IID, LPUNKNOWN *);
       void Pause();
       void PosnGet(PQWORD);
       void Resume();
