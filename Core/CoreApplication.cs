@@ -35,16 +35,21 @@ namespace Renfrew.Core {
 
    public class CoreApplication : ApplicationContext {
       private static CoreApplication _instance;
-      
+
+      // Main interface to dragon
+      private NatSpeakService _natSpeakService;
+
+      // Debug console
       private DebugConsole _console;
+      private Thread       _consoleThread;
 
+      // System tray icon and menu
       private readonly NotifyIcon _notifyIcon;
-      private ContextMenuStrip _contextMenuStrip;
-      private ToolStripMenuItem _exitMenuItem;
-      private Thread _thread;
-
+      private ContextMenuStrip    _contextMenuStrip;
+      
       private bool _isTerminated = false;
 
+      #region Application Init
       private CoreApplication() {
          _notifyIcon = new NotifyIcon();
 
@@ -78,7 +83,6 @@ namespace Renfrew.Core {
          _contextMenuStrip.Items.Add("E&xit Project Renfrew", null, OnApplicationExit);
          
          _notifyIcon.Visible = true;
-
       }
 
       public static CoreApplication Instance {
@@ -88,7 +92,9 @@ namespace Renfrew.Core {
             return _instance;
          }
       }
+      #endregion
 
+      #region Application Termination
       private void OnApplicationExit(Object sender = null, EventArgs e = null) {
          if (_isTerminated == true)
             return;
@@ -96,49 +102,41 @@ namespace Renfrew.Core {
          _notifyIcon.Visible = false;
 
          _console.Close();
-         
+
          Application.Exit();
          Application.ExitThread();
 
          _isTerminated = true;
       }
 
-      public void Start(NatSpeakService natSpeakService) {
+      public void Stop() {
+         OnApplicationExit();
+      }
+      #endregion
+
+      private void InitializeDebugConsole() {
          if (_console != null)
             return;
-         
-         _thread = new Thread(() => {
+
+         // The debug console runs on a thread of its own
+         _consoleThread = new Thread(() => {
             _console = new DebugConsole();
             _console.ShowDialog();
 
             Dispatcher.Run();
          });
 
-         _thread.SetApartmentState(ApartmentState.STA);
-         _thread.IsBackground = true;
-         _thread.Start();
+         // Start the thread in the background. STA is needed to support WPF
+         _consoleThread.SetApartmentState(ApartmentState.STA);
+         _consoleThread.IsBackground = true;
+         _consoleThread.Start();
 
+         // Wait a spell
          while (_console == null)
             Thread.Sleep(100);
+      }
 
-         _console.WriteLine("Querying Dragon Naturally Speaking...");
-
-         try {
-            var profileName = natSpeakService.GetCurrentUserProfileName();
-            var profilePath = natSpeakService.GetUserDirectory(profileName);
-
-            _console.WriteLine($"Dragon Profile Loaded: {profileName}");
-            _console.WriteLine($"Dragon Profile Path: {profilePath}");
-         } catch (COMException e) {
-            _console.WriteLine($"Fatal error: {e.Message}! Cannot continue!");
-            throw;
-         }
-
-         //_console.Dispatcher.BeginInvoke(
-         //   DispatcherPriority.Background, new Action(() => { }));
-
-         //
-         // Grammar Test
+      private void LoadGrammars() {
          var ruleFactory = new RuleFactory();
          var definitionFactory = new RuleDefinitionFactory(new RuleDirectiveFactory());
          var grammar = new Grammar();
@@ -149,14 +147,32 @@ namespace Renfrew.Core {
 
          var grammarSerializer = new GrammarSerializer();
 
-         natSpeakService.LoadGrammar(grammarSerializer.Serialize(grammar), new SrGramNotifySink());
-
-         // End Grammar Test
-         //
+         _natSpeakService.LoadGrammar(grammarSerializer.Serialize(grammar), new SrGramNotifySink());
       }
 
-      public void Stop() {
-         OnApplicationExit();
+      public void Start(NatSpeakService natSpeakService) {
+
+         if (natSpeakService == null)
+            throw new ArgumentNullException(nameof(natSpeakService));
+
+         _natSpeakService = natSpeakService;
+
+         InitializeDebugConsole();
+
+         _console.WriteLine("Querying Dragon Naturally Speaking...");
+
+         try {
+            var profileName = _natSpeakService.GetCurrentUserProfileName();
+            var profilePath = _natSpeakService.GetUserDirectory(profileName);
+
+            _console.WriteLine($"Dragon Profile Loaded: {profileName}");
+            _console.WriteLine($"Dragon Profile Path: {profilePath}");
+         } catch (COMException e) {
+            _console.WriteLine($"Fatal error: {e.Message}! Cannot continue!");
+            throw;
+         }
+
+         LoadGrammars();
       }
 
    }

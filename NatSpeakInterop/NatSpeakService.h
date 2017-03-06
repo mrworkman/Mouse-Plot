@@ -265,9 +265,9 @@ namespace Renfrew::NatSpeakInterop {
          }
       }
 
-      ISrGramCommon ^o = (ISrGramCommon^) Marshal::GetTypedObjectForIUnknown(IntPtr(pUnknown), ISrGramCommon::typeid);
+      // ISrGramCommon ^o = (ISrGramCommon^) Marshal::GetTypedObjectForIUnknown(IntPtr(pUnknown), ISrGramCommon::typeid);
 
-      o->Activate(nullptr, false, L"hello_rule");
+      // o->Activate(nullptr, false, L"hello_rule");
 
       pUnknown->Release();
       Marshal::Release(iSrGramNotifySinkPtr);
