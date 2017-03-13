@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 using Renfrew.Grammar.Elements;
@@ -25,21 +26,22 @@ using Renfrew.Grammar.FluentApi;
 
 namespace Renfrew.Grammar {
 
-   public interface IGrammar {
-      void AddRule(String name, IActionableRule rule);
-   }
-
-   public class Grammar : IGrammar {
+   public abstract class Grammar : IDisposable {
+      
       private readonly Dictionary<String, IActionableRule> _rules;
       private readonly HashSet<String> _words;
 
-      public Grammar() {
+      protected Grammar() 
+         : this(new RuleFactory()) {
          _rules = new Dictionary<String, IActionableRule>();
          _words = new HashSet<String>();
       }
 
-      public void AddRule(String name, IActionableRule rule) {
+      protected Grammar(RuleFactory ruleFactory) {
+         RuleFactory = ruleFactory;
+      }
 
+      protected void AddRule(String name, IActionableRule rule) {
          if (String.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
 
@@ -58,6 +60,11 @@ namespace Renfrew.Grammar {
          _rules.Add(name, rule);
       }
 
+      protected void AddRule(String name, Expression<Action<IRule>> expression) =>
+         AddRule(name, RuleFactory.CreateActionableRule(expression));
+
+      public abstract void Dispose();
+
       private void EnforceRuleNaming(String ruleName) {
          var validChars = @"[a-z0-9_]";
 
@@ -70,7 +77,9 @@ namespace Renfrew.Grammar {
          }  
       }
 
-      public void RemoveRule(String name) {
+      public abstract void Initialize();
+
+      protected void RemoveRule(String name) {
          if (String.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
 
@@ -106,6 +115,8 @@ namespace Renfrew.Grammar {
          }
       }
 
+      protected RuleFactory RuleFactory { get; private set; }
+
       internal IList<String> RuleNames =>
          Rules.Keys.OrderBy(e => e).ToList();
 
@@ -114,4 +125,5 @@ namespace Renfrew.Grammar {
 
       public IList<String> Words => GetWords();
    }
+   
 }

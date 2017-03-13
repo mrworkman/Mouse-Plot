@@ -16,12 +16,15 @@
 //
 
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using System.Windows.Forms;
 
+using Renfrew.Core.Grammars;
 using Renfrew.Core.Properties;
 using Renfrew.Grammar.Dragon;
 using Renfrew.Grammar.FluentApi;
@@ -114,6 +117,8 @@ namespace Renfrew.Core {
       }
       #endregion
 
+      private DebugConsole DebugConsole => _console;
+
       private void InitializeDebugConsole() {
          if (_console != null)
             return;
@@ -137,17 +142,33 @@ namespace Renfrew.Core {
       }
 
       private void LoadGrammars() {
-         var ruleFactory = new RuleFactory();
-         var definitionFactory = new RuleDefinitionFactory(new RuleDirectiveFactory());
-         var grammar = new Grammar();
 
-         grammar.AddRule("hello_rule", ruleFactory.CreateActionableRule(e =>
-            e.Say("hello")
-         ));
+         var currentAssembly = Assembly.GetExecutingAssembly();
 
-         var grammarSerializer = new GrammarSerializer();
+         var types = currentAssembly.GetTypes()
+            .Select(e => new {
+               Type = e,
+               Attr = e.GetCustomAttributes<GrammarExportAttribute>().FirstOrDefault()
+            }).Where(e => e.Attr != null).ToList();
 
-         _natSpeakService.LoadGrammar(grammarSerializer.Serialize(grammar), new SrGramNotifySink());
+         DebugConsole.WriteLine();
+         DebugConsole.WriteLine($"Found {types.Count} system grammars:");
+
+         foreach (var type in types) {
+            var a = type.Attr;
+
+            DebugConsole.WriteLine($"{type.Type}: (Name: {a.Name}, Description: {a.Description})");
+
+            var ttt = (Grammar) Activator.CreateInstance(type.Type);
+
+            try {
+               ttt.Initialize();
+            } catch (Exception e) {
+               DebugConsole.WriteLine($"{e.Message} {e.StackTrace}");
+            }
+
+            DebugConsole.WriteLine($"Grammar's words: {String.Join(", ", ttt.Words)}");
+         }
       }
 
       public void Start(NatSpeakService natSpeakService) {
@@ -159,22 +180,21 @@ namespace Renfrew.Core {
 
          InitializeDebugConsole();
 
-         _console.WriteLine("Querying Dragon Naturally Speaking...");
-
+         DebugConsole.WriteLine("Querying Dragon Naturally Speaking...");
+         
          try {
             var profileName = _natSpeakService.GetCurrentUserProfileName();
             var profilePath = _natSpeakService.GetUserDirectory(profileName);
 
-            _console.WriteLine($"Dragon Profile Loaded: {profileName}");
-            _console.WriteLine($"Dragon Profile Path: {profilePath}");
+            DebugConsole.WriteLine($"Dragon Profile Loaded: {profileName}");
+            DebugConsole.WriteLine($"Dragon Profile Path: {profilePath}");
+
+            LoadGrammars();
+
          } catch (COMException e) {
-            _console.WriteLine($"Fatal error: {e.Message}! Cannot continue!");
+            DebugConsole.WriteLine($"Fatal error: {e.Message}! Cannot continue!");
             throw;
          }
-
-         LoadGrammars();
       }
-
    }
-
 }
