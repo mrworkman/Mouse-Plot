@@ -67,3 +67,7 @@ typedef struct {
 #include "SrNotifySink.h"
 #include "SSvcActionNotifySink.h"
 #include "SrGramNotifySink.h"
+
+#include "IGrammar.h"
+#include "IGrammarSerializer.h"
+#include "GrammarService.h"

@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComHelper.h" />
+    <ClInclude Include="GrammarService.h" />
     <ClInclude Include="IDgnAppSupport.h" />
     <ClInclude Include="IDgnDictate.h" />
     <ClInclude Include="IDgnGetSinkFlags.h" />
@@ -146,6 +147,8 @@
     <ClInclude Include="IDgnSSvcActionNotifySink.h" />
     <ClInclude Include="IDgnSSvcInterpreter.h" />
     <ClInclude Include="IDgnSSvcOutputEvent.h" />
+    <ClInclude Include="IGrammar.h" />
+    <ClInclude Include="IGrammarSerializer.h" />
     <ClInclude Include="ISpchServices.h" />
     <ClInclude Include="ISrCentral.h" />
     <ClInclude Include="ISrGramCommon.h" />

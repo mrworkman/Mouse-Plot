@@ -118,6 +118,15 @@
     <ClInclude Include="ISrGramCommon.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
+    <ClInclude Include="GrammarService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGrammar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGrammarSerializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">
