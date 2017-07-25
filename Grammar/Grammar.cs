@@ -23,10 +23,12 @@ using System.Text.RegularExpressions;
 
 using Renfrew.Grammar.Elements;
 using Renfrew.Grammar.FluentApi;
+using Renfrew.NatSpeakInterop;
+using Renfrew.NatSpeakInterop.Dragon.ComInterfaces;
 
 namespace Renfrew.Grammar {
 
-   public abstract class Grammar : IDisposable {
+   public abstract class Grammar : IGrammar, IDisposable {
       
       private readonly Dictionary<String, IActionableRule> _rules;
       private readonly HashSet<String> _words;
@@ -77,6 +79,10 @@ namespace Renfrew.Grammar {
          }  
       }
 
+      public ISrGramCommon GramCommonInterface {
+         get { throw new NotImplementedException(); }
+      }
+
       public abstract void Initialize();
 
       protected void RemoveRule(String name) {
@@ -84,13 +90,13 @@ namespace Renfrew.Grammar {
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
 
          name = name.ToLower();
-
+         
          if (_rules.ContainsKey(name) == true)
             _rules.Remove(name);
       }
 
 
-      private IList<String> GetWords() {
+      private List<String> GetWords() {
          _words.Clear();
 
          foreach (var ruleName in RuleNames) {
@@ -117,13 +123,18 @@ namespace Renfrew.Grammar {
 
       protected RuleFactory RuleFactory { get; private set; }
 
-      internal IList<String> RuleNames =>
+      //internal IList<String> RuleNames =>
+      //   Rules.Keys.OrderBy(e => e).ToList();
+
+      public IReadOnlyCollection<String> RuleNames =>
          Rules.Keys.OrderBy(e => e).ToList();
 
       // Expose internally for serialization
       internal IDictionary<String, IActionableRule> Rules => _rules;
 
-      public IList<String> Words => GetWords();
+      // public IList<String> Words => GetWords();
+      public IReadOnlyCollection<String> Words => GetWords();
+      
    }
    
 }

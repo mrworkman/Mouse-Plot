@@ -24,9 +24,10 @@ using System.Text;
 
 using Renfrew.Grammar.Dragon;
 using Renfrew.Grammar.FluentApi;
+using Renfrew.NatSpeakInterop;
 
 namespace Renfrew.Grammar {
-   public class GrammarSerializer {
+   public class GrammarSerializer : IGrammarSerializer {
 
       #region Speech Recognition Constants
       private const UInt32 SRHDRTYPE_CFG     = 0;
@@ -84,7 +85,7 @@ namespace Renfrew.Grammar {
          }
       }
 
-      private byte[] BuildWordsChunk(IList<String> words) {
+      private byte[] BuildWordsChunk(IEnumerable<String> words) {
          var memoryStream = new MemoryStream();
          var stream = new BinaryWriter(memoryStream);
 
@@ -123,8 +124,8 @@ namespace Renfrew.Grammar {
 
          return numBytes;
       }
-
-      public byte[] Serialize(Grammar grammar) {
+      
+      public byte[] Serialize(IGrammar grammar) {
          var memoryStream = new MemoryStream();
          var stream = new BinaryWriter(memoryStream);
 
@@ -154,7 +155,7 @@ namespace Renfrew.Grammar {
          stream.Write(SRCKCFG_RULES);
 
          // This chunk has its own special format
-         bytes = BuildRulesChunk(grammar);
+         bytes = BuildRulesChunk(grammar as Grammar);
          stream.Write(bytes.Length); // Chunk Size
          stream.Write(bytes);        // Chunk
 

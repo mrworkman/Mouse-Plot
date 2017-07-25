@@ -70,7 +70,12 @@
     <Compile Include="FluentApi\RuleFactory.cs" />
     <Compile Include="Elements\WordElement.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\NatSpeakInterop\NatspeakInterop.vcxproj">
+      <Project>{0B7DF2F5-D3AD-415D-8B73-B8B9B9EFE75D}</Project>
+      <Name>NatSpeakInterop</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
