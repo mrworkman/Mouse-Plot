@@ -75,8 +75,6 @@ namespace Renfrew::NatSpeakInterop {
 
          String ^GetCurrentUserProfileName();
          String ^GetUserDirectory(String ^userProfile);
-
-         void LoadGrammar(array<byte> ^serializedGrammarBytes, ISrGramNotifySink ^iSrGramNotifySink);
    };
 
    NatSpeakService::NatSpeakService() {
@@ -230,49 +228,6 @@ namespace Renfrew::NatSpeakInterop {
 
    void NatSpeakService::InitializeSrEngineControlInterface() {
       _idgnSrEngineControl = (IDgnSrEngineControl ^) _isrCentral;
-   }
-
-   void NatSpeakService::LoadGrammar(array<byte> ^serializedGrammarBytes, ISrGramNotifySink ^iSrGramNotifySink) {
-      IntPtr iSrGramNotifySinkPtr;
-      LPUNKNOWN pUnknown = nullptr;
-
-      // Pinning any sub-element of a managed array pins the entire array
-      pin_ptr<byte> bytes = &serializedGrammarBytes[0];
-            
-      SDATA data;
-      data.dwSize = serializedGrammarBytes->Length;
-      data.pData  = bytes;
-
-      unsigned char *c = bytes;
-      int j = 1;
-      for(int i = 0; i < data.dwSize; i++, j++) {
-         Console::Write("{0:X2}", c[i]);
-         if (j == 4) {
-            Console::WriteLine();
-            j = 0;
-         }  
-      }
-
-      iSrGramNotifySinkPtr = Marshal::GetIUnknownForObject(iSrGramNotifySink);
-
-      try {
-         _isrCentral->GrammarLoad(SRGRMFMT_CFG, data, iSrGramNotifySinkPtr, __uuidof(ISrGramNotifySink^), &pUnknown);
-      } catch (COMException ^e) {
-         if (e->HResult == SRERR_GRAMMARERROR) {
-            Debug::WriteLine("SRERR_GRAMMARERROR");
-         } else {
-            throw;
-         }
-      }
-
-      // ISrGramCommon ^o = (ISrGramCommon^) Marshal::GetTypedObjectForIUnknown(IntPtr(pUnknown), ISrGramCommon::typeid);
-
-      // o->Activate(nullptr, false, L"hello_rule");
-
-      pUnknown->Release();
-      Marshal::Release(iSrGramNotifySinkPtr);
-
-      // Marshal::ReleaseComObject(o);
    }
 
    void NatSpeakService::RegisterEngineSink() {
