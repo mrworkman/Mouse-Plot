@@ -17,6 +17,7 @@
 
 // NOTE:
 //   Portions (c) Copyright 1997-1999 by Joel Gould.
+//   - Based on original NatLink Code
 
 #pragma once
 
