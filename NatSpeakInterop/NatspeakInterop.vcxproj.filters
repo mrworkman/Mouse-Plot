@@ -27,6 +27,9 @@
     <Filter Include="Header Files\Helpers">
       <UniqueIdentifier>{79881184-170d-47b9-94df-2d9793f32d5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Exceptions">
+      <UniqueIdentifier>{550471f8-c2ec-4d3a-bfaf-d4b494a3f17b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Stdafx.cpp">
@@ -126,6 +129,12 @@
     </ClInclude>
     <ClInclude Include="IGrammarSerializer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GrammarException.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="SrErrorCodes.h">
+      <Filter>Header Files\Dragon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

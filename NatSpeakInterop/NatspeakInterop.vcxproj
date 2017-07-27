@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComHelper.h" />
+    <ClInclude Include="GrammarException.h" />
     <ClInclude Include="GrammarService.h" />
     <ClInclude Include="IDgnAppSupport.h" />
     <ClInclude Include="IDgnDictate.h" />
@@ -163,6 +164,7 @@
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="SinkFlags.h" />
+    <ClInclude Include="SrErrorCodes.h" />
     <ClInclude Include="SrGramNotifySink.h" />
     <ClInclude Include="SrNotifySink.h" />
     <ClInclude Include="SSvcActionNotifySink.h" />
