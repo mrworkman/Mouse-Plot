@@ -15,16 +15,19 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
+// NOTE:
+//   Portions (c) Copyright 1997-1999 by Joel Gould.
+//   - Based on original NatLink Code
+
 #pragma once
 
 #include "Stdafx.h"
 #include <vcclr.h>
 
-// TODO: Move this:
-#define  SRERR_GRAMMARERROR   0x80040416
-
 namespace Renfrew::NatSpeakInterop {
+   using namespace Renfrew::NatSpeakInterop::Dragon;
    using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
+   using namespace Renfrew::NatSpeakInterop::Exceptions;
    using namespace Renfrew::NatSpeakInterop::Sinks;
 
    public ref class GrammarService {
@@ -47,27 +50,48 @@ namespace Renfrew::NatSpeakInterop {
 
       }
 
-      public: void ActivateRule(IGrammar ^grammar, /*HWND hWnd,*/ String ^ruleName) {
+      public: void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName) {
          pin_ptr<const WCHAR> wstrRuleName = PtrToStringChars(ruleName);
+
+         if (hWnd != nullptr && IsWindow(hWnd) == false)
+            return;
 
          try {
             grammar->GramCommonInterface->Activate(
-               nullptr, // TODO: Set to hWnd (where applicable) 
+               hWnd, // TODO: Set to hWnd (where applicable) 
                false, wstrRuleName
             );
          } catch (COMException ^e) {
-            // SRERR_INVALIDRULE
-            // SRERR_GRAMMARTOOCOMPLEX
-            // SRERR_RULEALREADYACTIVE
-            // default on other errors
-
-            throw;
+            if (e->HResult == SrErrorCodes::SRERR_INVALIDRULE)
+               throw gcnew GrammarException(String::Format("Invalid Rule: {}!", ruleName), e);
+            if (e->HResult == SrErrorCodes::SRERR_GRAMMARTOOCOMPLEX)
+               throw gcnew GrammarException("Grammar too complex!", e);
+            if (e->HResult == SrErrorCodes::SRERR_RULEALREADYACTIVE)
+               throw gcnew GrammarException(String::Format("Rule Already Active: {}!", ruleName), e);
+            throw gcnew GrammarException("Unexpected Grammar Error!", e);
          }
+      }
 
+      public: void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName) {
+         ActivateRule(grammar, (HWND) hWnd->ToPointer(), ruleName);
       }
 
       public: void ActivateRules(IGrammar ^grammar) {
 
+      }
+
+      public: void DeactivateRule(IGrammar ^grammar, String ^ruleName) {
+         pin_ptr<const WCHAR> wstrRuleName = PtrToStringChars(ruleName);
+
+         try {
+            grammar->GramCommonInterface->Deactivate(
+               wstrRuleName
+            );
+         } catch (COMException ^e) {
+            if (e->HResult == SrErrorCodes::SRERR_RULENOTACTIVE)
+               throw gcnew GrammarException(String::Format("Rule Is Not Active: {}!", ruleName), e);
+            throw gcnew GrammarException("Unexpected Grammar Error!", e);
+         }
       }
 
       public: ISrGramCommon ^LoadGrammar(IGrammar ^grammar) {
@@ -98,14 +122,11 @@ namespace Renfrew::NatSpeakInterop {
                SRGRMFMT_CFG, data, iSrGramNotifySinkPtr, __uuidof(ISrGramNotifySink^), &pUnknown
             );
          } catch (COMException ^e) {
-            if (e->HResult == SRERR_GRAMMARERROR) {
-               Debug::WriteLine("SRERR_GRAMMARERROR");
-            } else {
-               throw;
-            }
-            // SRERR_INVALIDCHAR
-            // SRERR_GRAMMARERROR
-            // default on other errors
+            if (e->HResult == SrErrorCodes::SRERR_INVALIDCHAR)
+               throw gcnew GrammarException("Invalid Word/Character in Grammar", e);
+            if (e->HResult == SrErrorCodes::SRERR_GRAMMARERROR)
+               throw gcnew GrammarException("Grammar Error", e);
+            throw gcnew GrammarException("Unexpected Grammar Error!", e);
          }
 
          ISrGramCommon ^isrGramCommon = (ISrGramCommon^)
