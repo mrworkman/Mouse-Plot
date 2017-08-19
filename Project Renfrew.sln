@@ -3,17 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrammarTest", "GrammarTest\GrammarTest.csproj", "{DCEAAC99-3014-4435-9862-B71DE9D044D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grammar", "Grammar\Grammar.csproj", "{FCF06529-2ADC-4F27-804F-260B598EA492}"
 	ProjectSection(ProjectDependencies) = postProject
-		{D97E5809-476B-4001-A1FB-EDAE7235276D} = {D97E5809-476B-4001-A1FB-EDAE7235276D}
 		{0B7DF2F5-D3AD-415D-8B73-B8B9B9EFE75D} = {0B7DF2F5-D3AD-415D-8B73-B8B9B9EFE75D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grammar", "Grammar\Grammar.csproj", "{FCF06529-2ADC-4F27-804F-260B598EA492}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher\Launcher.csproj", "{52409A8D-1784-41EF-8252-893EB936CBE5}"
 	ProjectSection(ProjectDependencies) = postProject
-		{FCF06529-2ADC-4F27-804F-260B598EA492} = {FCF06529-2ADC-4F27-804F-260B598EA492}
 		{0B7DF2F5-D3AD-415D-8B73-B8B9B9EFE75D} = {0B7DF2F5-D3AD-415D-8B73-B8B9B9EFE75D}
 	EndProjectSection
 EndProject
@@ -37,26 +33,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|Win32.Build.0 = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|x64.Build.0 = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Debug|x86.Build.0 = Debug|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|Win32.ActiveCfg = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|Win32.Build.0 = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|x64.ActiveCfg = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|x64.Build.0 = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|x86.ActiveCfg = Release|Any CPU
-		{DCEAAC99-3014-4435-9862-B71DE9D044D6}.Release|x86.Build.0 = Release|Any CPU
 		{FCF06529-2ADC-4F27-804F-260B598EA492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FCF06529-2ADC-4F27-804F-260B598EA492}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCF06529-2ADC-4F27-804F-260B598EA492}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
