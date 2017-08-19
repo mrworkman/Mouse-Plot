@@ -1,5 +1,5 @@
-﻿// Project Renfrew
-// Copyright(C) 2016  Stephen Workman (workman.stephen@gmail.com)
+// Project Renfrew
+// Copyright(C) 2017 Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,22 +15,22 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#pragma once
 
-namespace Renfrew.Dragon {
-   using Grammar.Elements;
+namespace Renfrew::NatSpeakInterop::Exceptions {
+   using namespace System;
+   using namespace System::Runtime::InteropServices;
 
-   public class RuleDirective {
-      public DirectiveTypes DirectiveType { get; set; }
-      public ElementGroupings? ElementGrouping { get; set; }
-      public UInt32 Id { get; set; }
+   public ref class GrammarException : Exception {
+      public: GrammarException(String ^message, COMException ^innerException) :
+         Exception(message, innerException) {
+         
+         if (innerException != nullptr)
+            this->HResult = innerException->HResult;
 
-      public override String ToString() {
-         if (ElementGrouping == ElementGroupings.NOT_APPLICABLE)
-            return $"{DirectiveType} {Id}";
-         return $"{DirectiveType} {ElementGrouping}";
       }
-   }
+      public: GrammarException(String ^message, Exception ^innerException) :
+         Exception(message, innerException) {
+      }
+   };
 }

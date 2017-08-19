@@ -1,4 +1,4 @@
-﻿// Project Renfrew
+// Project Renfrew
 // Copyright(C) 2016  Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
@@ -15,15 +15,21 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-namespace Renfrew.Dragon {
+// NOTE: 
+// Original dragon interfaces (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright Dragon Systems, Inc. 1998
+//   Portions (c) Copyright 1997-1999 by Joel Gould.
 
-   public enum DirectiveTypes {
-      SRCFG_STARTOPERATION = 1,
-      SRCFG_ENDOPERATION = 2,
-      SRCFG_WORD = 3,
-      SRCFG_RULE = 4,
-      SRCFG_WILDCARD = 5,
-      SRCFG_LIST = 6
-   }
-   
+#pragma once
+
+#define IDgnDictateGUID "dd100001-6205-11cf-ae61-0000e8a28647"
+
+namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
+   using namespace System::Runtime::InteropServices;
+
+   [ComImport, Guid(IDgnDictateGUID)]
+   [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
+   public interface class
+      DECLSPEC_UUID(IDgnDictateGUID) IDgnDictate { };
+
 }

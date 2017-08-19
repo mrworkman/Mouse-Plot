@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{a3993e88-c707-4900-bfaa-ea1f6995f9c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Dragon">
+      <UniqueIdentifier>{ff92dcf0-3389-48af-addc-c3225a5ce28e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Dragon\ComInterfaces">
+      <UniqueIdentifier>{320ea833-9942-4d03-a34c-3268591068fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sinks">
+      <UniqueIdentifier>{96eb9270-bf3a-43f1-ac85-914981506f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sinks">
+      <UniqueIdentifier>{bc94cdb4-57fa-4356-b256-dbc04e86788e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Helpers">
+      <UniqueIdentifier>{79881184-170d-47b9-94df-2d9793f32d5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exceptions">
+      <UniqueIdentifier>{550471f8-c2ec-4d3a-bfaf-d4b494a3f17b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NatSpeakService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SrNotifySink.cpp">
+      <Filter>Source Files\Sinks</Filter>
+    </ClCompile>
+    <ClCompile Include="SSvcActionNotifySink.cpp">
+      <Filter>Source Files\Sinks</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NatSpeakService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnGetSinkFlags.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSSvcActionNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="SrNotifySink.h">
+      <Filter>Header Files\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="SSvcActionNotifySink.h">
+      <Filter>Header Files\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="ISrCentral.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISrNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ComHelper.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnDictate.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSpeechServices.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSSvcOutputEvent.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSSvcInterpreter.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISpchServices.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSrEngineNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnAppSupport.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="SinkFlags.h">
+      <Filter>Header Files\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="ISrSpeaker.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSrSpeaker.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSrEngineControl.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISrGramNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="SrGramNotifySink.h">
+      <Filter>Header Files\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="ISrGramCommon.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="GrammarService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGrammar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGrammarSerializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GrammarException.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="SrErrorCodes.h">
+      <Filter>Header Files\Dragon</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NatSpeakInterop.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

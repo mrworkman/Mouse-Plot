@@ -19,8 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Renfrew.Dragon {
-   using Grammar.Elements;
+namespace Renfrew.Grammar.Dragon {
+   using Elements;
 
    public class RuleDirectiveFactory {
 
@@ -60,7 +60,7 @@ namespace Renfrew.Dragon {
       public RuleDirective CreateStartDirective(IElementContainer grouping) =>
          CreateGroupingDirective(grouping as dynamic, DirectiveTypes.SRCFG_STARTOPERATION);
 
-      public RuleDirective CreateElementDirective(IElement element, UInt32 id = 0) {
+      public RuleDirective CreateElementDirective(IElement element, Int32 id = 0) {
          return new RuleDirective {
             DirectiveType = GetDirectiveType(element),
             ElementGrouping = ElementGroupings.NOT_APPLICABLE,

@@ -15,15 +15,26 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-namespace Renfrew.Dragon {
+using System;
+using System.Windows.Forms;
 
-   public enum ElementGroupings {
-      SRCFGO_SEQUENCE = 1,
-      SRCFGO_ALTERNATIVE = 2,
-      SRCFGO_REPEAT = 3,
-      SRCFGO_OPTIONAL = 4,
+namespace Renfrew.Launcher {
+   class LauncherApplicationContext : ApplicationContext {
+      private readonly Launcher _launcher;
 
-      NOT_APPLICABLE = 0
+      // Constructor
+      public LauncherApplicationContext(Launcher launcher) {
+         if (launcher == null)
+            throw new ArgumentNullException();
+
+         _launcher = launcher;
+
+         InitializeComponent();
+      }
+
+      private void InitializeComponent() {
+         // Let's fire up the Quattro!
+         _launcher.Launch();
+      }
    }
-
 }
