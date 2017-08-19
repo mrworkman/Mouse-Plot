@@ -15,11 +15,6 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-// NOTE: 
-// Original dragon interfaces (c) Copyright Dragon Systems, Inc. 1998
-//   Portions (c) Copyright Dragon Systems, Inc. 1998
-//   Portions (c) Copyright 1997-1999 by Joel Gould.
-
 #pragma once
 
 #define ISrCentralGUID "b9bd3860-44db-101b-90a8-00aa003e4b50"

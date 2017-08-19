@@ -15,10 +15,6 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-// NOTE:
-//   Portions (c) Copyright 1997-1999 by Joel Gould.
-//   - Based on original NatLink Code
-
 #pragma once
 
 #include "Stdafx.h"

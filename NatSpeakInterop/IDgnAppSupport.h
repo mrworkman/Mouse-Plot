@@ -15,11 +15,6 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-// NOTE: 
-// Original dragon interfaces (c) Copyright Dragon Systems, Inc. 1998
-//   Portions (c) Copyright Dragon Systems, Inc. 1998
-//   Portions (c) Copyright 1997-1999 by Joel Gould.
-
 #pragma once
 
 // Native types are private by default with /clr

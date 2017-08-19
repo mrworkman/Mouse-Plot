@@ -15,11 +15,6 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-// NOTE: 
-// Original dragon interfaces (c) Copyright Dragon Systems, Inc. 1998
-//   Portions (c) Copyright Dragon Systems, Inc. 1998
-//   Portions (c) Copyright 1997-1999 by Joel Gould.
-
 #pragma once
 
 #define ISrSpeakerGUID "090CD9AE-DA1A-11CD-B3CA-00AA0047BA4F"
