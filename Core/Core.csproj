@@ -16,7 +16,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -98,10 +98,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dragon\Dragon.csproj">
-      <Project>{7e803d0c-7d85-45bd-9c45-12971b0531bf}</Project>
-      <Name>Dragon</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Grammar\Grammar.csproj">
       <Project>{fcf06529-2adc-4f27-804f-260b598ea492}</Project>
       <Name>Grammar</Name>
