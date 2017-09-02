@@ -136,6 +136,18 @@
     <ClInclude Include="SrErrorCodes.h">
       <Filter>Header Files\Dragon</Filter>
     </ClInclude>
+    <ClInclude Include="GrammarExecutive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GrammarAlreadyLoadedException.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="GrammarNotLoadedException.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="InvalidStateException.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

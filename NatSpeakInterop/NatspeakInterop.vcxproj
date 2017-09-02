@@ -136,7 +136,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComHelper.h" />
+    <ClInclude Include="GrammarAlreadyLoadedException.h" />
     <ClInclude Include="GrammarException.h" />
+    <ClInclude Include="GrammarExecutive.h" />
+    <ClInclude Include="GrammarNotLoadedException.h" />
     <ClInclude Include="GrammarService.h" />
     <ClInclude Include="IDgnAppSupport.h" />
     <ClInclude Include="IDgnDictate.h" />
@@ -150,6 +153,7 @@
     <ClInclude Include="IDgnSSvcOutputEvent.h" />
     <ClInclude Include="IGrammar.h" />
     <ClInclude Include="IGrammarSerializer.h" />
+    <ClInclude Include="InvalidStateException.h" />
     <ClInclude Include="ISpchServices.h" />
     <ClInclude Include="ISrCentral.h" />
     <ClInclude Include="ISrGramCommon.h" />
@@ -175,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
