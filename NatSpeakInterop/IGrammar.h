@@ -22,10 +22,6 @@ namespace Renfrew::NatSpeakInterop {
    using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
 
    public interface class IGrammar {
-      public: property ISrGramCommon ^GramCommonInterface {
-         ISrGramCommon ^get();
-      };
-
       public: property IReadOnlyCollection<String^> ^RuleNames {
          IReadOnlyCollection<String^> ^get();
       };

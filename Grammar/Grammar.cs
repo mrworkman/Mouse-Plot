@@ -79,10 +79,6 @@ namespace Renfrew.Grammar {
          }  
       }
 
-      public ISrGramCommon GramCommonInterface {
-         get { throw new NotImplementedException(); }
-      }
-
       public abstract void Initialize();
 
       protected void RemoveRule(String name) {
