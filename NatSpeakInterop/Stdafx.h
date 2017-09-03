@@ -68,9 +68,15 @@ typedef struct {
 #include "SSvcActionNotifySink.h"
 #include "SrGramNotifySink.h"
 
+#include "GrammarAlreadyLoadedException.h"
 #include "GrammarException.h"
+#include "GrammarNotLoadedException.h"
+#include "InvalidStateException.h"
+
 #include "SrErrorCodes.h"
 
 #include "IGrammar.h"
 #include "IGrammarSerializer.h"
+
+#include "GrammarExecutive.h"
 #include "GrammarService.h"

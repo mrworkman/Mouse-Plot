@@ -58,7 +58,7 @@ namespace Renfrew::NatSpeakInterop {
          void InitializeSrEngineControlInterface();
          void RegisterEngineSink();
          void RegisterPlaybackSink();
-         
+
       public:
          NatSpeakService();
          ~NatSpeakService();
@@ -72,6 +72,12 @@ namespace Renfrew::NatSpeakInterop {
 
          String ^GetCurrentUserProfileName();
          String ^GetUserDirectory(String ^userProfile);
+
+         public: property ISrCentral ^SrCentral {
+            ISrCentral ^get() {
+               return _isrCentral;
+            };
+         };
    };
 
    NatSpeakService::NatSpeakService() {

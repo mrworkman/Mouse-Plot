@@ -143,6 +143,12 @@ namespace Renfrew.Core {
 
       private void LoadGrammars() {
 
+         // Testing...
+         var grammarService = new GrammarService(
+            _natSpeakService.SrCentral, 
+            new GrammarSerializer()
+         );
+
          var currentAssembly = Assembly.GetExecutingAssembly();
 
          var types = currentAssembly.GetTypes()
@@ -159,15 +165,19 @@ namespace Renfrew.Core {
 
             DebugConsole.WriteLine($"{type.Type}: (Name: {a.Name}, Description: {a.Description})");
 
-            var ttt = (Grammar) Activator.CreateInstance(type.Type);
+            var grammar = (Grammar) Activator.CreateInstance(type.Type);
 
             try {
-               ttt.Initialize();
+               grammar.Initialize();
             } catch (Exception e) {
                DebugConsole.WriteLine($"{e.Message} {e.StackTrace}");
             }
 
-            DebugConsole.WriteLine($"Grammar's words: {String.Join(", ", ttt.Words)}");
+            DebugConsole.WriteLine($"Grammar's words: {String.Join(", ", grammar.Words)}");
+
+            grammarService.LoadGrammar(grammar);
+            grammarService.ActivateRule(grammar, (IntPtr) null, "test_rule");
+
          }
       }
 

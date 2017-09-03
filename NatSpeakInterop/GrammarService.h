@@ -21,6 +21,8 @@
 #include <vcclr.h>
 
 namespace Renfrew::NatSpeakInterop {
+   using namespace System::Collections::Generic;
+
    using namespace Renfrew::NatSpeakInterop::Dragon;
    using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
    using namespace Renfrew::NatSpeakInterop::Exceptions;
@@ -29,6 +31,8 @@ namespace Renfrew::NatSpeakInterop {
    public ref class GrammarService {
       private: ISrCentral ^_isrCentral;
       private: IGrammarSerializer ^_grammarSerializer;
+
+      private: Dictionary<IGrammar ^, GrammarExecutive^> ^_grammars;
 
       public: GrammarService(ISrCentral ^isrCentral,
                              IGrammarSerializer ^grammarSerializer) {
@@ -40,6 +44,7 @@ namespace Renfrew::NatSpeakInterop {
 
          _isrCentral = isrCentral;
          _grammarSerializer = grammarSerializer;
+         _grammars = gcnew Dictionary<IGrammar ^, GrammarExecutive^>();
       }
 
       public: ~GrammarService() {
@@ -49,11 +54,19 @@ namespace Renfrew::NatSpeakInterop {
       public: void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName) {
          pin_ptr<const WCHAR> wstrRuleName = PtrToStringChars(ruleName);
 
+         if (_grammars->ContainsKey(grammar) == false)
+            throw gcnew GrammarNotLoadedException("FILL ME IN");
+
+         // Check if the handle points to an exsiting window
          if (hWnd != nullptr && IsWindow(hWnd) == false)
-            return;
+            return; // TODO: Throw exception?
+
+         auto ge = _grammars[grammar];
+
+         // TODO: Check that the grammar actually has the matching rule name!
 
          try {
-            grammar->GramCommonInterface->Activate(
+            ge->GramCommonInterface->Activate(
                hWnd, // TODO: Set to hWnd (where applicable) 
                false, wstrRuleName
             );
@@ -73,14 +86,35 @@ namespace Renfrew::NatSpeakInterop {
       }
 
       public: void ActivateRules(IGrammar ^grammar) {
+         throw gcnew NotImplementedException();
+      }
 
+      private: GrammarExecutive ^AddGrammarToList(IGrammar ^grammar) {
+         GrammarExecutive ^ge;
+
+         // Make sure the grammar's not already loaded
+         if (_grammars->ContainsKey(grammar) == true)
+            throw gcnew GrammarAlreadyLoadedException("FILL ME IN");
+
+         ge = gcnew GrammarExecutive(grammar);
+
+         _grammars->Add(grammar, ge);
+
+         return ge;
       }
 
       public: void DeactivateRule(IGrammar ^grammar, String ^ruleName) {
          pin_ptr<const WCHAR> wstrRuleName = PtrToStringChars(ruleName);
 
+         if (_grammars->ContainsKey(grammar) == false)
+            throw gcnew GrammarNotLoadedException("FILL ME IN");
+
+         auto ge = _grammars[grammar];
+
+         // TODO: Check that the grammar actually has the matching rule name!
+
          try {
-            grammar->GramCommonInterface->Deactivate(
+            ge->GramCommonInterface->Deactivate(
                wstrRuleName
             );
          } catch (COMException ^e) {
@@ -90,7 +124,7 @@ namespace Renfrew::NatSpeakInterop {
          }
       }
 
-      public: ISrGramCommon ^LoadGrammar(IGrammar ^grammar) {
+      public: void LoadGrammar(IGrammar ^grammar) {
 
          ISrGramNotifySink ^isrGramNotifySink;
          IntPtr iSrGramNotifySinkPtr;
@@ -101,8 +135,10 @@ namespace Renfrew::NatSpeakInterop {
          if (grammar == nullptr)
             throw gcnew ArgumentNullException("grammar");
 
-         grammarBytes = _grammarSerializer->Serialize(grammar);
+         auto ge = AddGrammarToList(grammar);
 
+         grammarBytes = _grammarSerializer->Serialize(grammar);
+         
          // Pinning any sub-element of a managed array pins the entire array
          pin_ptr<byte> bytes = &grammarBytes[0];
 
@@ -112,7 +148,7 @@ namespace Renfrew::NatSpeakInterop {
 
          isrGramNotifySink = gcnew SrGramNotifySink();
          iSrGramNotifySinkPtr = Marshal::GetIUnknownForObject(isrGramNotifySink);
-
+         
          try {
             _isrCentral->GrammarLoad(
                SRGRMFMT_CFG, data, iSrGramNotifySinkPtr, __uuidof(ISrGramNotifySink^), &pUnknown
@@ -130,8 +166,38 @@ namespace Renfrew::NatSpeakInterop {
 
          pUnknown->Release();
          Marshal::Release(iSrGramNotifySinkPtr);
-         
-         return isrGramCommon;
+
+         // Store isrGramCommon with our grammar
+         ge->GramCommonInterface = isrGramCommon;
+
+
+      }
+
+      private: GrammarExecutive ^RemoveGrammarFromList(IGrammar ^grammar) {
+         GrammarExecutive ^ge;
+
+         // Make sure the grammar's loaded
+         if (_grammars->ContainsKey(grammar) == false)
+            throw gcnew GrammarNotLoadedException("FILL ME IN");
+
+         ge = _grammars[grammar];
+
+         _grammars->Remove(grammar);
+
+         return ge;
+      }
+
+      public: void UnloadGrammar(IGrammar ^grammar) {
+         if (grammar == nullptr)
+            throw gcnew ArgumentNullException("grammar");
+
+         auto ge = RemoveGrammarFromList(grammar);
+
+         if (ge->GramCommonInterface == nullptr)
+            throw gcnew InvalidStateException("isrGramCommon interface is not set!");
+
+         Marshal::ReleaseComObject(ge->GramCommonInterface);
+         ge->GramCommonInterface = nullptr;
       }
 
    };
