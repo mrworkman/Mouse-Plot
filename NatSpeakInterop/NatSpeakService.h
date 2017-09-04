@@ -41,16 +41,16 @@ namespace Renfrew::NatSpeakInterop {
    using namespace Renfrew::NatSpeakInterop::Sinks;
 
    public ref class NatSpeakService {
-      private:
-         ::IServiceProvider *_piServiceProvider;
+      
+      private: ::IServiceProvider *_piServiceProvider;
 
-         ISrCentral ^_isrCentral = nullptr;
-         IDgnSpeechServices  ^_idgnSpeechServices  = nullptr;
-         IDgnSrEngineControl ^_idgnSrEngineControl = nullptr;
-         IDgnSSvcOutputEvent ^_idgnSSvcOutputEvent = nullptr;
-         IDgnSSvcInterpreter ^_idgnSSvcInterpreter = nullptr;
+      private: ISrCentral ^_isrCentral = nullptr;
+      private: IDgnSpeechServices  ^_idgnSpeechServices  = nullptr;
+      private: IDgnSrEngineControl ^_idgnSrEngineControl = nullptr;
+      private: IDgnSSvcOutputEvent ^_idgnSSvcOutputEvent = nullptr;
+      private: IDgnSSvcInterpreter ^_idgnSSvcInterpreter = nullptr;
 
-         DWORD _key;
+      private: DWORD _key;
 
       public: NatSpeakService() {
          _key = 0;
