@@ -148,6 +148,9 @@
     <ClInclude Include="InvalidStateException.h">
       <Filter>Header Files\Exceptions</Filter>
     </ClInclude>
+    <ClInclude Include="IGrammarService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

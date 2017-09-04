@@ -78,5 +78,6 @@ typedef struct {
 #include "IGrammar.h"
 #include "IGrammarSerializer.h"
 
+#include "IGrammarService.h"
 #include "GrammarExecutive.h"
 #include "GrammarService.h"
