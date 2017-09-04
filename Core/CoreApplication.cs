@@ -143,11 +143,9 @@ namespace Renfrew.Core {
 
       private void LoadGrammars() {
 
-         // Testing...
-         var grammarService = new GrammarService(
-            _natSpeakService.SrCentral, 
-            new GrammarSerializer()
-         );
+         IGrammarService grammarService = _natSpeakService.GrammarService;
+
+         grammarService.GrammarSerializer = new GrammarSerializer();
 
          var currentAssembly = Assembly.GetExecutingAssembly();
 
