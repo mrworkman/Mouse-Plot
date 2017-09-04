@@ -32,6 +32,8 @@ namespace Renfrew::NatSpeakInterop::Sinks {
       public Dragon::ComInterfaces::ISrGramNotifySink,
       public Dragon::ComInterfaces::IDgnGetSinkFlags {
 
+      private: Action<UInt32, IntPtr> ^_phraseFinishCallback;
+
       public: SrGramNotifySink() {
          
       }
@@ -45,6 +47,15 @@ namespace Renfrew::NatSpeakInterop::Sinks {
 
          // These are the notifications handled by this sink
          *pdwFlags = DGNSRGRAMSINKFLAG_SENDPHRASEFINISH;
+
+         /* TODO: Decide if I'll support this...
+         if ( all results wanted )
+            *pdwFlags |= DGNSRGRAMSINKFLAG_SENDFOREIGNFINISH; */
+
+         /* TODO: Decide if I'll support this...
+         if ( hypothesis wanted )
+            *pdwFlags |= DGNSRGRAMSINKFLAG_SENDPHRASEHYPO; */
+
       }
 
          // ISrGramNotifySink Methods
@@ -56,8 +67,30 @@ namespace Renfrew::NatSpeakInterop::Sinks {
          Debug::WriteLine(__FUNCTION__);
       }
 
-      public: void virtual PhraseFinish(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN) {
+      public: void virtual PhraseFinish(DWORD flags, QWORD, QWORD, PSRPHRASEW pSrPhrase, LPUNKNOWN pIUnknown) {
          Debug::WriteLine(__FUNCTION__);
+
+         // Debugging (for now)
+         if (pSrPhrase != nullptr) {
+           
+            int offset = 0;
+
+            while (offset < (pSrPhrase->dwSize - sizeof(DWORD))) {
+               PSRWORDW word = (PSRWORDW)(pSrPhrase->abWords + offset);
+
+               Debug::WriteLine(
+                  "Word (# {0}, Length: {1}): {2}",
+                  word->dwWordNum,
+                  word->dwSize,
+                  gcnew String((PWCHAR)word->szWord)
+               );
+               
+               offset += word->dwSize;
+            }
+         }
+
+         if (_phraseFinishCallback != nullptr)
+            _phraseFinishCallback(flags, IntPtr(pIUnknown));
       }
 
       public: void virtual PhraseHypothesis(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN) {

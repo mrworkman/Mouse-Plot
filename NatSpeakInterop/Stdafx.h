@@ -44,6 +44,12 @@ typedef struct {
 
 typedef struct {
    DWORD    dwSize;
+   DWORD    dwWordNum;
+   WCHAR    szWord[0];
+} SRWORDW, *PSRWORDW;
+
+typedef struct {
+   DWORD    dwSize;
    BYTE     abWords[0];
 } SRPHRASEW, *PSRPHRASEW;
 
