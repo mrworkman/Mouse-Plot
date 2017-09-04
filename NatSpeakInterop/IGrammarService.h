@@ -22,16 +22,16 @@ namespace Renfrew::NatSpeakInterop {
    using namespace System::Collections::Generic;
 
    public interface class IGrammarService {
-      public: void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName);
-      public: void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName);
-      public: void ActivateRules(IGrammar ^grammar);
-      public: void DeactivateRule(IGrammar ^grammar, String ^ruleName);
+      void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName);
+      void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName);
+      void ActivateRules(IGrammar ^grammar);
+      void DeactivateRule(IGrammar ^grammar, String ^ruleName);
 
-      public: property IGrammarSerializer ^GrammarSerializer {
+      property IGrammarSerializer ^GrammarSerializer {
          void set(IGrammarSerializer ^grammarSerializer);
       };
 
-      public: void LoadGrammar(IGrammar ^grammar);
-      public: void UnloadGrammar(IGrammar ^grammar);
+      void LoadGrammar(IGrammar ^grammar);
+      void UnloadGrammar(IGrammar ^grammar);
    };
 }
