@@ -28,22 +28,27 @@ namespace Renfrew::NatSpeakInterop {
    using namespace Renfrew::NatSpeakInterop::Exceptions;
    using namespace Renfrew::NatSpeakInterop::Sinks;
 
-   public ref class GrammarService {
+   private ref class GrammarService : 
+      public IGrammarService {
+
       private: ISrCentral ^_isrCentral;
+      private: IDgnSrEngineControl ^_idgnSrEngineControl;
+
       private: IGrammarSerializer ^_grammarSerializer;
 
       private: Dictionary<IGrammar ^, GrammarExecutive^> ^_grammars;
 
       public: GrammarService(ISrCentral ^isrCentral,
-                             IGrammarSerializer ^grammarSerializer) {
+                             IDgnSrEngineControl ^idgnSrEngineControl) {
 
          if (isrCentral == nullptr)
             throw gcnew ArgumentNullException("isrCentral");
-         if (grammarSerializer == nullptr)
-            throw gcnew ArgumentNullException("grammarSerializer");
+         if (idgnSrEngineControl == nullptr)
+            throw gcnew ArgumentNullException("iDgnSrEngineControl");
 
          _isrCentral = isrCentral;
-         _grammarSerializer = grammarSerializer;
+         _idgnSrEngineControl = idgnSrEngineControl;
+
          _grammars = gcnew Dictionary<IGrammar ^, GrammarExecutive^>();
       }
 
@@ -51,7 +56,7 @@ namespace Renfrew::NatSpeakInterop {
 
       }
 
-      public: void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName) {
+      public: virtual void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName) {
          pin_ptr<const WCHAR> wstrRuleName = PtrToStringChars(ruleName);
 
          if (_grammars->ContainsKey(grammar) == false)
@@ -81,11 +86,11 @@ namespace Renfrew::NatSpeakInterop {
          }
       }
 
-      public: void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName) {
+      public: virtual void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName) {
          ActivateRule(grammar, (HWND) hWnd->ToPointer(), ruleName);
       }
 
-      public: void ActivateRules(IGrammar ^grammar) {
+      public: virtual void ActivateRules(IGrammar ^grammar) {
          throw gcnew NotImplementedException();
       }
 
@@ -103,7 +108,7 @@ namespace Renfrew::NatSpeakInterop {
          return ge;
       }
 
-      public: void DeactivateRule(IGrammar ^grammar, String ^ruleName) {
+      public: virtual void DeactivateRule(IGrammar ^grammar, String ^ruleName) {
          pin_ptr<const WCHAR> wstrRuleName = PtrToStringChars(ruleName);
 
          if (_grammars->ContainsKey(grammar) == false)
@@ -124,7 +129,16 @@ namespace Renfrew::NatSpeakInterop {
          }
       }
 
-      public: void LoadGrammar(IGrammar ^grammar) {
+      public: virtual property IGrammarSerializer ^GrammarSerializer {
+         void set(IGrammarSerializer ^grammarSerializer) {
+            if (grammarSerializer == nullptr)
+               throw gcnew ArgumentNullException("grammarSerializer");
+
+            _grammarSerializer = grammarSerializer;
+         }
+      };
+
+      public: virtual void LoadGrammar(IGrammar ^grammar) {
 
          ISrGramNotifySink ^isrGramNotifySink;
          IntPtr iSrGramNotifySinkPtr;
@@ -135,6 +149,9 @@ namespace Renfrew::NatSpeakInterop {
          if (grammar == nullptr)
             throw gcnew ArgumentNullException("grammar");
 
+         if (_grammarSerializer == nullptr)
+            throw gcnew InvalidStateException("GrammarSerializer hasn't been set!");
+         
          auto ge = AddGrammarToList(grammar);
 
          grammarBytes = _grammarSerializer->Serialize(grammar);
@@ -170,7 +187,15 @@ namespace Renfrew::NatSpeakInterop {
          // Store isrGramCommon with our grammar
          ge->GramCommonInterface = isrGramCommon;
 
+      }
 
+      public: void PausedProcessor(UInt64 cookie) {
+         Debug::WriteLine(__FUNCTION__ + "(cookie: " + cookie + ")");
+
+         // TODO: Call grammar activation method(s)
+
+         Debug::WriteLine(__FUNCTION__ + ", Resuming.");
+         _idgnSrEngineControl->Resume(cookie);
       }
 
       private: GrammarExecutive ^RemoveGrammarFromList(IGrammar ^grammar) {
@@ -187,7 +212,7 @@ namespace Renfrew::NatSpeakInterop {
          return ge;
       }
 
-      public: void UnloadGrammar(IGrammar ^grammar) {
+      public: virtual void UnloadGrammar(IGrammar ^grammar) {
          if (grammar == nullptr)
             throw gcnew ArgumentNullException("grammar");
 
@@ -201,5 +226,4 @@ namespace Renfrew::NatSpeakInterop {
       }
 
    };
-
 }
