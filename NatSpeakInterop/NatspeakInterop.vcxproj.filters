@@ -151,6 +151,9 @@
     <ClInclude Include="IGrammarService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ISrResBasic.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

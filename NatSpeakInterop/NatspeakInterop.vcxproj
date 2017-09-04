@@ -161,6 +161,7 @@
     <ClInclude Include="ISrGramCommon.h" />
     <ClInclude Include="ISrGramNotifySink.h" />
     <ClInclude Include="ISrNotifySink.h" />
+    <ClInclude Include="ISrResBasic.h" />
     <ClInclude Include="ISrSpeaker.h" />
     <ClInclude Include="NatSpeakService.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
