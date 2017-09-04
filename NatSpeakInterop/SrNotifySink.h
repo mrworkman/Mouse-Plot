@@ -34,9 +34,14 @@ namespace Renfrew::NatSpeakInterop::Sinks {
       public Dragon::ComInterfaces::IDgnSrEngineNotifySink,
       public Dragon::ComInterfaces::ISrNotifySink {
 
+      private: Action<UInt64> ^_pausedProcessingCallback;
+
       public:
-         SrNotifySink() {
-            Debug::WriteLine(__FUNCTION__);
+         SrNotifySink(Action<UInt64> ^pausedProcessingCallback) {
+            if (pausedProcessingCallback == nullptr)
+               throw gcnew ArgumentNullException("pausedProcessingCallback");
+
+            _pausedProcessingCallback = pausedProcessingCallback;
          }
 
          void virtual SinkFlagsGet(DWORD *pdwFlags) {
@@ -60,8 +65,11 @@ namespace Renfrew::NatSpeakInterop::Sinks {
             Debug::WriteLine(__FUNCTION__);
          }
 
-         void virtual Paused(QWORD) {
+         void virtual Paused(QWORD cookie) {
             Debug::WriteLine(__FUNCTION__);
+
+            if (_pausedProcessingCallback != nullptr)
+               _pausedProcessingCallback(cookie);
          }
 
          void virtual MimicDone(DWORD, LPUNKNOWN) {

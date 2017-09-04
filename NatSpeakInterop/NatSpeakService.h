@@ -50,6 +50,8 @@ namespace Renfrew::NatSpeakInterop {
       private: IDgnSSvcOutputEvent ^_idgnSSvcOutputEvent = nullptr;
       private: IDgnSSvcInterpreter ^_idgnSSvcInterpreter = nullptr;
 
+      private: GrammarService ^_grammarService = nullptr;
+
       private: DWORD _key;
 
       public: NatSpeakService() {
@@ -69,10 +71,19 @@ namespace Renfrew::NatSpeakInterop {
             throw gcnew ArgumentNullException();
 
          InitializeIsrCentral(pServiceProvider);
-         RegisterEngineSink();
          InitializeSrEngineControlInterface();
+
+         CreateGrammarService();
+
+         RegisterEngineSink();
          InitializeSpeechServicesInterfaces();
          RegisterPlaybackSink();
+
+      }
+
+      private: void CreateGrammarService() {
+         _grammarService = gcnew Renfrew::NatSpeakInterop::
+            GrammarService(_isrCentral, _idgnSrEngineControl);
       }
 
       public: IntPtr CreateSiteObject() {
@@ -188,6 +199,12 @@ namespace Renfrew::NatSpeakInterop {
          }
       }
 
+      public: property IGrammarService ^GrammarService {
+         IGrammarService ^get() {
+            return _grammarService;
+         }
+      }
+
       private: void InitializeIsrCentral(::IServiceProvider *pServiceProvider) {
          _piServiceProvider = pServiceProvider;
 
@@ -215,8 +232,10 @@ namespace Renfrew::NatSpeakInterop {
          IntPtr /*isrNotifySinkPtr,*/ idgnSrEngineNotifySinkPtr;
          pin_ptr<DWORD> key = &_key; // https://msdn.microsoft.com/en-us/library/1dz8byfh.aspx
 
-                                     // Create an engine sink
-         auto sink = gcnew SrNotifySink();
+         // Create an engine sink
+         auto sink = gcnew SrNotifySink(
+            gcnew Action<UInt64>(_grammarService, &NatSpeakInterop::GrammarService::PausedProcessor)
+         );
 
          // ISrNotifySink ^isrNotifySink = sink;
          IDgnSrEngineNotifySink ^idgnSrEngineNotifySink = sink;
