@@ -26,25 +26,28 @@ namespace Renfrew::NatSpeakInterop::Sinks {
    public ref class SSvcActionNotifySink :
       public Dragon::ComInterfaces::IDgnSSvcActionNotifySink {
 
-      public:
-         SSvcActionNotifySink() {
+      public: SSvcActionNotifySink() {
 
-         }
+      }
 
-         void virtual PlaybackDone(DWORD) {
-            Debug::WriteLine(__FUNCTION__);
-         }
-         void virtual PlaybackAborted(DWORD, HRESULT) {
-            Debug::WriteLine(__FUNCTION__);
-         }
-         void virtual ExecutionDone(DWORD) {
-            Debug::WriteLine(__FUNCTION__);
-         }
-         void virtual ExecutionStatus(DWORD, DWORD) {
-            Debug::WriteLine(__FUNCTION__);
-         }
-         void virtual ExecutionAborted(DWORD, HRESULT, DWORD) {
-            Debug::WriteLine(__FUNCTION__);
-         }
+      public: void virtual PlaybackDone(DWORD) {
+         Debug::WriteLine(__FUNCTION__);
+      }
+
+      public: void virtual PlaybackAborted(DWORD, HRESULT) {
+         Debug::WriteLine(__FUNCTION__);
+      }
+
+      public: void virtual ExecutionDone(DWORD) {
+         Debug::WriteLine(__FUNCTION__);
+      }
+
+      public: void virtual ExecutionStatus(DWORD, DWORD) {
+         Debug::WriteLine(__FUNCTION__);
+      }
+
+      public: void virtual ExecutionAborted(DWORD, HRESULT, DWORD) {
+         Debug::WriteLine(__FUNCTION__);
+      }
    };
 }

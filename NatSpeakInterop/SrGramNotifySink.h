@@ -32,50 +32,52 @@ namespace Renfrew::NatSpeakInterop::Sinks {
       public Dragon::ComInterfaces::ISrGramNotifySink,
       public Dragon::ComInterfaces::IDgnGetSinkFlags {
 
-      public:
-         // IDgnGetSinkFlags Methods
-         void virtual SinkFlagsGet(DWORD *pdwFlags) {
-            Debug::WriteLine(__FUNCTION__);
+      public: SrGramNotifySink() {
+         
+      }
 
-            if (pdwFlags == nullptr)
-               return;
+      // IDgnGetSinkFlags Methods
+      public: void virtual SinkFlagsGet(DWORD *pdwFlags) {
+         Debug::WriteLine(__FUNCTION__);
 
-            // These are the notifications handled by this sink
-            *pdwFlags = DGNSRGRAMSINKFLAG_SENDPHRASEFINISH;
-         }
+         if (pdwFlags == nullptr)
+            return;
+
+         // These are the notifications handled by this sink
+         *pdwFlags = DGNSRGRAMSINKFLAG_SENDPHRASEFINISH;
+      }
 
          // ISrGramNotifySink Methods
-         void virtual BookMark(DWORD) {
-            Debug::WriteLine(__FUNCTION__);
-         }
+      public: void virtual BookMark(DWORD) {
+         Debug::WriteLine(__FUNCTION__);
+      }
 
-         void virtual Paused() {
-            Debug::WriteLine(__FUNCTION__);
-         }
+      public: void virtual Paused() {
+         Debug::WriteLine(__FUNCTION__);
+      }
 
-         void virtual PhraseFinish(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN) {
-            Debug::WriteLine(__FUNCTION__);
-         }
+      public: void virtual PhraseFinish(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN) {
+         Debug::WriteLine(__FUNCTION__);
+      }
 
-         void virtual PhraseHypothesis(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN) {
-            Debug::WriteLine(__FUNCTION__);
-         }
+      public: void virtual PhraseHypothesis(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN) {
+         Debug::WriteLine(__FUNCTION__);
+      }
 
-         void virtual PhraseStart(QWORD) {
-            Debug::WriteLine(__FUNCTION__);
-         }
+      public: void virtual PhraseStart(QWORD) {
+         Debug::WriteLine(__FUNCTION__);
+      }
 
-         void virtual ReEvaluate(LPUNKNOWN) {
-            Debug::WriteLine(__FUNCTION__);
-         }
+      public: void virtual ReEvaluate(LPUNKNOWN) {
+         Debug::WriteLine(__FUNCTION__);
+      }
 
-         void virtual Training(DWORD) {
-            Debug::WriteLine(__FUNCTION__);
-         }
+      public: void virtual Training(DWORD) {
+         Debug::WriteLine(__FUNCTION__);
+      }
 
-         void virtual UnArchive(LPUNKNOWN) {
-            Debug::WriteLine(__FUNCTION__);
-         }
-
+      public: void virtual UnArchive(LPUNKNOWN) {
+         Debug::WriteLine(__FUNCTION__);
+      }
    };
 }
