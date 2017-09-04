@@ -32,10 +32,14 @@ namespace Renfrew::NatSpeakInterop::Sinks {
       public Dragon::ComInterfaces::ISrGramNotifySink,
       public Dragon::ComInterfaces::IDgnGetSinkFlags {
 
-      private: Action<UInt32, IntPtr> ^_phraseFinishCallback;
+      private: Action<UInt32, ISrResBasic^> ^_phraseFinishCallback;
 
       public: SrGramNotifySink() {
-         
+         _phraseFinishCallback = nullptr;
+      }
+
+      public: SrGramNotifySink(Action<UInt32, ISrResBasic^> ^phraseFinishCallback) {
+         _phraseFinishCallback = phraseFinishCallback;
       }
 
       // IDgnGetSinkFlags Methods
@@ -70,10 +74,14 @@ namespace Renfrew::NatSpeakInterop::Sinks {
       public: void virtual PhraseFinish(DWORD flags, QWORD, QWORD, PSRPHRASEW pSrPhrase, LPUNKNOWN pIUnknown) {
          Debug::WriteLine(__FUNCTION__);
 
+         // Check if a results object was provided, and silently return if not
+         if (pIUnknown == nullptr)
+            return;
+
          // Debugging (for now)
          if (pSrPhrase != nullptr) {
            
-            int offset = 0;
+            UInt32 offset = 0;
 
             while (offset < (pSrPhrase->dwSize - sizeof(DWORD))) {
                PSRWORDW word = (PSRWORDW)(pSrPhrase->abWords + offset);
@@ -88,9 +96,16 @@ namespace Renfrew::NatSpeakInterop::Sinks {
                offset += word->dwSize;
             }
          }
+         
+         // Use our callback (if set)
+         if (_phraseFinishCallback != nullptr) {
+            auto isrResBasic = (ISrResBasic^) Marshal::GetObjectForIUnknown(IntPtr(pIUnknown));
+            
+            _phraseFinishCallback(flags, isrResBasic);
 
-         if (_phraseFinishCallback != nullptr)
-            _phraseFinishCallback(flags, IntPtr(pIUnknown));
+            // TODO: Move to a more appropriate place (if this _isn't_ appropriate).
+            Marshal::ReleaseComObject(isrResBasic);
+         }
       }
 
       public: void virtual PhraseHypothesis(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN) {

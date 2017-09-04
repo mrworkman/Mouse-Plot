@@ -68,6 +68,7 @@ typedef struct {
 #include "ISrGramCommon.h"
 #include "ISrGramNotifySink.h"
 #include "ISrNotifySink.h"
+#include "ISrResBasic.h"
 #include "ISrSpeaker.h"
 
 #include "SrNotifySink.h"
