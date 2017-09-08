@@ -21,37 +21,8 @@
 
 typedef unsigned __int64 QWORD, *PQWORD;
 
-#include  "ComHelper.h"
-
-typedef struct {} PSRMODEINFOW;
-
-typedef enum {
-   SRGRMFMT_CFG                 = 0x0000,
-   SRGRMFMT_LIMITEDDOMAIN       = 0x0001,
-   SRGRMFMT_DICTATION           = 0x0002,
-   SRGRMFMT_CFGNATIVE           = 0x8000,
-   SRGRMFMT_LIMITEDDOMAINNATIVE = 0x8001,
-   SRGRMFMT_DICTATIONNATIVE     = 0x8002,
-   SRGRMFMT_DRAGONNATIVE1       = 0x8101,
-   SRGRMFMT_DRAGONNATIVE2       = 0x8102,
-   SRGRMFMT_DRAGONNATIVE3       = 0x8103
-} SRGRMFMT, *PSRGRMFMT;
-
-typedef struct {
-   PVOID    pData;
-   DWORD    dwSize;
-} SDATA, *PSDATA;
-
-typedef struct {
-   DWORD    dwSize;
-   DWORD    dwWordNum;
-   WCHAR    szWord[0];
-} SRWORDW, *PSRWORDW;
-
-typedef struct {
-   DWORD    dwSize;
-   BYTE     abWords[0];
-} SRPHRASEW, *PSRPHRASEW;
+#include "ComHelper.h"
+#include "sinfo.h"
 
 #include "IDgnAppSupport.h"
 #include "IDgnDictate.h"
@@ -69,6 +40,7 @@ typedef struct {
 #include "ISrGramNotifySink.h"
 #include "ISrNotifySink.h"
 #include "ISrResBasic.h"
+#include "ISrResGraph.h"
 #include "ISrSpeaker.h"
 
 #include "SrNotifySink.h"
