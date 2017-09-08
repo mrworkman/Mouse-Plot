@@ -154,6 +154,12 @@
     <ClInclude Include="ISrResBasic.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
+    <ClInclude Include="ISrResGraph.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="sinfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

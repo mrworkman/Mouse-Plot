@@ -162,6 +162,7 @@
     <ClInclude Include="ISrGramNotifySink.h" />
     <ClInclude Include="ISrNotifySink.h" />
     <ClInclude Include="ISrResBasic.h" />
+    <ClInclude Include="ISrResGraph.h" />
     <ClInclude Include="ISrSpeaker.h" />
     <ClInclude Include="NatSpeakService.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -170,6 +171,7 @@
       </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="sinfo.h" />
     <ClInclude Include="SinkFlags.h" />
     <ClInclude Include="SrErrorCodes.h" />
     <ClInclude Include="SrGramNotifySink.h" />
