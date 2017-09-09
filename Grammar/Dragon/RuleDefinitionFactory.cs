@@ -56,10 +56,7 @@ namespace Renfrew.Grammar.Dragon {
             .Select((e, i) => new { Word = e, Index = i + 1 })
             .ToDictionary(e => e.Word, e => e.Index);
          
-         // Sort the rules by name
-         var rules = grammar.Rules.OrderBy(e => e.Key).Select(e => e.Value);
-
-         foreach (var rule in rules)
+         foreach (var rule in grammar.Rules)
             ruleDirectives.Add( CreateDefinitionTable(rule.Elements) );
 
          return ruleDirectives;

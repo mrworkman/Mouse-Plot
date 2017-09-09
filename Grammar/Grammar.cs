@@ -123,10 +123,11 @@ namespace Renfrew.Grammar {
       //   Rules.Keys.OrderBy(e => e).ToList();
 
       public IReadOnlyCollection<String> RuleNames =>
-         Rules.Keys.OrderBy(e => e).ToList();
+         _rules.Keys.OrderBy(e => e).ToList();
 
       // Expose internally for serialization
-      internal IDictionary<String, IActionableRule> Rules => _rules;
+      internal IReadOnlyCollection<IActionableRule> Rules => 
+         _rules.OrderBy(e => e.Key).Select(e => e.Value).ToList();
 
       // public IList<String> Words => GetWords();
       public IReadOnlyCollection<String> Words => GetWords();
