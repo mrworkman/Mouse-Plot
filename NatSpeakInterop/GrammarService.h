@@ -21,6 +21,7 @@
 #include <vcclr.h>
 
 namespace Renfrew::NatSpeakInterop {
+   using namespace System;
    using namespace System::Collections::Generic;
 
    using namespace Renfrew::NatSpeakInterop::Dragon;
@@ -36,7 +37,7 @@ namespace Renfrew::NatSpeakInterop {
 
       private: IGrammarSerializer ^_grammarSerializer;
 
-      private: Dictionary<IGrammar ^, GrammarExecutive^> ^_grammars;
+      private: Dictionary<IGrammar^, GrammarExecutive^> ^_grammars;
 
       public: GrammarService(ISrCentral ^isrCentral,
                              IDgnSrEngineControl ^idgnSrEngineControl) {
@@ -49,7 +50,7 @@ namespace Renfrew::NatSpeakInterop {
          _isrCentral = isrCentral;
          _idgnSrEngineControl = idgnSrEngineControl;
 
-         _grammars = gcnew Dictionary<IGrammar ^, GrammarExecutive^>();
+         _grammars = gcnew Dictionary<IGrammar^, GrammarExecutive^>();
       }
 
       public: ~GrammarService() {
@@ -163,7 +164,10 @@ namespace Renfrew::NatSpeakInterop {
          data.dwSize = grammarBytes->Length;
          data.pData = bytes;
 
-         isrGramNotifySink = gcnew SrGramNotifySink();
+         isrGramNotifySink = gcnew SrGramNotifySink(
+            gcnew Action<UInt32, ISrResBasic^>(this, &GrammarService::PhraseFinishedCallback)
+         );
+
          iSrGramNotifySinkPtr = Marshal::GetIUnknownForObject(isrGramNotifySink);
          
          try {
@@ -196,6 +200,71 @@ namespace Renfrew::NatSpeakInterop {
 
          Debug::WriteLine(__FUNCTION__ + ", Resuming.");
          _idgnSrEngineControl->Resume(cookie);
+      }
+
+      public: void PhraseFinishedCallback(UInt32 flags, ISrResBasic^ isrResBasic) {
+         Debug::WriteLine(__FUNCTION__);
+
+         //
+         // Test Processing The Results
+         //
+
+         /* MOVE BELOW BasePathWord
+          *if ((flags & ISRNOTEFIN_RECOGNIZED) == 0) {
+            Debug::WriteLine("Rejected");
+            return;
+         }
+
+         if ((flags & ISRNOTEFIN_THISGRAMMAR) == 0) {
+            Debug::WriteLine("Other");
+            return;
+         }*/
+
+         auto isrResGraph = (ISrResGraph^) isrResBasic;
+         
+         DWORD pathSize = 0;
+         PDWORD path = nullptr;
+
+         try {
+            // Find out how big the path is
+            isrResGraph->BestPathWord(0, &pathSize, 0, &pathSize);
+         } catch (COMException ^e) {
+            // Allocate space for the path
+            if (e->HResult == EVENT_E_ALL_SUBSCRIBERS_FAILED) {
+               path = new DWORD[pathSize];
+               isrResGraph->BestPathWord(0, path, pathSize * sizeof(DWORD), &pathSize);
+            }
+         }
+
+         DWORD numWords = pathSize / sizeof(DWORD);
+
+         for (DWORD i = 0; i < numWords; i++) {
+            SRRESWORDNODE node;
+
+            DWORD srWordSize = 0;
+            PSRWORDW srWord = nullptr;
+
+            // Get the word size to allocate space for it
+            isrResGraph->GetWordNode(path[i], &node, (PSRWORDW)1, 0, &srWordSize);
+
+            if (srWordSize == 0)
+               throw gcnew InvalidStateException("Word with no size!");
+
+            srWord = (PSRWORDW) new BYTE[srWordSize];
+
+            isrResGraph->GetWordNode(path[i], &node, srWord, srWordSize, &srWordSize);
+
+            Debug::WriteLine(
+               "Word Number: {0}, Word: {1}, Rule: {2}",
+               srWord->dwWordNum,
+               gcnew String(srWord->szWord),
+               node.dwCFGParse
+            );
+
+            delete srWord;
+         }
+
+         delete[] path;
       }
 
       private: GrammarExecutive ^RemoveGrammarFromList(IGrammar ^grammar) {
