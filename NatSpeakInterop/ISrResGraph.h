@@ -17,7 +17,7 @@
 
 #pragma once
 
-#define ISrResGraphGUID "090cd9a5-da1a-11cd-b3ca-00aa0047ba4f"
+#define ISrResGraphGUID "090cd9aa-da1a-11cd-b3ca-00aa0047ba4f"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
    using namespace System::Runtime::InteropServices;
