@@ -20,6 +20,10 @@
 #define LANG_LEN 0x40
 #define SRMI_NAMELEN 0x106
 
+#define ISRNOTEFIN_RECOGNIZED      0x01
+#define ISRNOTEFIN_THISGRAMMAR     0x02
+#define ISRNOTEFIN_FROMTHISGRAMMAR 0x04
+
 typedef enum {
    SRGRMFMT_CFG                 = 0x0000,
    SRGRMFMT_LIMITEDDOMAIN       = 0x0001,
