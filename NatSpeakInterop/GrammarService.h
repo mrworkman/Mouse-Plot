@@ -165,7 +165,7 @@ namespace Renfrew::NatSpeakInterop {
          data.pData = bytes;
 
          isrGramNotifySink = gcnew SrGramNotifySink(
-            gcnew Action<UInt32, ISrResBasic^>(this, &GrammarService::PhraseFinishedCallback)
+            gcnew Action<UInt32, Object^, ISrResBasic^>(this, &GrammarService::PhraseFinishedCallback), ge
          );
 
          iSrGramNotifySinkPtr = Marshal::GetIUnknownForObject(isrGramNotifySink);
@@ -202,8 +202,13 @@ namespace Renfrew::NatSpeakInterop {
          _idgnSrEngineControl->Resume(cookie);
       }
 
-      public: void PhraseFinishedCallback(UInt32 flags, ISrResBasic^ isrResBasic) {
+      public: void PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, ISrResBasic^ isrResBasic) {
          Debug::WriteLine(__FUNCTION__);
+
+         auto ge = (GrammarExecutive^) grammarObj;
+
+         if (ge == nullptr)
+            throw gcnew InvalidStateException("grammarObj is unexpectedly NULL!");
 
          //
          // Test Processing The Results
