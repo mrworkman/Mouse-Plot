@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -24,19 +25,28 @@ using System.Text.RegularExpressions;
 using Renfrew.Grammar.Elements;
 using Renfrew.Grammar.FluentApi;
 using Renfrew.NatSpeakInterop;
-using Renfrew.NatSpeakInterop.Dragon.ComInterfaces;
 
 namespace Renfrew.Grammar {
 
    public abstract class Grammar : IGrammar, IDisposable {
       
       private readonly Dictionary<String, IActionableRule> _rules;
-      private readonly HashSet<String> _words;
+
+      private UInt32 _wordCount = 0;
+      private readonly Dictionary<String, UInt32> _wordIds;
+
+      private UInt32 _ruleCount = 0;
+      private readonly Dictionary<String, UInt32> _ruleIds;
 
       protected Grammar() 
          : this(new RuleFactory()) {
-         _rules = new Dictionary<String, IActionableRule>();
-         _words = new HashSet<String>();
+
+         // This is a list of the rules themselves (by name)
+         _rules = new Dictionary<String, IActionableRule>(StringComparer.CurrentCultureIgnoreCase);
+
+         // These are lookups to find the numeric ids for words/rule names
+         _wordIds = new Dictionary<String, UInt32>(StringComparer.CurrentCultureIgnoreCase);
+         _ruleIds = new Dictionary<String, UInt32>(StringComparer.CurrentCultureIgnoreCase);
       }
 
       protected Grammar(RuleFactory ruleFactory) {
@@ -50,15 +60,24 @@ namespace Renfrew.Grammar {
          if (rule == null)
             throw new ArgumentNullException(nameof(rule));
          
-         name = name.ToLower();
-
          try {
             EnforceRuleNaming(name);
          } catch { throw; }
          
          if (_rules.ContainsKey(name) == true)
             throw new ArgumentException($"Grammar already contains a rule called '{name}'.", nameof(name));
-         
+
+         foreach (var word in GetWordsFromRule(rule)) {
+            Debug.WriteLine($"WORD: {word}");
+
+            if (_wordIds.ContainsKey(word) == false)
+               _wordIds.Add(word, _wordCount++);
+
+         }
+
+         if (_ruleIds.ContainsKey(name) == false)
+            _ruleIds.Add(name, _ruleCount++);
+
          _rules.Add(name, rule);
       }
 
@@ -68,7 +87,7 @@ namespace Renfrew.Grammar {
       public abstract void Dispose();
 
       private void EnforceRuleNaming(String ruleName) {
-         var validChars = @"[a-z0-9_]";
+         var validChars = @"[a-zA-Z0-9_]";
 
          if (Regex.IsMatch(ruleName, $@"^{validChars}+$") == false) {
             throw new ArgumentOutOfRangeException(nameof(ruleName), 
@@ -80,47 +99,31 @@ namespace Renfrew.Grammar {
       }
 
       public abstract void Initialize();
-
+      
       protected void RemoveRule(String name) {
          if (String.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
 
-         name = name.ToLower();
-         
-         if (_rules.ContainsKey(name) == true)
-            _rules.Remove(name);
+         _rules.Remove(name);
+         _ruleIds.Remove(name);
       }
 
-
-      private List<String> GetWords() {
-         _words.Clear();
-
-         foreach (var ruleName in RuleNames) {
-            var rule = _rules[ruleName];
-            UpdateWordsFrom(rule.Elements.Elements);
-         }
-
-         return _words.OrderBy(e => e).ToList();
+      private IEnumerable<String> GetWordsFromRule(IRule rule) {
+         return GetWordsFromRuleElements(rule.Elements.Elements);
       }
 
-      private void UpdateWordsFrom(IEnumerable<IElement> elements) {
+      private IEnumerable<String> GetWordsFromRuleElements(IEnumerable<IElement> elements) {
          foreach (var element in elements) {
             if (element is IElementContainer == false) {
-               var word = element.ToString().ToLower();
-
-               if (_words.Contains(word) == false)
-                  _words.Add(word);
-
+               yield return element.ToString();
             } else {
-               UpdateWordsFrom((element as IElementContainer).Elements);
+               foreach (var word in GetWordsFromRuleElements((element as IElementContainer).Elements))
+                  yield return word;
             }
          }
       }
 
       protected RuleFactory RuleFactory { get; private set; }
-
-      //internal IList<String> RuleNames =>
-      //   Rules.Keys.OrderBy(e => e).ToList();
 
       public IReadOnlyCollection<String> RuleNames =>
          _rules.Keys.OrderBy(e => e).ToList();
@@ -129,8 +132,8 @@ namespace Renfrew.Grammar {
       internal IReadOnlyCollection<IActionableRule> Rules => 
          _rules.OrderBy(e => e.Key).Select(e => e.Value).ToList();
 
-      // public IList<String> Words => GetWords();
-      public IReadOnlyCollection<String> Words => GetWords();
+      public IReadOnlyCollection<String> Words =>
+         _wordIds.Keys.OrderBy(e => e).ToList();
       
    }
    
