@@ -22,12 +22,12 @@ namespace Renfrew::NatSpeakInterop {
    using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
 
    public interface class IGrammar {
-      public: property IReadOnlyCollection<String^> ^RuleNames {
-         IReadOnlyCollection<String^> ^get();
+      public: property IReadOnlyDictionary<String^, UInt32> ^RuleIds {
+         IReadOnlyDictionary<String^, UInt32> ^get();
       };
 
-      public: property IReadOnlyCollection<String^> ^Words {
-         IReadOnlyCollection<String^> ^get();
+      public: property IReadOnlyDictionary<String^, UInt32> ^WordIds {
+         IReadOnlyDictionary<String^, UInt32> ^get();
       };
    };
 }

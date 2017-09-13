@@ -85,23 +85,20 @@ namespace Renfrew.Grammar {
          }
       }
 
-      private byte[] BuildWordsChunk(IEnumerable<String> words) {
+      private byte[] BuildWordsChunk(IReadOnlyDictionary<String, UInt32> words) {
          var memoryStream = new MemoryStream();
          var stream = new BinaryWriter(memoryStream);
 
-         Int32 wordNumber = 1;
-         foreach (var e in words) {
-            var length = GetPaddedStringLength(e);
-            var nameBytes = Encoding.Unicode.GetBytes(e);
+         foreach (var w in words) {
+            var length = GetPaddedStringLength(w.Key);
+            var nameBytes = Encoding.Unicode.GetBytes(w.Key);
 
             stream.Write(length + sizeof(Int32) * 2);
-            stream.Write(wordNumber);
+            stream.Write(w.Value);
             stream.Write(nameBytes);
 
             // Make sure that the word/rule name is padded to a 4-byte boundary
             stream.Write(new byte[length - nameBytes.Length]);
-
-            wordNumber++;
          }
 
          stream.Flush();
@@ -139,7 +136,7 @@ namespace Renfrew.Grammar {
          stream.Write(SRCKCFG_EXPORTRULES);
 
          // Rule/Word chunks have the same format
-         bytes = BuildWordsChunk(grammar.RuleNames);
+         bytes = BuildWordsChunk(grammar.RuleIds);
          stream.Write(bytes.Length); // Chunk Size
          stream.Write(bytes);        // Chunk
          
@@ -147,7 +144,7 @@ namespace Renfrew.Grammar {
          stream.Write(SRCKCFG_WORDS);
 
          // Rule/Word chunks have the same format
-         bytes = BuildWordsChunk(grammar.Words);
+         bytes = BuildWordsChunk(grammar.WordIds);
          stream.Write(bytes.Length); // Chunk Size
          stream.Write(bytes);        // Chunk
 

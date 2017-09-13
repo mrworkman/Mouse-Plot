@@ -171,7 +171,7 @@ namespace Renfrew.Core {
                DebugConsole.WriteLine($"{e.Message} {e.StackTrace}");
             }
 
-            DebugConsole.WriteLine($"Grammar's words: {String.Join(", ", grammar.Words)}");
+            DebugConsole.WriteLine($"Grammar's words: {String.Join(", ", grammar.WordIds.Keys)}");
 
             grammarService.LoadGrammar(grammar);
             grammarService.ActivateRule(grammar, (IntPtr) null, "test_rule");

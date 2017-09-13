@@ -24,7 +24,7 @@ namespace Renfrew.Grammar.Dragon {
 
    public class RuleDefinitionFactory {
       private readonly RuleDirectiveFactory _ruleDirectiveFactory;
-      private Dictionary<String, Int32> _wordLookup;
+      private IReadOnlyDictionary<String, UInt32> _wordLookup;
 
       public RuleDefinitionFactory(RuleDirectiveFactory ruleDirectiveFactory) {
          _ruleDirectiveFactory = ruleDirectiveFactory;
@@ -52,9 +52,7 @@ namespace Renfrew.Grammar.Dragon {
       public IEnumerable<IEnumerable<RuleDirective>> CreateDefinitionTables(Grammar grammar) {
          var ruleDirectives = new List<IEnumerable<RuleDirective>>();
 
-         _wordLookup = grammar.Words
-            .Select((e, i) => new { Word = e, Index = i + 1 })
-            .ToDictionary(e => e.Word, e => e.Index);
+         _wordLookup = grammar.WordIds;
          
          foreach (var rule in grammar.Rules)
             ruleDirectives.Add( CreateDefinitionTable(rule.Elements) );

@@ -32,10 +32,10 @@ namespace Renfrew.Grammar {
       
       private readonly Dictionary<String, IActionableRule> _rules;
 
-      private UInt32 _wordCount = 0;
+      private UInt32 _wordCount = 1;
       private readonly Dictionary<String, UInt32> _wordIds;
 
-      private UInt32 _ruleCount = 0;
+      private UInt32 _ruleCount = 1;
       private readonly Dictionary<String, UInt32> _ruleIds;
 
       protected Grammar() 
@@ -125,16 +125,14 @@ namespace Renfrew.Grammar {
 
       protected RuleFactory RuleFactory { get; private set; }
 
-      public IReadOnlyCollection<String> RuleNames =>
-         _rules.Keys.OrderBy(e => e).ToList();
-
+      public IReadOnlyDictionary<String, UInt32> RuleIds => _ruleIds;
+      
       // Expose internally for serialization
-      internal IReadOnlyCollection<IActionableRule> Rules => 
+      internal IReadOnlyCollection<IActionableRule> Rules =>
          _rules.OrderBy(e => e.Key).Select(e => e.Value).ToList();
 
-      public IReadOnlyCollection<String> Words =>
-         _wordIds.Keys.OrderBy(e => e).ToList();
-      
+      public IReadOnlyDictionary<String, UInt32> WordIds => _wordIds;
+
    }
    
 }

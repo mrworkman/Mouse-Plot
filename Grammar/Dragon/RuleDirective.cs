@@ -25,7 +25,7 @@ namespace Renfrew.Grammar.Dragon {
    public class RuleDirective {
       public DirectiveTypes DirectiveType { get; set; }
       public ElementGroupings ElementGrouping { get; set; }
-      public Int32 Id { get; set; }
+      public UInt32 Id { get; set; }
 
       public override String ToString() {
          if (ElementGrouping == ElementGroupings.NOT_APPLICABLE)
