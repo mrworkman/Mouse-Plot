@@ -21,6 +21,6 @@ using System.Collections.Generic;
 namespace Renfrew.Grammar.FluentApi {
    public interface IActionableRule : IRule {
       IRule Do(Action action);
-      IRule Do(Action<IEnumerable<String>> action, bool nearestOnly);
+      IRule Do(Action<IEnumerable<String>> action);
    }
 }

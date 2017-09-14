@@ -31,12 +31,12 @@ namespace Renfrew.Grammar.FluentApi {
       }
 
       public IRule Do(Action action) {
-         //baseRule.AddExpressionComponent(new RuleAction(action));
+         _rule.AddElementToContainer( new GrammarAction(action) );
          return _rule;
       }
 
-      public IRule Do(Action<IEnumerable<String>> action, bool nearestOnly) {
-         //baseRule.AddExpressionComponent(new RuleAction(action));
+      public IRule Do(Action<IEnumerable<String>> action) {
+         _rule.AddElementToContainer( new GrammarAction(action) );
          return _rule;
       }
 
