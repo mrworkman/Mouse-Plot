@@ -114,6 +114,12 @@ namespace Renfrew.Grammar {
 
       private IEnumerable<String> GetWordsFromRuleElements(IEnumerable<IElement> elements) {
          foreach (var element in elements) {
+
+            // Ignore action elements
+            if (element is IGrammarAction)
+               continue;
+
+            // Get the word from the element/sub-elements
             if (element is IElementContainer == false) {
                yield return element.ToString();
             } else {

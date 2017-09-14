@@ -60,6 +60,7 @@
     <Compile Include="Elements\Element Interfaces\IElement.cs" />
     <Compile Include="Elements\Element Interfaces\IElementContainer.cs" />
     <Compile Include="Elements\Element Interfaces\IGrouping.cs" />
+    <Compile Include="Elements\GrammarAction.cs" />
     <Compile Include="FluentApi\ActionableRule.cs" />
     <Compile Include="FluentApi\Interfaces\IActionableRule.cs" />
     <Compile Include="FluentApi\Interfaces\IRule.cs" />

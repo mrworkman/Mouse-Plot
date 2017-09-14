@@ -143,7 +143,7 @@ namespace Renfrew.Grammar.FluentApi {
       private void SetContainer(IElementContainer container) =>
          _container = container;
 
-      private void AddElementToContainer(IElement element) {
+      internal void AddElementToContainer(IElement element) {
 
          // Because we can't tell ahead of time if there will be
          // more than one element added to an element container,
