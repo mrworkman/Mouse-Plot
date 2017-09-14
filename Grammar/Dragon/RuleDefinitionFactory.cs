@@ -76,6 +76,8 @@ namespace Renfrew.Grammar.Dragon {
                if (subGroup.HasElements)
                   directives.Add(_ruleDirectiveFactory.CreateEndDirective(subGroup));
 
+            } else if (element is IGrammarAction) {
+               continue;
             } else {
                String word = element.ToString().ToLower();
 
