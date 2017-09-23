@@ -1,5 +1,5 @@
 ﻿// Project Renfrew
-// Copyright(C) 2016  Stephen Workman (workman.stephen@gmail.com)
+// Copyright(C) 2017 Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

@@ -28,10 +28,10 @@ namespace GrammarTests {
    [TestClass]
    public class GrammarTests {
 
-      [TestMethod]
-      public void ShouldThrowExceptionIfRuleDoesNotTerminateWithAnAction() {
-         throw new NotImplementedException();
-      }
+      //[TestMethod]
+      //public void ShouldThrowExceptionIfRuleDoesNotTerminateWithAnAction() {
+      //   throw new NotImplementedException();
+      //}
 
    }
 }
