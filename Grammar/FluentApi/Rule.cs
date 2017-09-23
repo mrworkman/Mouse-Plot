@@ -22,7 +22,6 @@ using System.Linq.Expressions;
 
 namespace Renfrew.Grammar.FluentApi {
    using Elements;
-   using Exceptions;
 
    internal class Rule : IRule {
       private IElementContainer _container;
@@ -56,14 +55,9 @@ namespace Renfrew.Grammar.FluentApi {
          SaveCurrentContainer();
          SetContainer(subContainer ?? alternatives);
 
-         if (actions.Length < 2) {
-            throw new InvalidNumberOfSubruleElementsException(
-               $"{nameof(OneOf)} requires more than one sub-rule element!"
-            );
-         }
-
-         // We need to "alternate" between actions
-         if (subContainer != null) {
+         // If there is more than one action, then
+         // we need to "alternate" between them
+         if (actions.Length > 1 && subContainer != null) {
             subContainer.AddElement(alternatives);
             SetContainer(alternatives);
          }
