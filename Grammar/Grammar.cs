@@ -30,19 +30,21 @@ namespace Renfrew.Grammar {
 
    public abstract class Grammar : IGrammar, IDisposable {
       
-      private readonly Dictionary<String, IActionableRule> _rules;
+      private readonly Dictionary<String, IRule> _rules;
+      private readonly Dictionary<UInt32, IRule> _rulesById;
 
       private UInt32 _wordCount = 1;
       private readonly Dictionary<String, UInt32> _wordIds;
 
       private UInt32 _ruleCount = 1;
       private readonly Dictionary<String, UInt32> _ruleIds;
-
+      
       protected Grammar() 
          : this(new RuleFactory()) {
 
          // This is a list of the rules themselves (by name)
-         _rules = new Dictionary<String, IActionableRule>(StringComparer.CurrentCultureIgnoreCase);
+         _rules = new Dictionary<String, IRule>(StringComparer.CurrentCultureIgnoreCase);
+         _rulesById = new Dictionary<UInt32, IRule>();
 
          // These are lookups to find the numeric ids for words/rule names
          _wordIds = new Dictionary<String, UInt32>(StringComparer.CurrentCultureIgnoreCase);
@@ -53,16 +55,14 @@ namespace Renfrew.Grammar {
          RuleFactory = ruleFactory;
       }
 
-      protected void AddRule(String name, IActionableRule rule) {
-         if (String.IsNullOrWhiteSpace(name))
+      protected void AddRule(String name, IRule rule) {
+         if (String.IsNullOrWhiteSpace(name) == true)
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
 
          if (rule == null)
             throw new ArgumentNullException(nameof(rule));
-         
-         try {
-            EnforceRuleNaming(name);
-         } catch { throw; }
+
+         EnforceRuleNaming(name);
          
          if (_rules.ContainsKey(name) == true)
             throw new ArgumentException($"Grammar already contains a rule called '{name}'.", nameof(name));
@@ -75,14 +75,17 @@ namespace Renfrew.Grammar {
 
          }
 
+         var ruleId = _ruleCount++;
+
          if (_ruleIds.ContainsKey(name) == false)
-            _ruleIds.Add(name, _ruleCount++);
+            _ruleIds.Add(name, ruleId);
 
          _rules.Add(name, rule);
+         _rulesById.Add(ruleId, rule);
       }
 
-      protected void AddRule(String name, Expression<Action<IRule>> expression) =>
-         AddRule(name, RuleFactory.CreateActionableRule(expression));
+      protected void AddRule(String name, Func<IRule, IRule> ruleFunc) =>
+         AddRule(name, ruleFunc?.Invoke(RuleFactory.Create()));
 
       public abstract void Dispose();
 
@@ -105,7 +108,10 @@ namespace Renfrew.Grammar {
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
 
          _rules.Remove(name);
+
+         _rulesById.Remove(_ruleIds[name]);
          _ruleIds.Remove(name);
+         
       }
 
       private IEnumerable<String> GetWordsFromRule(IRule rule) {
@@ -129,12 +135,67 @@ namespace Renfrew.Grammar {
          }
       }
 
+      public void InvokeRule(UInt32 ruleNumber, IEnumerable<String> spokenWords) {
+
+         if (spokenWords == null)
+            throw new ArgumentNullException(nameof(spokenWords));
+
+         if (_rulesById.ContainsKey(ruleNumber) == false)
+            throw new ArgumentOutOfRangeException();
+
+         var rule = _rulesById[ruleNumber];
+
+         var spokenWordStack = new Stack<String>(spokenWords.Reverse());
+
+         foo(rule.Elements, spokenWordStack);
+         
+         if (spokenWordStack.Any() == true)
+            throw new Exception();
+
+      }
+
+      private void foo(IElementContainer elementContainer, Stack<String> spokenWordsStack, List<String> callbackWords = null) {
+
+         callbackWords = callbackWords ?? new List<String>();
+
+         foreach (var element in elementContainer.Elements) {
+            
+            if (element is IElementContainer) {
+               var subGroup = element as IElementContainer;
+
+               foo(subGroup, spokenWordsStack, callbackWords);
+
+            } else if (element is IGrammarAction) {
+               (element as GrammarAction).InvokeAction(callbackWords);
+            } else if (element is IWordElement) {
+               var comparer = StringComparison.CurrentCultureIgnoreCase;
+
+               var ruleWord = (element as IWordElement).ToString();
+               var firstStackWord = spokenWordsStack.FirstOrDefault();
+
+               if (firstStackWord == null)
+                  throw new Exception();
+
+               if (String.Equals(ruleWord, firstStackWord, comparer) == true) {
+                  callbackWords.Add(spokenWordsStack.Pop());
+               } else {
+                  if (elementContainer is IOptionals)
+                     continue;
+                  throw new Exception();
+               }
+
+
+            }
+         }
+
+      }
+
       protected RuleFactory RuleFactory { get; private set; }
 
       public IReadOnlyDictionary<String, UInt32> RuleIds => _ruleIds;
       
       // Expose internally for serialization
-      internal IReadOnlyCollection<IActionableRule> Rules =>
+      internal IReadOnlyCollection<IRule> Rules =>
          _rules.OrderBy(e => e.Key).Select(e => e.Value).ToList();
 
       public IReadOnlyDictionary<String, UInt32> WordIds => _wordIds;

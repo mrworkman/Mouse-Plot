@@ -1,34 +1,36 @@
-﻿using System;
+﻿// Project Renfrew
+// Copyright(C) 2017 Stephen Workman (workman.stephen@gmail.com)
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.If not, see<http://www.gnu.org/licenses/>.
+//
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Renfrew.Grammar.Elements;
-using Renfrew.Grammar.FluentApi;
-
 namespace GrammarTests {
+
    [TestClass]
    public class GrammarTests {
-      private RuleFactory _factory;
-
-      [TestInitialize]
-      public void Initialize() {
-         _factory = new RuleFactory();
-      }
 
       [TestMethod]
-      [ExpectedException(typeof(Exception))]
-      public void OneOfShouldThrowExceptionIfOnlyOneElement() {
-         var rule = _factory.Create(r => r.OneOf(r2 => r2.Say("test")));
-      }
-
-      [TestMethod]
-      public void OneWordGrammarNestedInSequenceGrouping() {
-         var rule = _factory.Create();
-
-         rule.Say("test");
-
-         Assert.IsTrue(rule.Elements is ISequence);
-         Assert.IsTrue(rule.Elements.Elements.First() is IWordElement);
+      public void ShouldThrowExceptionIfRuleDoesNotTerminateWithAnAction() {
+         throw new NotImplementedException();
       }
 
    }
