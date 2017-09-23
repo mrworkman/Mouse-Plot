@@ -16,16 +16,12 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Renfrew.Grammar;
-using Renfrew.Grammar.FluentApi;
+using Renfrew.Grammar.Exceptions;
 
 namespace GrammarTests {
 
@@ -34,6 +30,7 @@ namespace GrammarTests {
 
       private static int rule1Result = 0;
       private static int rule2Result = 0;
+      private static int rule3Result = 0;
 
       #region TestGrammar
       private class TestGrammar : Grammar {
@@ -45,7 +42,7 @@ namespace GrammarTests {
                   rule1Result = 1;
 
                   foreach (var word in words)
-                     Debug.WriteLine($"RECEIVED WORD: {word}");
+                     Debug.WriteLine($"Rule1: RECEIVED WORD: {word}");
 
                })
             );
@@ -55,9 +52,22 @@ namespace GrammarTests {
                   rule2Result = 1;
 
                   foreach (var word in words)
-                     Debug.WriteLine($"RECEIVED WORD: {word}");
+                     Debug.WriteLine($"Rule2: RECEIVED WORD: {word}");
 
                })
+            );
+
+            AddRule("test_rule_03", r => 
+               r.Say("Hello")
+                  .Optionally(o => o.Say("Skee"))
+                  .RepeatOneOf(
+                     rp => rp.Say("Hi"),
+                     rp => rp.Say("Sty")
+                  ).Do(words => {
+                     rule3Result = 1;
+                     foreach (var word in words)
+                        Debug.WriteLine($"Rule3: RECEIVED WORD: {word}");
+                  })
             );
 
          }
@@ -73,6 +83,14 @@ namespace GrammarTests {
 
          rule1Result = 0;
          rule2Result = 0;
+         rule3Result = 0;
+      }
+
+      [TestMethod]
+      public void ComplexRuleActionShouldBeInvoked() {
+         _g.InvokeRule(3, new[] { "Hello", "Hi", "Hi" });
+
+         Assert.AreEqual(1, rule3Result);
       }
 
       [TestMethod]
@@ -89,19 +107,19 @@ namespace GrammarTests {
       }
 
       [TestMethod]
-      [ExpectedException(typeof(Exception))]
+      [ExpectedException(typeof(TooManyWordsInCallbackException))]
       public void SimpleRuleActionWithExtraWordShouldThrowException() {
          _g.InvokeRule(1, new[] { "Hello", "Jello", "Smello" });
       }
 
       [TestMethod]
-      [ExpectedException(typeof(Exception))]
+      [ExpectedException(typeof(UnexpectedWordInCallbackException))]
       public void SimpleRuleActionWithInvalidWordShouldThrowException() {
          _g.InvokeRule(1, new[] { "Hello", "Mellow" });
       }
 
       [TestMethod]
-      [ExpectedException(typeof(Exception))]
+      [ExpectedException(typeof(MissingWordsInCallbackException))]
       public void SimpleRuleActionWithNotEnoughWordsShouldThrowException() {
          _g.InvokeRule(1, new[] { "Hello" });
       }
@@ -121,7 +139,7 @@ namespace GrammarTests {
       }
 
       [TestMethod]
-      [ExpectedException(typeof(Exception))]
+      [ExpectedException(typeof(UnexpectedWordInCallbackException))]
       public void SimpleRuleActionWithInvalidWordInPlaceOfOptionalWordShouldThrowException() {
          _g.InvokeRule(2, new[] { "Hello", "Jello", "Sneeze", "Please" });
       }

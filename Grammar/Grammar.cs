@@ -23,6 +23,7 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 using Renfrew.Grammar.Elements;
+using Renfrew.Grammar.Exceptions;
 using Renfrew.Grammar.FluentApi;
 using Renfrew.NatSpeakInterop;
 
@@ -150,7 +151,10 @@ namespace Renfrew.Grammar {
          foo(rule.Elements, spokenWordStack);
          
          if (spokenWordStack.Any() == true)
-            throw new Exception();
+            throw new TooManyWordsInCallbackException(
+               "There are too many words in the callback!",
+               spokenWordStack.ToList()
+            );
 
       }
 
@@ -173,15 +177,22 @@ namespace Renfrew.Grammar {
                var ruleWord = (element as IWordElement).ToString();
                var firstStackWord = spokenWordsStack.FirstOrDefault();
 
-               if (firstStackWord == null)
-                  throw new Exception();
+               if (firstStackWord == null) {
+                  throw new MissingWordsInCallbackException(
+                     $"The callback did not provide enough words. Next word expected: {ruleWord}"
+                  );
+               }
 
                if (String.Equals(ruleWord, firstStackWord, comparer) == true) {
                   callbackWords.Add(spokenWordsStack.Pop());
                } else {
                   if (elementContainer is IOptionals)
                      continue;
-                  throw new Exception();
+
+                  // If we get here, then the word is unexpected
+                  throw new UnexpectedWordInCallbackException(
+                     $"The following word was unexpected: {firstStackWord}"
+                  );
                }
 
 
