@@ -241,6 +241,9 @@ namespace Renfrew::NatSpeakInterop {
             }
          }
 
+         UInt32 ruleNumber = 0;
+         auto spokenWords = gcnew List<String^>();
+
          DWORD numWords = pathSize / sizeof(DWORD);
 
          for (DWORD i = 0; i < numWords; i++) {
@@ -259,6 +262,8 @@ namespace Renfrew::NatSpeakInterop {
 
             isrResGraph->GetWordNode(path[i], &node, srWord, srWordSize, &srWordSize);
 
+            ruleNumber = node.dwCFGParse;
+
             Debug::WriteLine(
                "Word Number: {0}, Word: {1}, Rule: {2}",
                srWord->dwWordNum,
@@ -266,10 +271,15 @@ namespace Renfrew::NatSpeakInterop {
                node.dwCFGParse
             );
 
+            spokenWords->Add(gcnew String(srWord->szWord));
+
             delete srWord;
          }
 
          delete[] path;
+
+         ge->Grammar->InvokeRule(ruleNumber, spokenWords);
+
       }
 
       private: GrammarExecutive ^RemoveGrammarFromList(IGrammar ^grammar) {
