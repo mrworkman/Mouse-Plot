@@ -25,7 +25,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GrammarTests {
 
-   [TestClass]
+   //[TestClass]
    public class GrammarTests {
 
       //[TestMethod]
