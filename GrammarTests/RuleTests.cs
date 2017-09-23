@@ -33,12 +33,6 @@ namespace GrammarTests {
       }
 
       [TestMethod]
-      [ExpectedException(typeof(InvalidNumberOfSubruleElementsException))]
-      public void OneOfShouldThrowExceptionIfOnlyOneElement() {
-         var rule = _factory.Create(r => r.OneOf(r2 => r2.Say("test")));
-      }
-
-      [TestMethod]
       public void OneWordGrammarNestedInSequenceGrouping() {
          var rule = _factory.Create();
 
