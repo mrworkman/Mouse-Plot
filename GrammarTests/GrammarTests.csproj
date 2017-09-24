@@ -72,6 +72,10 @@
       <Project>{fcf06529-2adc-4f27-804f-260b598ea492}</Project>
       <Name>Grammar</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NatSpeakInterop\NatspeakInterop.vcxproj">
+      <Project>{0b7df2f5-d3ad-415d-8b73-b8b9b9efe75d}</Project>
+      <Name>NatSpeakInterop</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

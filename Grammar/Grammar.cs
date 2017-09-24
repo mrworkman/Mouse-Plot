@@ -148,7 +148,7 @@ namespace Renfrew.Grammar {
 
          var spokenWordStack = new Stack<String>(spokenWords.Reverse());
 
-         foo(rule.Elements, spokenWordStack);
+         ProcessSpokenWords(rule.Elements, spokenWordStack);
          
          if (spokenWordStack.Any() == true)
             throw new TooManyWordsInCallbackException(
@@ -158,47 +158,94 @@ namespace Renfrew.Grammar {
 
       }
 
-      private void foo(IElementContainer elementContainer, Stack<String> spokenWordsStack, List<String> callbackWords = null) {
+      private void ProcessSpokenWords(IElementContainer elementContainer, Stack<String> spokenWordsStack, List<String> callbackWords = null) {
+         bool optional = elementContainer is IOptionals;
 
          callbackWords = callbackWords ?? new List<String>();
 
          foreach (var element in elementContainer.Elements) {
-            
+
+            if (element is IGrammarAction) {
+               ((GrammarAction) element).InvokeAction(callbackWords);
+               return;
+            }
+
             if (element is IElementContainer) {
                var subGroup = element as IElementContainer;
 
-               foo(subGroup, spokenWordsStack, callbackWords);
+               if (element is IRepeats) {
+                  while (true) {
+                     try {
+                        ProcessSpokenWords(subGroup, spokenWordsStack, callbackWords);
+                     } catch (Exception) {
+                        break;
+                     }
+                  }
+               } else if (element is IAlternatives) {
+                  bool matchFound = false;
 
-            } else if (element is IGrammarAction) {
-               (element as GrammarAction).InvokeAction(callbackWords);
-            } else if (element is IWordElement) {
-               var comparer = StringComparison.CurrentCultureIgnoreCase;
+                  foreach (var eee in subGroup.Elements) {
+                     if (eee is IWordElement) {
 
-               var ruleWord = (element as IWordElement).ToString();
-               var firstStackWord = spokenWordsStack.FirstOrDefault();
+                        var s = GetNextMatchingWord(eee as IWordElement, spokenWordsStack, optional: true);
 
-               if (firstStackWord == null) {
-                  throw new MissingWordsInCallbackException(
-                     $"The callback did not provide enough words. Next word expected: {ruleWord}"
-                  );
-               }
+                        if (s == null)
+                           continue;
+                        callbackWords.Add(s);
 
-               if (String.Equals(ruleWord, firstStackWord, comparer) == true) {
-                  callbackWords.Add(spokenWordsStack.Pop());
+                     } else {
+                        ProcessSpokenWords(subGroup, spokenWordsStack, callbackWords);
+                     }
+
+                     matchFound = true;
+                     break;
+                  }
                } else {
-                  if (elementContainer is IOptionals)
-                     continue;
-
-                  // If we get here, then the word is unexpected
-                  throw new UnexpectedWordInCallbackException(
-                     $"The following word was unexpected: {firstStackWord}"
-                  );
+                  ProcessSpokenWords(subGroup, spokenWordsStack, callbackWords);
                }
+            } else if (element is IWordElement) {
+               var callbackWord = GetNextMatchingWord(
+                  element as IWordElement, spokenWordsStack, optional
+               );
 
+               if (callbackWord == null)
+                  continue;
 
+               callbackWords.Add(callbackWord);
+            } else {
+               // TODO: Use better exception
+               throw new Exception("WAT?");
             }
          }
+      }
 
+      private String GetNextMatchingWord(IWordElement element, Stack<String> spokenWordsStack, bool optional = false) {
+         var comparer     = StringComparison.CurrentCultureIgnoreCase;
+
+         if (element == null)
+            throw new ArgumentNullException(nameof(element));
+         if (spokenWordsStack == null)
+            throw new ArgumentNullException(nameof(spokenWordsStack));
+
+         var ruleWord = element.ToString();
+         var firstStackWord = spokenWordsStack.FirstOrDefault();
+
+         if (firstStackWord == null) {
+            throw new MissingWordsInCallbackException(
+               $"The callback did not provide enough words. Next word expected: {ruleWord}"
+            );
+         }
+
+         if (String.Equals(ruleWord, firstStackWord, comparer) == true)
+            return spokenWordsStack.Pop();
+
+         if (optional == true)
+            return null;
+
+         // If we get here, then the word is unexpected
+         throw new UnexpectedWordInCallbackException(
+            $"The following word was unexpected: {firstStackWord}"
+         );
       }
 
       protected RuleFactory RuleFactory { get; private set; }

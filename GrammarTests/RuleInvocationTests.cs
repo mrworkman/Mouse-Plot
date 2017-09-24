@@ -86,12 +86,12 @@ namespace GrammarTests {
          rule3Result = 0;
       }
 
-      //[TestMethod]
-      //public void ComplexRuleActionShouldBeInvoked() {
-      //   _g.InvokeRule(3, new[] { "Hello", "Skee", "Hi" });
+      [TestMethod]
+      public void ComplexRuleActionShouldBeInvoked() {
+         _g.InvokeRule(3, new[] { "Hello", "Skee", "Hi", "Sty", "Hi", "Hi", "Sty" });
 
-      //   Assert.AreEqual(1, rule3Result);
-      //}
+         Assert.AreEqual(1, rule3Result);
+      }
 
       [TestMethod]
       [ExpectedException(typeof(ArgumentOutOfRangeException))]
