@@ -61,6 +61,7 @@ namespace GrammarTests {
                r.Say("Hello")
                   .Optionally(o => o.Say("Skee"))
                   .RepeatOneOf(
+                     rp => rp.SayOneOf("a", "b", "c"),
                      rp => rp.Say("Hi"),
                      rp => rp.Say("Sty")
                   ).Do(words => {
@@ -87,11 +88,26 @@ namespace GrammarTests {
       }
 
       [TestMethod]
-      public void ComplexRuleActionShouldBeInvoked() {
-         _g.InvokeRule(3, new[] { "Hello", "Skee", "Hi", "Sty", "Hi", "Hi", "Sty" });
+      public void ComplexRuleActionShouldBeInvoked_Variant1() {
+         _g.InvokeRule(3, new[] { "Hello", "Skee", "Sty", "Sty", "Hi", "Hi", "Sty" });
 
          Assert.AreEqual(1, rule3Result);
       }
+
+      [TestMethod]
+      public void ComplexRuleActionShouldBeInvoked_Variant2() {
+         _g.InvokeRule(3, new[] { "Hello", "Hi", "Hi" });
+
+         Assert.AreEqual(1, rule3Result);
+      }
+
+      [TestMethod]
+      public void ComplexRuleActionShouldBeInvoked_Variant3() {
+         _g.InvokeRule(3, new[] { "Hello", "Hi", "a", "a", "Sty", "Hi", "c", "b", "c", "c" });
+
+         Assert.AreEqual(1, rule3Result);
+      }
+
 
       [TestMethod]
       [ExpectedException(typeof(ArgumentOutOfRangeException))]

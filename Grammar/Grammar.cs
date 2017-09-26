@@ -158,8 +158,10 @@ namespace Renfrew.Grammar {
 
       }
 
-      private void ProcessSpokenWords(IElementContainer elementContainer, Stack<String> spokenWordsStack, List<String> callbackWords = null) {
-         bool optional = elementContainer is IOptionals;
+      private void ProcessSpokenWords(IElementContainer elementContainer, 
+         Stack<String> spokenWordsStack, List<String> callbackWords = null, bool isOptional = false) {
+
+         bool optional = elementContainer is IOptionals || isOptional;
 
          callbackWords = callbackWords ?? new List<String>();
 
@@ -194,7 +196,12 @@ namespace Renfrew.Grammar {
                         callbackWords.Add(s);
 
                      } else {
-                        ProcessSpokenWords(subGroup, spokenWordsStack, callbackWords);
+                        var countBeforeCall = callbackWords.Count();
+
+                        ProcessSpokenWords(eee as IElementContainer, spokenWordsStack, callbackWords, isOptional: true);
+
+                        if (countBeforeCall == callbackWords.Count)
+                           continue;
                      }
 
                      matchFound = true;
@@ -253,8 +260,8 @@ namespace Renfrew.Grammar {
       public IReadOnlyDictionary<String, UInt32> RuleIds => _ruleIds;
       
       // Expose internally for serialization
-      internal IReadOnlyCollection<IRule> Rules =>
-         _rules.OrderBy(e => e.Key).Select(e => e.Value).ToList();
+      internal IReadOnlyList<IRule> Rules =>
+         _rulesById.OrderBy(e => e.Key).Select(e => e.Value).ToList();
 
       public IReadOnlyDictionary<String, UInt32> WordIds => _wordIds;
 
