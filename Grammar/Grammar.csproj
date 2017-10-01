@@ -61,10 +61,8 @@
     <Compile Include="Elements\Element Interfaces\IElementContainer.cs" />
     <Compile Include="Elements\Element Interfaces\IGrouping.cs" />
     <Compile Include="Elements\GrammarAction.cs" />
-    <Compile Include="Exceptions\InvalidNumberOfSubruleElementsException.cs" />
-    <Compile Include="Exceptions\MissingWordsInCallbackException.cs" />
+    <Compile Include="Exceptions\InvalidSequenceInCallbackException.cs" />
     <Compile Include="Exceptions\TooManyWordsInCallbackException.cs" />
-    <Compile Include="Exceptions\UnexpectedWordInCallbackException.cs" />
     <Compile Include="FluentApi\ActionableRule.cs" />
     <Compile Include="FluentApi\Interfaces\IActionableRule.cs" />
     <Compile Include="FluentApi\Interfaces\IRule.cs" />

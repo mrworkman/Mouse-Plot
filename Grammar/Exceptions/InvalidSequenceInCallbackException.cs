@@ -18,10 +18,13 @@
 using System;
 
 namespace Renfrew.Grammar.Exceptions {
-   public class InvalidNumberOfSubruleElementsException : Exception {
-      public InvalidNumberOfSubruleElementsException(String message) 
-         : base(message) {
+   public class InvalidSequenceInCallbackException : Exception {
+      public InvalidSequenceInCallbackException()
+         : base() {
+      }
 
+      public InvalidSequenceInCallbackException(String message) 
+         : base(message) {
       }
    }
 }

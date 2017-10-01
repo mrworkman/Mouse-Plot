@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -69,11 +70,8 @@ namespace Renfrew.Grammar {
             throw new ArgumentException($"Grammar already contains a rule called '{name}'.", nameof(name));
 
          foreach (var word in GetWordsFromRule(rule)) {
-            Debug.WriteLine($"WORD: {word}");
-
             if (_wordIds.ContainsKey(word) == false)
                _wordIds.Add(word, _wordCount++);
-
          }
 
          var ruleId = _ruleCount++;
@@ -146,113 +144,118 @@ namespace Renfrew.Grammar {
 
          var rule = _rulesById[ruleNumber];
 
-         var spokenWordStack = new Stack<String>(spokenWords.Reverse());
+         var spokenWordsStack = new Stack<String>(spokenWords.Reverse());
+         var callbacks = new List<KeyValuePair<IGrammarAction, IEnumerable<String>>>();
 
-         ProcessSpokenWords(rule.Elements, spokenWordStack);
-         
-         if (spokenWordStack.Any() == true)
+
+         var result = ProcessSpokenWords(
+            rule.Elements, 
+            spokenWordsStack,
+            callbacks
+         );
+
+         // Did the spoken words match the rule's structure?
+         if (result == false)
+            throw new InvalidSequenceInCallbackException();
+
+         // Make sure there are no words left in the stack
+         if (spokenWordsStack.Any()) {
             throw new TooManyWordsInCallbackException(
-               "There are too many words in the callback!",
-               spokenWordStack.ToList()
+               "There are extra words in the callback!", spokenWords.ToList()
             );
+         }
+
+         // Invoke callback(s)
+         foreach (var callback in callbacks)
+            callback.Key.InvokeAction(callback.Value);
 
       }
 
-      private void ProcessSpokenWords(IElementContainer elementContainer, 
-         Stack<String> spokenWordsStack, List<String> callbackWords = null, bool isOptional = false) {
+      private bool ProcessSpokenWords(
+         IElementContainer elementContainer, Stack<String> spokenWordsStack,
+         List<KeyValuePair<IGrammarAction, IEnumerable<String>>> callbacks,
+         List<String> aw = null 
+         ) {
 
-         bool optional = elementContainer is IOptionals || isOptional;
+         if (callbacks == null)
+            throw new ArgumentNullException(nameof(callbacks));
 
-         callbackWords = callbackWords ?? new List<String>();
+         var sc = StringComparison.CurrentCultureIgnoreCase;
+         var actionWords = new List<String>();
 
          foreach (var element in elementContainer.Elements) {
 
-            if (element is IGrammarAction) {
-               ((GrammarAction) element).InvokeAction(callbackWords);
-               return;
+            if (element is IWordElement) {
+               var wordElement = element as IWordElement;
+
+               var spokenWord = spokenWordsStack.FirstOrDefault();
+
+               // If the words don't match, then this sub-rule doesn't match.
+               if (spokenWord == null || String.Equals(spokenWord, element.ToString(), sc) == false)
+                  return false;
+
+               // Add word to callback stack
+               spokenWordsStack.Pop();
+               actionWords.Add(spokenWord);
+
+               continue;
             }
 
+            // Check if we need to descend into a sub-rule (Optional, Repeats, Alternatives...)
             if (element is IElementContainer) {
-               var subGroup = element as IElementContainer;
+               var subRule = (element as IElementContainer);
+               var subRuleResult = false;
 
-               if (element is IRepeats) {
-                  while (true) {
-                     try {
-                        ProcessSpokenWords(subGroup, spokenWordsStack, callbackWords);
-                     } catch (Exception) {
+               if (subRule is IOptionals) {
+                  ProcessSpokenWords(subRule, spokenWordsStack, callbacks, actionWords);
+                  subRuleResult = true;
+               } else if (subRule is IAlternatives) {
+                  var alternatives = (subRule as IAlternatives)?.Elements;
+
+                  foreach (var alternative in alternatives) {
+
+                     // Encapsulate in a sequence
+                     var s = new Sequence();
+                     s.AddElement(alternative);
+
+                     subRuleResult = ProcessSpokenWords(s, spokenWordsStack, callbacks, actionWords);
+
+                     if (subRuleResult == true)
                         break;
-                     }
                   }
-               } else if (element is IAlternatives) {
-                  bool matchFound = false;
 
-                  foreach (var eee in subGroup.Elements) {
-                     if (eee is IWordElement) {
+               } else if (subRule is IRepeats) {
+                  var repeatable = (subRule as IRepeats)?.Elements;
 
-                        var s = GetNextMatchingWord(eee as IWordElement, spokenWordsStack, optional: true);
+                  while (ProcessSpokenWords(subRule, spokenWordsStack, callbacks, actionWords))
+                     subRuleResult = true;
 
-                        if (s == null)
-                           continue;
-                        callbackWords.Add(s);
-
-                     } else {
-                        var countBeforeCall = callbackWords.Count();
-
-                        ProcessSpokenWords(eee as IElementContainer, spokenWordsStack, callbackWords, isOptional: true);
-
-                        if (countBeforeCall == callbackWords.Count)
-                           continue;
-                     }
-
-                     matchFound = true;
-                     break;
-                  }
-               } else {
-                  ProcessSpokenWords(subGroup, spokenWordsStack, callbackWords);
+               } else { // Must be an ISequence
+                  subRuleResult = ProcessSpokenWords(subRule, spokenWordsStack, callbacks, actionWords);
                }
-            } else if (element is IWordElement) {
-               var callbackWord = GetNextMatchingWord(
-                  element as IWordElement, spokenWordsStack, optional
+
+               if (subRuleResult == false)
+                  return false;
+
+               continue;
+            }
+
+            if (element is IGrammarAction) {
+
+               callbacks.Add(
+                  new KeyValuePair<IGrammarAction, IEnumerable<string>>(
+                     element as IGrammarAction, actionWords
+                  )
                );
 
-               if (callbackWord == null)
-                  continue;
-
-               callbackWords.Add(callbackWord);
-            } else {
-               // TODO: Use better exception
-               throw new Exception("WAT?");
+               actionWords = new List<String>();
             }
          }
-      }
 
-      private String GetNextMatchingWord(IWordElement element, Stack<String> spokenWordsStack, bool optional = false) {
-         var comparer     = StringComparison.CurrentCultureIgnoreCase;
+         aw?.AddRange(actionWords);
 
-         if (element == null)
-            throw new ArgumentNullException(nameof(element));
-         if (spokenWordsStack == null)
-            throw new ArgumentNullException(nameof(spokenWordsStack));
-
-         var ruleWord = element.ToString();
-         var firstStackWord = spokenWordsStack.FirstOrDefault();
-
-         if (firstStackWord == null) {
-            throw new MissingWordsInCallbackException(
-               $"The callback did not provide enough words. Next word expected: {ruleWord}"
-            );
-         }
-
-         if (String.Equals(ruleWord, firstStackWord, comparer) == true)
-            return spokenWordsStack.Pop();
-
-         if (optional == true)
-            return null;
-
-         // If we get here, then the word is unexpected
-         throw new UnexpectedWordInCallbackException(
-            $"The following word was unexpected: {firstStackWord}"
-         );
+         // If we get here, the rule matches the spoken words
+         return true;
       }
 
       protected RuleFactory RuleFactory { get; private set; }

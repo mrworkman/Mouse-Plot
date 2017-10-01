@@ -129,13 +129,13 @@ namespace GrammarTests {
       }
 
       [TestMethod]
-      [ExpectedException(typeof(UnexpectedWordInCallbackException))]
+      [ExpectedException(typeof(InvalidSequenceInCallbackException))]
       public void SimpleRuleActionWithInvalidWordShouldThrowException() {
          _g.InvokeRule(1, new[] { "Hello", "Mellow" });
       }
 
       [TestMethod]
-      [ExpectedException(typeof(MissingWordsInCallbackException))]
+      [ExpectedException(typeof(InvalidSequenceInCallbackException))]
       public void SimpleRuleActionWithNotEnoughWordsShouldThrowException() {
          _g.InvokeRule(1, new[] { "Hello" });
       }
@@ -155,7 +155,7 @@ namespace GrammarTests {
       }
 
       [TestMethod]
-      [ExpectedException(typeof(UnexpectedWordInCallbackException))]
+      [ExpectedException(typeof(InvalidSequenceInCallbackException))]
       public void SimpleRuleActionWithInvalidWordInPlaceOfOptionalWordShouldThrowException() {
          _g.InvokeRule(2, new[] { "Hello", "Jello", "Sneeze", "Please" });
       }
