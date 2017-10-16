@@ -20,7 +20,6 @@
 #define IDgnSrSpeakerGUID "DD10901C-6205-11CF-AE61-0000E8A28647"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
-   using namespace System::Runtime::InteropServices;
 
    [ComImport, Guid(IDgnSrSpeakerGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]

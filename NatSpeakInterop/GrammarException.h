@@ -18,8 +18,6 @@
 #pragma once
 
 namespace Renfrew::NatSpeakInterop::Exceptions {
-   using namespace System;
-   using namespace System::Runtime::InteropServices;
 
    public ref class GrammarException : Exception {
       public: GrammarException(String ^message, COMException ^innerException) :

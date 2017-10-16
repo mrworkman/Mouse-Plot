@@ -127,7 +127,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="GrammarService.cpp" />
     <ClCompile Include="NatSpeakService.cpp" />
+    <ClCompile Include="SrGramNotifySink.cpp" />
     <ClCompile Include="SrNotifySink.cpp" />
     <ClCompile Include="SSvcActionNotifySink.cpp" />
     <ClCompile Include="Stdafx.cpp">

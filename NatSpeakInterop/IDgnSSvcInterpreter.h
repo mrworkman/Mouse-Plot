@@ -20,8 +20,6 @@
 #define IDgnSSvcInterpreterGUID "dd109203-6205-11cf-ae61-0000e8a28647"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
-   using namespace System;
-   using namespace System::Runtime::InteropServices;
 
    [ComImport, Guid(IDgnSSvcInterpreterGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
@@ -33,5 +31,4 @@ namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
       void ExecuteScript(const PWCHAR, DWORD*, DWORD*, const PWCHAR, DWORD);
       void ExecuteScriptWithListResults(const PWCHAR, DWORD, const PWCHAR, DWORD*, DWORD*, const PWCHAR, DWORD);
    };
-
 }

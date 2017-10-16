@@ -1,5 +1,5 @@
 // Project Renfrew
-// Copyright(C) 2016  Stephen Workman (workman.stephen@gmail.com)
+// Copyright(C) 2016 Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,14 +21,7 @@
 #include "IDgnSREngineNotifySink.h"
 #include "ISRNotifySink.h"
 
-#include "SinkFlags.h"
-
-using namespace System;
-using namespace System::Diagnostics;
-
 namespace Renfrew::NatSpeakInterop::Sinks {
-   using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
-
    public ref class SrNotifySink :
       public Dragon::ComInterfaces::IDgnGetSinkFlags,
       public Dragon::ComInterfaces::IDgnSrEngineNotifySink,
@@ -36,76 +29,22 @@ namespace Renfrew::NatSpeakInterop::Sinks {
 
       private: Action<UInt64> ^_pausedProcessingCallback;
 
-      public: SrNotifySink(Action<UInt64> ^pausedProcessingCallback) {
-         if (pausedProcessingCallback == nullptr)
-            throw gcnew ArgumentNullException("pausedProcessingCallback");
-
-         _pausedProcessingCallback = pausedProcessingCallback;
-      }
-
-      public: void virtual SinkFlagsGet(DWORD *pdwFlags) {
-         Debug::WriteLine(__FUNCTION__);
-
-         if (pdwFlags == nullptr)
-            return;
-
-         // These are the notifications handled by this sink
-         *pdwFlags = DGNSRSINKFLAG_SENDJITPAUSED |
-                     DGNSRSINKFLAG_SENDATTRIB    |
-                     #ifdef _DEBUG
-                     DGNSRSINKFLAG_SENDBEGINUTT  |
-                     DGNSRSINKFLAG_SENDENDUTT    |
-                     #endif
-                     DGNSRSINKFLAG_SENDMIMICDONE;
-      }
+      public: SrNotifySink(Action<UInt64> ^pausedProcessingCallback);
+      public: void virtual SinkFlagsGet(DWORD *pdwFlags);
 
       // IDgnSREngineNotifySink Methods
-      public: void virtual AttribChanged2(DWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
+      public: void virtual AttribChanged2(DWORD);
+      public: void virtual Paused(QWORD cookie);
+      public: void virtual MimicDone(DWORD, LPUNKNOWN);
+      public: void virtual ErrorHappened(LPUNKNOWN);
+      public: void virtual Progress(int, const WCHAR *);
 
-      public: void virtual Paused(QWORD cookie) {
-         Debug::WriteLine(__FUNCTION__);
-
-         if (_pausedProcessingCallback != nullptr)
-            _pausedProcessingCallback(cookie);
-      }
-
-      public: void virtual MimicDone(DWORD, LPUNKNOWN) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual ErrorHappened(LPUNKNOWN) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual Progress(int, const WCHAR *) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-         // ISRNotifySink Methods
-      public: void virtual AttribChanged(DWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual Interference(QWORD, QWORD, DWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual Sound(QWORD, QWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual UtteranceBegin(QWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual UtteranceEnd(QWORD, QWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual VUMeter(QWORD, WORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
+      // ISRNotifySink Methods
+      public: void virtual AttribChanged(DWORD);
+      public: void virtual Interference(QWORD, QWORD, DWORD);
+      public: void virtual Sound(QWORD, QWORD);
+      public: void virtual UtteranceBegin(QWORD);
+      public: void virtual UtteranceEnd(QWORD, QWORD);
+      public: void virtual VUMeter(QWORD, WORD);
    };
 }

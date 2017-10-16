@@ -20,7 +20,6 @@
 #define ISrSpeakerGUID "090CD9AE-DA1A-11CD-B3CA-00AA0047BA4F"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
-   using namespace System::Runtime::InteropServices;
 
    [ComImport, Guid(ISrSpeakerGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]

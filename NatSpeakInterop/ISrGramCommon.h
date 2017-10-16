@@ -20,7 +20,6 @@
 #define ISrGramCommonGUID "e8c3e160-c743-11cd-80e5-00aa003e4b50"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
-   using namespace System::Runtime::InteropServices;
 
    [ComImport, Guid(ISrGramCommonGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]

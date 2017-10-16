@@ -16,4 +16,217 @@
 //
 
 #include "stdafx.h"
+
+#include "SrNotifySink.h"
+#include "SSvcActionNotifySink.h"
+
+using namespace Renfrew::Helpers;
+using namespace Renfrew::NatSpeakInterop;
+using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
+using namespace Renfrew::NatSpeakInterop::Sinks;
+
 #include "NatSpeakService.h"
+
+NatSpeakService::NatSpeakService() {
+   _key = 0;
+}
+
+NatSpeakService::~NatSpeakService() {
+
+}
+
+void NatSpeakService::Connect(IntPtr serviceProviderPtr) {
+   Connect(reinterpret_cast<::IServiceProvider*>(serviceProviderPtr.ToPointer()));
+}
+
+void NatSpeakService::Connect(::IServiceProvider *pServiceProvider) {
+   if (pServiceProvider == nullptr)
+      throw gcnew ArgumentNullException();
+
+   InitializeIsrCentral(pServiceProvider);
+   InitializeSrEngineControlInterface();
+
+   CreateGrammarService();
+
+   RegisterEngineSink();
+   InitializeSpeechServicesInterfaces();
+   RegisterPlaybackSink();
+}
+
+void NatSpeakService::CreateGrammarService() {
+   _grammarService = gcnew Renfrew::NatSpeakInterop::
+      GrammarService(_isrCentral, _idgnSrEngineControl);
+}
+
+IntPtr NatSpeakService::CreateSiteObject() {
+   IntPtr sitePtr;
+
+   Guid iServiceProviderGuid(IServiceProviderGUID);
+   Type ^type = Type::GetTypeFromCLSID(Guid(IDgnSiteGUID));
+
+   Object ^idgnSite = Activator::CreateInstance(type);
+   IntPtr i = Marshal::GetIUnknownForObject(idgnSite);
+
+   try {
+      // http://stackoverflow.com/a/22160325/1254575
+      Marshal::QueryInterface(i, iServiceProviderGuid, sitePtr);
+   }
+   finally {
+      Marshal::Release(i);
+   }
+
+   return sitePtr;
+}
+
+void NatSpeakService::Disconnect() {
+   Trace::WriteLine(__FUNCTION__);
+
+   if (_key != 0) {
+      _isrCentral->UnRegister(_key);
+      _key = 0;
+   }
+
+   Marshal::ReleaseComObject(_isrCentral);
+   Marshal::ReleaseComObject(_idgnSpeechServices);
+}
+
+String ^NatSpeakService::GetCurrentUserProfileName() {
+   ISrSpeaker ^isrSpeaker = (ISrSpeaker ^)_isrCentral;
+
+   DWORD dwSize, dwNeeded = 0;
+   PWSTR profileName = nullptr;
+
+   // Find out how big our buffer should be
+   try {
+      isrSpeaker->Query(profileName, 0, &dwNeeded);
+   }
+   catch (COMException ^e) {
+      if (!(e->ErrorCode == EVENT_E_CANT_MODIFY_OR_DELETE_CONFIGURED_OBJECT ||
+         e->ErrorCode == E_BUFFERTOOSMALL || e->ErrorCode == SRERR_NOUSERSELECTED)) {
+         throw;
+      }
+   }
+
+   if (dwNeeded == 0)
+      return nullptr;
+
+   // Allocate a buffer to hold the string
+   dwSize = dwNeeded;
+   profileName = new WCHAR[dwSize];
+
+   // Get the string
+   isrSpeaker->Query(profileName, dwSize, &dwNeeded);
+
+   try {
+      return gcnew String(profileName);
+   }
+   finally {
+      delete profileName;
+   }
+}
+
+String ^NatSpeakService::GetUserDirectory(String ^userProfile) {
+   IDgnSrSpeaker ^idgnSrSpeaker = (IDgnSrSpeaker ^)_isrCentral;
+
+   DWORD dwSize, dwNeeded = 0;
+   PWSTR path = nullptr;
+
+   pin_ptr<const WCHAR> user = PtrToStringChars(userProfile);
+
+   // Find out how big our buffer should be
+   try {
+      idgnSrSpeaker->GetSpeakerDirectory(user, path, 0, &dwNeeded);
+   }
+   catch (COMException ^e) {
+      if (!(e->ErrorCode == EVENT_E_CANT_MODIFY_OR_DELETE_CONFIGURED_OBJECT ||
+         e->ErrorCode == E_BUFFERTOOSMALL || e->ErrorCode == SRERR_NOUSERSELECTED)) {
+         throw;
+      }
+   }
+
+   if (dwNeeded == 0)
+      return nullptr;
+
+   // Allocate a buffer to hold the string
+   dwSize = dwNeeded;
+   path = new WCHAR[dwSize];
+
+   // Get the string
+   idgnSrSpeaker->GetSpeakerDirectory(user, path, dwSize, &dwNeeded);
+
+   try {
+      return gcnew String(path) + "\\current";
+   }
+   finally {
+      delete path;
+   }
+}
+
+IGrammarService ^NatSpeakService::GrammarService::get() {
+   return _grammarService;
+}
+
+void NatSpeakService::InitializeIsrCentral(::IServiceProvider *pServiceProvider) {
+   _piServiceProvider = pServiceProvider;
+
+   ISrCentral ^*ptr = ComHelper::QueryService<IDgnDictate^, ISrCentral^>(_piServiceProvider);
+   _isrCentral = (ISrCentral^)Marshal::GetObjectForIUnknown(IntPtr(ptr));
+
+   Marshal::Release(IntPtr(ptr));
+}
+
+void NatSpeakService::InitializeSpeechServicesInterfaces() {
+   // Speech Services
+   IDgnSpeechServices ^*ptr = ComHelper::QueryService<ISpchServices^, IDgnSpeechServices^>(_piServiceProvider);
+   _idgnSpeechServices = (IDgnSpeechServices^)Marshal::GetObjectForIUnknown(IntPtr(ptr));
+   _idgnSSvcOutputEvent = (IDgnSSvcOutputEvent ^)_idgnSpeechServices;
+   _idgnSSvcInterpreter = (IDgnSSvcInterpreter ^)_idgnSSvcOutputEvent;
+
+   Marshal::Release(IntPtr(ptr));
+}
+
+void NatSpeakService::InitializeSrEngineControlInterface() {
+   _idgnSrEngineControl = (IDgnSrEngineControl ^)_isrCentral;
+}
+
+void NatSpeakService::RegisterEngineSink() {
+   IntPtr /*isrNotifySinkPtr,*/ idgnSrEngineNotifySinkPtr;
+   pin_ptr<DWORD> key = &_key; // https://msdn.microsoft.com/en-us/library/1dz8byfh.aspx
+
+                               // Create an engine sink
+   auto sink = gcnew SrNotifySink(
+      gcnew Action<UInt64>(_grammarService, &NatSpeakInterop::GrammarService::PausedProcessor)
+   );
+
+   // ISrNotifySink ^isrNotifySink = sink;
+   IDgnSrEngineNotifySink ^idgnSrEngineNotifySink = sink;
+
+   // isrNotifySinkPtr          = Marshal::GetIUnknownForObject(isrNotifySink);
+   idgnSrEngineNotifySinkPtr = Marshal::GetIUnknownForObject(idgnSrEngineNotifySink);
+
+   // Register our notification sinks
+   // _isrCentral->Register(isrNotifySinkPtr, __uuidof(ISrNotifySink^), key);
+   _isrCentral->Register(idgnSrEngineNotifySinkPtr, __uuidof(IDgnSrEngineNotifySink^), key);
+
+   // Marshal::Release(isrNotifySinkPtr);
+   Marshal::Release(idgnSrEngineNotifySinkPtr);
+}
+
+void NatSpeakService::RegisterPlaybackSink() {
+   // Playback sink
+   IDgnSSvcActionNotifySink ^playbackSink = gcnew SSvcActionNotifySink();
+   IntPtr i = Marshal::GetIUnknownForObject(playbackSink);
+
+   _idgnSSvcOutputEvent->Register(i);
+   _idgnSSvcInterpreter->Register(i);
+
+   Marshal::Release(i);
+}
+
+void NatSpeakService::ReleaseSiteObject(IntPtr sitePtr) {
+   Marshal::Release(sitePtr);
+}
+
+ISrCentral ^NatSpeakService::SrCentral::get() {
+   return _isrCentral;
+};

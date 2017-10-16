@@ -18,9 +18,6 @@
 #pragma once
 
 namespace Renfrew::NatSpeakInterop {
-   using namespace System;
-   using namespace System::Collections::Generic;
-
    public interface class IGrammarService {
       void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName);
       void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName);

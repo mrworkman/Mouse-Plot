@@ -18,11 +18,18 @@
 #pragma once
 
 #include <Windows.h>
+#include <vcclr.h>
 
 typedef unsigned __int64 QWORD, *PQWORD;
 
 #include "ComHelper.h"
 #include "sinfo.h"
+
+using namespace System;
+using namespace System::Collections::Generic;
+using namespace System::Diagnostics;
+using namespace System::Runtime::InteropServices;
+using namespace System::Runtime::InteropServices::ComTypes;
 
 #include "IDgnAppSupport.h"
 #include "IDgnDictate.h"
@@ -42,21 +49,3 @@ typedef unsigned __int64 QWORD, *PQWORD;
 #include "ISrResBasic.h"
 #include "ISrResGraph.h"
 #include "ISrSpeaker.h"
-
-#include "SrNotifySink.h"
-#include "SSvcActionNotifySink.h"
-#include "SrGramNotifySink.h"
-
-#include "GrammarAlreadyLoadedException.h"
-#include "GrammarException.h"
-#include "GrammarNotLoadedException.h"
-#include "InvalidStateException.h"
-
-#include "SrErrorCodes.h"
-
-#include "IGrammar.h"
-#include "IGrammarSerializer.h"
-
-#include "IGrammarService.h"
-#include "GrammarExecutive.h"
-#include "GrammarService.h"

@@ -18,9 +18,6 @@
 #pragma once
 
 namespace Renfrew::NatSpeakInterop::Exceptions {
-   using namespace System;
-   using namespace System::Runtime::InteropServices;
-
    public ref class InvalidStateException : Exception {
       public: InvalidStateException(String ^message) :
          Exception(message) {

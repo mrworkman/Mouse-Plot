@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "Stdafx.h"
-
 namespace Renfrew::NatSpeakInterop {
    private ref class GrammarExecutive {
       private: IGrammar ^_grammar;

@@ -18,8 +18,6 @@
 #pragma once
 
 namespace Renfrew::NatSpeakInterop::Exceptions {
-   using namespace System;
-   using namespace System::Runtime::InteropServices;
 
    public ref class GrammarAlreadyLoadedException : Exception {
       public: GrammarAlreadyLoadedException(String ^message) :

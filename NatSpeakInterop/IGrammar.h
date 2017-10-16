@@ -18,9 +18,6 @@
 #pragma once
 
 namespace Renfrew::NatSpeakInterop {
-   using namespace System::Collections::Generic;
-   using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
-
    public interface class IGrammar {
       public: property IReadOnlyDictionary<String^, UInt32> ^RuleIds {
          IReadOnlyDictionary<String^, UInt32> ^get();

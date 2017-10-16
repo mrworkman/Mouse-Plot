@@ -21,7 +21,6 @@
 #define IDgnSREngineNotifySinkGUID "dd109001-6205-11cf-ae61-0000e8a28647"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
-   using namespace System::Runtime::InteropServices;
 
    [ComImport, Guid(IDgnSREngineNotifySinkGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]

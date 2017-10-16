@@ -20,7 +20,6 @@
 #define ISrCentralGUID "b9bd3860-44db-101b-90a8-00aa003e4b50"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
-   using namespace System::Runtime::InteropServices;
 
    [ComImport, Guid(ISrCentralGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
@@ -35,7 +34,5 @@ namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
       void ToFileTime(PQWORD, ::FILETIME *);
       void Register(IntPtr, IID, DWORD*);
       void UnRegister(DWORD);
-
    };
-
 }

@@ -1,5 +1,5 @@
 // Project Renfrew
-// Copyright(C) 2016  Stephen Workman (workman.stephen@gmail.com)
+// Copyright(C) 2016 Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,5 +15,33 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-#include "stdafx.h"
+#pragma once
+
+#include "Stdafx.h"
 #include "SSvcActionNotifySink.h"
+
+using namespace Renfrew::NatSpeakInterop::Sinks;
+
+SSvcActionNotifySink::SSvcActionNotifySink() {
+
+}
+
+void SSvcActionNotifySink::ExecutionAborted(DWORD, HRESULT, DWORD) {
+   Debug::WriteLine(__FUNCTION__);
+}
+
+void SSvcActionNotifySink::ExecutionDone(DWORD) {
+   Debug::WriteLine(__FUNCTION__);
+}
+
+void SSvcActionNotifySink::ExecutionStatus(DWORD, DWORD) {
+   Debug::WriteLine(__FUNCTION__);
+}
+
+void SSvcActionNotifySink::PlaybackDone(DWORD) {
+   Debug::WriteLine(__FUNCTION__);
+}
+
+void SSvcActionNotifySink::PlaybackAborted(DWORD, HRESULT) {
+   Debug::WriteLine(__FUNCTION__);
+}

@@ -21,14 +21,14 @@
     <Filter Include="Header Files\Sinks">
       <UniqueIdentifier>{96eb9270-bf3a-43f1-ac85-914981506f36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Sinks">
-      <UniqueIdentifier>{bc94cdb4-57fa-4356-b256-dbc04e86788e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Helpers">
       <UniqueIdentifier>{79881184-170d-47b9-94df-2d9793f32d5f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Exceptions">
       <UniqueIdentifier>{550471f8-c2ec-4d3a-bfaf-d4b494a3f17b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sinks">
+      <UniqueIdentifier>{20c0fd82-22d5-43ef-845e-b28460bb486e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +40,12 @@
     </ClCompile>
     <ClCompile Include="NatSpeakService.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GrammarService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SrGramNotifySink.cpp">
+      <Filter>Source Files\Sinks</Filter>
     </ClCompile>
     <ClCompile Include="SrNotifySink.cpp">
       <Filter>Source Files\Sinks</Filter>

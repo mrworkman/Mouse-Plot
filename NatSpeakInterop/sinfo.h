@@ -128,3 +128,9 @@ typedef struct {
    DWORD dwCFGParse;
    DWORD dwCue;
 } SRRESWORDNODE, *PSRRESWORDNODE;
+
+typedef struct {
+   DWORD    message;
+   DWORD    paramL;
+   DWORD    paramH;
+} HOOK_EVENTMSG;

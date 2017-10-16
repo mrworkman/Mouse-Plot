@@ -18,8 +18,6 @@
 #pragma once
 
 namespace Renfrew::Helpers {
-   using namespace System;
-
    public ref class ComHelper {
       public:
          template <typename _ServiceType, typename _ReturnType, typename _ServicePtr>
@@ -34,6 +32,5 @@ namespace Renfrew::Helpers {
 
             return static_cast<_ReturnType*>(ptr);
          }
-
    };
 }

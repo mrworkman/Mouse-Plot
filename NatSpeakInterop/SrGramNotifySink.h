@@ -19,116 +19,30 @@
 
 #include "IDgnGetSinkFlags.h"
 #include "ISrGramNotifySink.h"
-
-#include "SinkFlags.h"
-
-using namespace System;
-using namespace System::Diagnostics;
+#include "ISrResBasic.h"
 
 namespace Renfrew::NatSpeakInterop::Sinks {
-   using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
-
    public ref class SrGramNotifySink :
       public Dragon::ComInterfaces::ISrGramNotifySink,
       public Dragon::ComInterfaces::IDgnGetSinkFlags {
 
       private: Object ^_callbackParam;
-      private: Action<UInt32, Object^,ISrResBasic^> ^_phraseFinishCallback;
-
-      public: SrGramNotifySink(Action<UInt32, Object^, ISrResBasic^> ^phraseFinishCallback,
-                               Object ^callbackParam) {
-
-         if (phraseFinishCallback == nullptr)
-            throw gcnew ArgumentNullException("phraseFinishCallback");
-         if (callbackParam == nullptr)
-            throw gcnew ArgumentNullException("callbackParam");
-
-         _phraseFinishCallback = phraseFinishCallback;
-         _callbackParam = callbackParam;
-
-      }
+      private: Action<UInt32, Object^, Dragon::ComInterfaces::ISrResBasic^> ^_phraseFinishCallback;
+      public: SrGramNotifySink(Action<UInt32, Object^,
+                               Dragon::ComInterfaces::ISrResBasic^> ^phraseFinishCallback,
+                               Object ^callbackParam);
 
       // IDgnGetSinkFlags Methods
-      public: void virtual SinkFlagsGet(DWORD *pdwFlags) {
-         Debug::WriteLine(__FUNCTION__);
+      public: void virtual SinkFlagsGet(DWORD *pdwFlags);
 
-         if (pdwFlags == nullptr)
-            return;
-
-         // These are the notifications handled by this sink
-         *pdwFlags = DGNSRGRAMSINKFLAG_SENDPHRASEFINISH;
-
-         /* TODO: Decide if I'll support this...
-         if ( all results wanted )
-            *pdwFlags |= DGNSRGRAMSINKFLAG_SENDFOREIGNFINISH; */
-
-         /* TODO: Decide if I'll support this...
-         if ( hypothesis wanted )
-            *pdwFlags |= DGNSRGRAMSINKFLAG_SENDPHRASEHYPO; */
-
-      }
-
-         // ISrGramNotifySink Methods
-      public: void virtual BookMark(DWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual Paused() {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual PhraseFinish(DWORD flags, QWORD, QWORD, PSRPHRASEW pSrPhrase, LPUNKNOWN pIUnknown) {
-         Debug::WriteLine(__FUNCTION__);
-
-         // Check if a results object was provided, and silently return if not
-         if (pIUnknown == nullptr)
-            return;
-
-         // Debugging (for now)
-         if (pSrPhrase != nullptr) {
-           
-            UInt32 offset = 0;
-
-            while (offset < (pSrPhrase->dwSize - sizeof(DWORD))) {
-               PSRWORDW word = (PSRWORDW)(pSrPhrase->abWords + offset);
-
-               Debug::WriteLine(
-                  "Word (# {0}, Length: {1}): {2}",
-                  word->dwWordNum,
-                  word->dwSize,
-                  gcnew String((PWCHAR)word->szWord)
-               );
-               
-               offset += word->dwSize;
-            }
-         }
-         
-         auto isrResBasic = (ISrResBasic^) Marshal::GetObjectForIUnknown(IntPtr(pIUnknown));
-            
-         _phraseFinishCallback(flags, _callbackParam, isrResBasic);
-
-         // TODO: Move to a more appropriate place (if this _isn't_ appropriate).
-         Marshal::ReleaseComObject(isrResBasic);
-      }
-
-      public: void virtual PhraseHypothesis(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual PhraseStart(QWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual ReEvaluate(LPUNKNOWN) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual Training(DWORD) {
-         Debug::WriteLine(__FUNCTION__);
-      }
-
-      public: void virtual UnArchive(LPUNKNOWN) {
-         Debug::WriteLine(__FUNCTION__);
-      }
+      // ISrGramNotifySink Methods
+      public: void virtual BookMark(DWORD);
+      public: void virtual Paused();
+      public: void virtual PhraseFinish(DWORD flags, QWORD, QWORD, PSRPHRASEW pSrPhrase, LPUNKNOWN pIUnknown);
+      public: void virtual PhraseHypothesis(DWORD, QWORD, QWORD, PSRPHRASEW, LPUNKNOWN);
+      public: void virtual PhraseStart(QWORD);
+      public: void virtual ReEvaluate(LPUNKNOWN);
+      public: void virtual Training(DWORD);
+      public: void virtual UnArchive(LPUNKNOWN);
    };
 }

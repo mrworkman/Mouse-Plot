@@ -20,7 +20,6 @@
 #define ISpchServicesGUID "dd100002-6205-11cf-ae61-0000e8a28647"
 
 namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
-   using namespace System::Runtime::InteropServices;
 
    [ComImport, Guid(ISpchServicesGUID)]
    [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
