@@ -18,14 +18,17 @@
 using System;
 using System.Diagnostics;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+
+using NUnit.Framework;
 
 using Renfrew.Grammar;
 using Renfrew.Grammar.Exceptions;
+using Renfrew.NatSpeakInterop;
 
 namespace GrammarTests {
 
-   [TestClass]
+   [TestFixture]
    public class RuleInvocationTests {
 
       private static int rule1Result = 0;
@@ -34,6 +37,13 @@ namespace GrammarTests {
 
       #region TestGrammar
       private class TestGrammar : Grammar {
+
+         public TestGrammar(IGrammarService grammarService)
+            : base(grammarService) {
+
+         }
+
+
          public override void Dispose() { }
 
          public override void Initialize() {
@@ -57,7 +67,7 @@ namespace GrammarTests {
                })
             );
 
-            AddRule("test_rule_03", r => 
+            AddRule("test_rule_03", r =>
                r.Say("Hello")
                   .Optionally(o => o.Say("Skee"))
                   .RepeatOneOf(
@@ -77,9 +87,11 @@ namespace GrammarTests {
 
       private Grammar _g;
 
-      [TestInitialize]
+      [SetUp]
       public void Initialize() {
-         _g = new TestGrammar();
+         var grammarServiceMock = new Mock<IGrammarService>(MockBehavior.Loose);
+
+         _g = new TestGrammar(grammarServiceMock.Object);
          _g.Initialize();
 
          rule1Result = 0;
@@ -87,77 +99,83 @@ namespace GrammarTests {
          rule3Result = 0;
       }
 
-      [TestMethod]
+      [Test]
       public void ComplexRuleActionShouldBeInvoked_Variant1() {
          _g.InvokeRule(3, new[] { "Hello", "Skee", "Sty", "Sty", "Hi", "Hi", "Sty" });
 
-         Assert.AreEqual(1, rule3Result);
+         Assert.That(rule3Result, Is.EqualTo(1));
       }
 
-      [TestMethod]
+      [Test]
       public void ComplexRuleActionShouldBeInvoked_Variant2() {
          _g.InvokeRule(3, new[] { "Hello", "Hi", "Hi" });
 
-         Assert.AreEqual(1, rule3Result);
+         Assert.That(rule3Result, Is.EqualTo(1));
       }
 
-      [TestMethod]
+      [Test]
       public void ComplexRuleActionShouldBeInvoked_Variant3() {
          _g.InvokeRule(3, new[] { "Hello", "Hi", "a", "a", "Sty", "Hi", "c", "b", "c", "c" });
 
-         Assert.AreEqual(1, rule3Result);
+         Assert.That(rule3Result, Is.EqualTo(1));
       }
 
 
-      [TestMethod]
-      [ExpectedException(typeof(ArgumentOutOfRangeException))]
+      [Test]
       public void InvalidRuleIdShouldCauseException() {
-         _g.InvokeRule(0, new[] { "Hello", "Jello" });
+         Assert.That(() => {
+            _g.InvokeRule(0, new[] { "Hello", "Jello" });
+         }, Throws.InstanceOf<ArgumentOutOfRangeException>());
+
       }
 
-      [TestMethod]
+      [Test]
       public void SimpleRuleActionShouldBeInvoked() {
          _g.InvokeRule(1, new[] {"Hello", "Jello"});
 
-         Assert.AreEqual(1, rule1Result);
+         Assert.That(rule1Result, Is.EqualTo(1));
       }
 
-      [TestMethod]
-      [ExpectedException(typeof(TooManyWordsInCallbackException))]
+      [Test]
       public void SimpleRuleActionWithExtraWordShouldThrowException() {
-         _g.InvokeRule(1, new[] { "Hello", "Jello", "Smello" });
+         Assert.That(() => {
+            _g.InvokeRule(1, new[] { "Hello", "Jello", "Smello" });
+         }, Throws.InstanceOf<TooManyWordsInCallbackException>());
       }
 
-      [TestMethod]
-      [ExpectedException(typeof(InvalidSequenceInCallbackException))]
+      [Test]
       public void SimpleRuleActionWithInvalidWordShouldThrowException() {
-         _g.InvokeRule(1, new[] { "Hello", "Mellow" });
+         Assert.That(() => {
+            _g.InvokeRule(1, new[] { "Hello", "Mellow" });
+         }, Throws.InstanceOf<InvalidSequenceInCallbackException>());
       }
 
-      [TestMethod]
-      [ExpectedException(typeof(InvalidSequenceInCallbackException))]
+      [Test]
       public void SimpleRuleActionWithNotEnoughWordsShouldThrowException() {
-         _g.InvokeRule(1, new[] { "Hello" });
+         Assert.That(() => {
+            _g.InvokeRule(1, new[] { "Hello" });
+         }, Throws.InstanceOf<InvalidSequenceInCallbackException>());
       }
 
-      [TestMethod]
+      [Test]
       public void SimpleRuleActionWithMissiongOptionalWordShouldBeInvoked() {
          _g.InvokeRule(2, new[] { "Hello", "Jello", "Please" });
 
-         Assert.AreEqual(1, rule2Result);
+         Assert.That(rule2Result, Is.EqualTo(1));
       }
 
-      [TestMethod]
+      [Test]
       public void SimpleRuleActionWithOptionalWordShouldBeInvoked() {
          _g.InvokeRule(2, new[] { "Hello", "Jello", "Cheese", "Please" });
 
-         Assert.AreEqual(1, rule2Result);
+         Assert.That(rule2Result, Is.EqualTo(1));
       }
 
-      [TestMethod]
-      [ExpectedException(typeof(InvalidSequenceInCallbackException))]
+      [Test]
       public void SimpleRuleActionWithInvalidWordInPlaceOfOptionalWordShouldThrowException() {
-         _g.InvokeRule(2, new[] { "Hello", "Jello", "Sneeze", "Please" });
+         Assert.That(() => {
+            _g.InvokeRule(2, new[] { "Hello", "Jello", "Sneeze", "Please" });
+         }, Throws.InstanceOf<InvalidSequenceInCallbackException>());
       }
 
 

@@ -16,30 +16,32 @@
 //
 
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 using Renfrew.Grammar.Elements;
 using Renfrew.Grammar.Exceptions;
 using Renfrew.Grammar.FluentApi;
 
 namespace GrammarTests {
-   [TestClass]
+   [TestFixture()]
    public class RuleTests {
       private RuleFactory _factory;
 
-      [TestInitialize]
+      [SetUp]
       public void Initialize() {
          _factory = new RuleFactory();
       }
 
-      [TestMethod]
+      [Test]
       public void OneWordGrammarNestedInSequenceGrouping() {
          var rule = _factory.Create();
 
          rule.Say("test");
 
-         Assert.IsTrue(rule.Elements is ISequence);
-         Assert.IsTrue(rule.Elements.Elements.First() is IWordElement);
+         Assert.That(rule.Elements, Is.InstanceOf<ISequence>());
+         Assert.That(rule.Elements.Elements.First(), Is.InstanceOf<IWordElement>());
       }
 
    }
