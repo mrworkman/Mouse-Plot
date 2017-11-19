@@ -49,7 +49,7 @@ namespace Renfrew.Core {
       // System tray icon and menu
       private readonly NotifyIcon _notifyIcon;
       private ContextMenuStrip    _contextMenuStrip;
-      
+
       private bool _isTerminated = false;
 
       #region Application Init
@@ -84,7 +84,7 @@ namespace Renfrew.Core {
          });
          _contextMenuStrip.Items.Add("-");
          _contextMenuStrip.Items.Add("E&xit Project Renfrew", null, OnApplicationExit);
-         
+
          _notifyIcon.Visible = true;
       }
 
@@ -163,18 +163,18 @@ namespace Renfrew.Core {
 
             DebugConsole.WriteLine($"{type.Type}: (Name: {a.Name}, Description: {a.Description})");
 
-            var grammar = (Grammar) Activator.CreateInstance(type.Type);
+            var grammar = (Grammar) Activator.CreateInstance(
+               type.Type, grammarService
+            );
 
             try {
                grammar.Initialize();
             } catch (Exception e) {
                DebugConsole.WriteLine($"{e.Message} {e.StackTrace}");
+               continue;
             }
 
             DebugConsole.WriteLine($"Grammar's words: {String.Join(", ", grammar.WordIds.Keys)}");
-
-            grammarService.LoadGrammar(grammar);
-            grammarService.ActivateRule(grammar, (IntPtr) null, "test_rule");
 
          }
       }
@@ -189,7 +189,7 @@ namespace Renfrew.Core {
          InitializeDebugConsole();
 
          DebugConsole.WriteLine("Querying Dragon Naturally Speaking...");
-         
+
          try {
             var profileName = _natSpeakService.GetCurrentUserProfileName();
             var profilePath = _natSpeakService.GetUserDirectory(profileName);

@@ -19,16 +19,23 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using Renfrew.NatSpeakInterop;
+
 namespace Renfrew.Core.Grammars {
    using Grammar;
 
    [GrammarExport("Test Grammar", "This is a test grammar.")]
    public class TestGrammar : Grammar {
 
+      public TestGrammar(IGrammarService grammarService)
+         : base(grammarService) {
+
+      }
+
       public override void Initialize() {
-         AddRule("test_rule", e => 
+         AddRule("test_rule", e =>
             e.Say("hello").Say("jello").Do(() => MessageBox.Show("Hello!"))
-         );        
+         );
       }
 
       public override void Dispose() {
