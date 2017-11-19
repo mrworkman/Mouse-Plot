@@ -61,6 +61,7 @@
     <Compile Include="Elements\Element Interfaces\IElementContainer.cs" />
     <Compile Include="Elements\Element Interfaces\IGrouping.cs" />
     <Compile Include="Elements\GrammarAction.cs" />
+    <Compile Include="Elements\RuleElement.cs" />
     <Compile Include="Exceptions\InvalidSequenceInCallbackException.cs" />
     <Compile Include="Exceptions\TooManyWordsInCallbackException.cs" />
     <Compile Include="FluentApi\ActionableRule.cs" />

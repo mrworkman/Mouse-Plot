@@ -86,10 +86,13 @@ namespace Renfrew.Grammar.FluentApi {
       public IActionableRule OptionallySay(String word) =>
          Optionally(r => r.Say(word));
 
+      public IActionableRule OptionallyWithRule(String ruleName) =>
+         Optionally(r => r.WithRule(ruleName));
+
       // Repeats: A+
       public IActionableRule Repeat(Expression<Action<IRule>> action) =>
          RepeatOneOf(action);
-      
+
       // Repeats + Alternatives: ( A | B | C )+
       public IActionableRule RepeatOneOf(params Expression<Action<IRule>>[] actions) {
          OneOf(new Repeats(), actions);
@@ -143,6 +146,11 @@ namespace Renfrew.Grammar.FluentApi {
       private void SetContainer(IElementContainer container) =>
          _container = container;
 
+      public IActionableRule WithRule(String ruleName) {
+         AddElementToContainer(new RuleElement(ruleName));
+         return (ActionableRule)this;
+      }
+
       internal void AddElementToContainer(IElement element) {
 
          // Because we can't tell ahead of time if there will be
@@ -160,10 +168,10 @@ namespace Renfrew.Grammar.FluentApi {
          // into the container.
          //
          // Example of a "chain" (probably not the best term):
-         // 
+         //
          // |-- 0 --|------------ 1 ------------|-- 2 --| // <-- Chain #
          // Say("X").Optionally(r => r.Say("Y")).Say("Z")
-         
+
          if (_countInChain == 1) {
             ISequence sequence = new Sequence();
 
@@ -177,7 +185,7 @@ namespace Renfrew.Grammar.FluentApi {
          } else {
             _container.AddElement(element);
          }
-            
+
          _countInChain++;
       }
 

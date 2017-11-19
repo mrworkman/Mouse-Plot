@@ -57,6 +57,9 @@ namespace Renfrew.Grammar.FluentApi {
       public IActionableRule OptionallySay(String word) =>
          _rule.OptionallySay(word);
 
+      public IActionableRule OptionallyWithRule(String ruleName) =>
+         _rule.OptionallyWithRule(ruleName);
+
       public IActionableRule Repeat(Expression<Action<IRule>> action) =>
          _rule.Repeat(action);
 
@@ -71,6 +74,9 @@ namespace Renfrew.Grammar.FluentApi {
 
       public IActionableRule SayOneOf(IEnumerable<String> words) =>
          _rule.SayOneOf(words);
+
+      public IActionableRule WithRule(String ruleName) =>
+         _rule.WithRule(ruleName);
       #endregion
 
       public static explicit operator ActionableRule(Rule rule) =>

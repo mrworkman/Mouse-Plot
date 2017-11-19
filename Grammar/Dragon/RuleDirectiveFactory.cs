@@ -41,8 +41,6 @@ namespace Renfrew.Grammar.Dragon {
          /* { typeof(IWildcardElement), DirectiveTypes.SRCFG_WILDCARD }, */ // <-- Not Implemented!
             { typeof(IWordElement),     DirectiveTypes.SRCFG_WORD     },
          }) {
-
-         /* poor-man's ioc */
       }
       #endregion
 

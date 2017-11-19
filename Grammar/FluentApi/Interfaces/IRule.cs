@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 
 namespace Renfrew.Grammar.FluentApi {
    using Elements;
-   
+
    public interface IRule {
       IElementContainer Elements { get; }
 
@@ -38,5 +38,8 @@ namespace Renfrew.Grammar.FluentApi {
 
       IActionableRule Repeat(Expression<Action<IRule>> action);
       IActionableRule RepeatOneOf(params Expression<Action<IRule>>[] actions);
+
+      IActionableRule OptionallyWithRule(String ruleName);
+      IActionableRule WithRule(String ruleName);
    }
 }
