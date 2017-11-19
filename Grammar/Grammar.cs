@@ -31,7 +31,9 @@ using Renfrew.NatSpeakInterop;
 namespace Renfrew.Grammar {
 
    public abstract class Grammar : IGrammar, IDisposable {
-      
+
+      private IGrammarService _grammarService;
+
       private readonly Dictionary<String, IRule> _rules;
       private readonly Dictionary<UInt32, IRule> _rulesById;
 
@@ -40,9 +42,9 @@ namespace Renfrew.Grammar {
 
       private UInt32 _ruleCount = 1;
       private readonly Dictionary<String, UInt32> _ruleIds;
-      
-      protected Grammar() 
-         : this(new RuleFactory()) {
+
+      protected Grammar(IGrammarService grammarService)
+         : this(new RuleFactory(), grammarService) {
 
          // This is a list of the rules themselves (by name)
          _rules = new Dictionary<String, IRule>(StringComparer.CurrentCultureIgnoreCase);
@@ -53,8 +55,16 @@ namespace Renfrew.Grammar {
          _ruleIds = new Dictionary<String, UInt32>(StringComparer.CurrentCultureIgnoreCase);
       }
 
-      protected Grammar(RuleFactory ruleFactory) {
+      protected Grammar(RuleFactory ruleFactory, IGrammarService grammarService) {
+         Debug.Assert(ruleFactory != null);
+         Debug.Assert(grammarService != null);
+
+         _grammarService = grammarService;
          RuleFactory = ruleFactory;
+      }
+
+      protected void ActivateRule(String name) {
+         _grammarService.ActivateRule(this, (IntPtr) null, name);
       }
 
       protected void AddRule(String name, IRule rule) {
@@ -65,7 +75,7 @@ namespace Renfrew.Grammar {
             throw new ArgumentNullException(nameof(rule));
 
          EnforceRuleNaming(name);
-         
+
          if (_rules.ContainsKey(name) == true)
             throw new ArgumentException($"Grammar already contains a rule called '{name}'.", nameof(name));
 
@@ -92,16 +102,28 @@ namespace Renfrew.Grammar {
          var validChars = @"[a-zA-Z0-9_]";
 
          if (Regex.IsMatch(ruleName, $@"^{validChars}+$") == false) {
-            throw new ArgumentOutOfRangeException(nameof(ruleName), 
+            throw new ArgumentOutOfRangeException(nameof(ruleName),
                $@"Rule name '{ruleName}' contains invalid character(s): '{
                   Regex.Replace(ruleName, validChars, String.Empty)
                }'"
             );
-         }  
+         }
       }
 
       public abstract void Initialize();
-      
+
+      protected void Load() {
+         _grammarService.LoadGrammar(this);
+      }
+
+      protected void MakeGrammarExclusive() {
+         _grammarService.SetExclusiveGrammar(this, true);
+      }
+
+      protected void MakeGrammarNotExclusive() {
+         _grammarService.SetExclusiveGrammar(this, false);
+      }
+
       protected void RemoveRule(String name) {
          if (String.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
@@ -110,7 +132,7 @@ namespace Renfrew.Grammar {
 
          _rulesById.Remove(_ruleIds[name]);
          _ruleIds.Remove(name);
-         
+
       }
 
       private IEnumerable<String> GetWordsFromRule(IRule rule) {
@@ -147,9 +169,8 @@ namespace Renfrew.Grammar {
          var spokenWordsStack = new Stack<String>(spokenWords.Reverse());
          var callbacks = new List<KeyValuePair<IGrammarAction, IEnumerable<String>>>();
 
-
          var result = ProcessSpokenWords(
-            rule.Elements, 
+            rule.Elements,
             spokenWordsStack,
             callbacks
          );
@@ -174,7 +195,7 @@ namespace Renfrew.Grammar {
       private bool ProcessSpokenWords(
          IElementContainer elementContainer, Stack<String> spokenWordsStack,
          List<KeyValuePair<IGrammarAction, IEnumerable<String>>> callbacks,
-         List<String> aw = null 
+         List<String> aw = null
          ) {
 
          if (callbacks == null)
@@ -197,6 +218,22 @@ namespace Renfrew.Grammar {
                // Add word to callback stack
                spokenWordsStack.Pop();
                actionWords.Add(spokenWord);
+
+               continue;
+            }
+
+            // This rule refers to another rule, so we need to
+            // look it up and traverse it as well...a
+            if (element is IRuleElement) {
+               var ruleElement = element as IRuleElement;
+
+               try {
+                  InvokeRule(RuleIds[ruleElement.ToString()], spokenWordsStack);
+               } catch (InvalidSequenceInCallbackException) {
+                  return false;
+               } catch (TooManyWordsInCallbackException) {
+                  return false;
+               }
 
                continue;
             }
@@ -261,7 +298,7 @@ namespace Renfrew.Grammar {
       protected RuleFactory RuleFactory { get; private set; }
 
       public IReadOnlyDictionary<String, UInt32> RuleIds => _ruleIds;
-      
+
       // Expose internally for serialization
       internal IReadOnlyList<IRule> Rules =>
          _rulesById.OrderBy(e => e.Key).Select(e => e.Value).ToList();
@@ -269,5 +306,5 @@ namespace Renfrew.Grammar {
       public IReadOnlyDictionary<String, UInt32> WordIds => _wordIds;
 
    }
-   
+
 }
