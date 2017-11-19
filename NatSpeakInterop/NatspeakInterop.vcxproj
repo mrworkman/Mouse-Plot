@@ -150,6 +150,7 @@
     <ClInclude Include="IDgnSpeechServices.h" />
     <ClInclude Include="IDgnSrEngineControl.h" />
     <ClInclude Include="IDgnSrEngineNotifySink.h" />
+    <ClInclude Include="IDgnSrGramCommon.h" />
     <ClInclude Include="IDgnSrSpeaker.h" />
     <ClInclude Include="IDgnSSvcActionNotifySink.h" />
     <ClInclude Include="IDgnSSvcInterpreter.h" />

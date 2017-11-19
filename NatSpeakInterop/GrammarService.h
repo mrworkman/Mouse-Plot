@@ -23,7 +23,7 @@
 #include "GrammarExecutive.h"
 
 namespace Renfrew::NatSpeakInterop {
-   private ref class GrammarService : 
+   private ref class GrammarService :
       public IGrammarService {
 
       private: ISrCentral ^_isrCentral;
@@ -40,10 +40,14 @@ namespace Renfrew::NatSpeakInterop {
       private: GrammarExecutive ^AddGrammarToList(IGrammar ^grammar);
       private: GrammarExecutive ^RemoveGrammarFromList(IGrammar ^grammar);
 
+      private: GrammarExecutive ^GetGrammarExecutive(IGrammar ^grammar);
+
       public: virtual void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName);
       public: virtual void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName);
       public: virtual void ActivateRules(IGrammar ^grammar);
       public: virtual void DeactivateRule(IGrammar ^grammar, String ^ruleName);
+
+      public: virtual void SetExclusiveGrammar(IGrammar ^grammar, bool exclusive);
 
       public: virtual property IGrammarSerializer ^GrammarSerializer {
          void set(IGrammarSerializer ^grammarSerializer);

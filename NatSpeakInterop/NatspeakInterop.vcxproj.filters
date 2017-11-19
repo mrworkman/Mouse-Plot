@@ -166,6 +166,9 @@
     <ClInclude Include="sinfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IDgnSrGramCommon.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

@@ -41,6 +41,7 @@ using namespace System::Runtime::InteropServices::ComTypes;
 #include "IDgnSSvcActionNotifySink.h"
 #include "IDgnSSvcInterpreter.h"
 #include "IDgnSSvcOutputEvent.h"
+#include "IDgnSrGramCommon.h"
 #include "ISpchServices.h"
 #include "ISrCentral.h"
 #include "ISrGramCommon.h"

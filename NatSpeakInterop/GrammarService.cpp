@@ -67,17 +67,16 @@ void GrammarService::ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName
 
    try {
       ge->GramCommonInterface->Activate(
-         hWnd, // TODO: Set to hWnd (where applicable) 
+         hWnd, // TODO: Set to hWnd (where applicable)
          false, wstrRuleName
       );
-   }
-   catch (COMException ^e) {
+   } catch (COMException ^e) {
       if (e->HResult == SrErrorCodes::SRERR_INVALIDRULE)
-         throw gcnew GrammarException(String::Format("Invalid Rule: {}!", ruleName), e);
+         throw gcnew GrammarException(String::Format("Invalid Rule: {0}!", ruleName), e);
       if (e->HResult == SrErrorCodes::SRERR_GRAMMARTOOCOMPLEX)
          throw gcnew GrammarException("Grammar too complex!", e);
       if (e->HResult == SrErrorCodes::SRERR_RULEALREADYACTIVE)
-         throw gcnew GrammarException(String::Format("Rule Already Active: {}!", ruleName), e);
+         throw gcnew GrammarException(String::Format("Rule Already Active: {0}!", ruleName), e);
       throw gcnew GrammarException("Unexpected Grammar Error!", e);
    }
 }
@@ -118,12 +117,22 @@ void GrammarService::DeactivateRule(IGrammar ^grammar, String ^ruleName) {
       ge->GramCommonInterface->Deactivate(
          wstrRuleName
       );
-   }
-   catch (COMException ^e) {
+   } catch (COMException ^e) {
       if (e->HResult == SrErrorCodes::SRERR_RULENOTACTIVE)
-         throw gcnew GrammarException(String::Format("Rule Is Not Active: {}!", ruleName), e);
+         throw gcnew GrammarException(String::Format("Rule Is Not Active: {0}!", ruleName), e);
       throw gcnew GrammarException("Unexpected Grammar Error!", e);
    }
+}
+
+GrammarExecutive ^GrammarService::GetGrammarExecutive(IGrammar ^grammar) {
+   if (grammar == nullptr)
+      throw gcnew ArgumentNullException("grammar");
+
+   // Make sure the grammar's loaded
+   if (_grammars->ContainsKey(grammar) == false)
+      throw gcnew GrammarNotLoadedException("FILL ME IN");
+
+   return _grammars[grammar];
 }
 
 void GrammarService::GrammarSerializer::set(IGrammarSerializer ^grammarSerializer) {
@@ -168,8 +177,7 @@ void GrammarService::LoadGrammar(IGrammar ^grammar) {
       _isrCentral->GrammarLoad(
          SRGRMFMT_CFG, data, iSrGramNotifySinkPtr, __uuidof(ISrGramNotifySink^), &pUnknown
       );
-   }
-   catch (COMException ^e) {
+   } catch (COMException ^e) {
       if (e->HResult == SrErrorCodes::SRERR_INVALIDCHAR)
          throw gcnew GrammarException("Invalid Word/Character in Grammar", e);
       if (e->HResult == SrErrorCodes::SRERR_GRAMMARERROR)
@@ -228,8 +236,7 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
    try {
       // Find out how big the path is
       isrResGraph->BestPathWord(0, &pathSize, 0, &pathSize);
-   }
-   catch (COMException ^e) {
+   } catch (COMException ^e) {
       // Allocate space for the path
       if (e->HResult == EVENT_E_ALL_SUBSCRIBERS_FAILED) {
          path = new DWORD[pathSize];
@@ -258,7 +265,8 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
 
       isrResGraph->GetWordNode(path[i], &node, srWord, srWordSize, &srWordSize);
 
-      ruleNumber = node.dwCFGParse;
+      if (ruleNumber == 0)
+         ruleNumber = node.dwCFGParse;
 
       Debug::WriteLine(
          "Word Number: {0}, Word: {1}, Rule: {2}",
@@ -279,17 +287,17 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
 }
 
 GrammarExecutive ^GrammarService::RemoveGrammarFromList(IGrammar ^grammar) {
-   GrammarExecutive ^ge;
-
-   // Make sure the grammar's loaded
-   if (_grammars->ContainsKey(grammar) == false)
-      throw gcnew GrammarNotLoadedException("FILL ME IN");
-
-   ge = _grammars[grammar];
+   auto ge = GetGrammarExecutive(grammar);
 
    _grammars->Remove(grammar);
 
    return ge;
+}
+
+void GrammarService::SetExclusiveGrammar(IGrammar ^grammar, bool exclusive) {
+   auto ge = GetGrammarExecutive(grammar);
+
+   ((IDgnSrGramCommon^)(ge->GramCommonInterface))->SpecialGrammar(exclusive);
 }
 
 void GrammarService::UnloadGrammar(IGrammar ^grammar) {

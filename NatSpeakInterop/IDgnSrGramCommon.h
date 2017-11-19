@@ -17,20 +17,16 @@
 
 #pragma once
 
-namespace Renfrew::NatSpeakInterop {
-   public interface class IGrammarService {
-      void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName);
-      void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName);
-      void ActivateRules(IGrammar ^grammar);
-      void DeactivateRule(IGrammar ^grammar, String ^ruleName);
+#define IDgnSRGramCommonGUID "dd108006-6205-11cf-ae61-0000e8a28647"
 
-      void SetExclusiveGrammar(IGrammar ^grammar, bool exclusive);
+namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces {
 
-      property IGrammarSerializer ^GrammarSerializer {
-         void set(IGrammarSerializer ^grammarSerializer);
-      };
+   [ComImport, Guid(IDgnSRGramCommonGUID)]
+   [InterfaceType(ComInterfaceType::InterfaceIsIUnknown)]
+   public interface class
+      DECLSPEC_UUID(IDgnSRGramCommonGUID) IDgnSrGramCommon {
 
-      void LoadGrammar(IGrammar ^grammar);
-      void UnloadGrammar(IGrammar ^grammar);
+      void SpecialGrammar(BOOL);
+      void Identify(GUID*);
    };
 }
