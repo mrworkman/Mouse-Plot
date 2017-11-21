@@ -96,19 +96,21 @@ namespace Renfrew.Core.Grammars {
       }
 
       public override void Initialize() {
-
          var alphaWords = _alphaList.Select(e => e.Key).ToArray();
 
          AddRule("mouse_plot", e => e
             .Say("Plot")
-               .Do(MakeGrammarExclusive)
+               .Do(() => {
+                  ActivateRule("post_plot");
+                  MakeGrammarExclusive();
+               })
             .OptionallyWithRule("post_plot")
          );
 
          AddRule("post_plot", e => e
             .OneOf(
 
-               p => p.SayOneOf(_clickList),
+               p => p.WithRule("mouse_click"),
 
                p => p.Say("Monitor")
                   .SayOneOf("One", "Two", "Three", "Four"),
@@ -119,10 +121,10 @@ namespace Renfrew.Core.Grammars {
                p => p.SayOneOf(alphaWords)
                   .SayOneOf(alphaWords)
                   .OptionallyOneOf(
-                     o => o.SayOneOf(_clickList),
+                     o => o.WithRule("mouse_click"),
                      o => o.SayOneOf(alphaWords)
                         .SayOneOf(alphaWords)
-                        .Optionally(q => q.SayOneOf(_clickList))
+                        .Optionally(q => q.WithRule("mouse_click"))
                   )
             )
             .Do(spokenWords => {
@@ -131,9 +133,17 @@ namespace Renfrew.Core.Grammars {
                   Debug.WriteLine($"Spoken: {w}");
                }
 
-               if (spokenWords.Any() == true)
+               if (spokenWords.Any() == true) {
                   MakeGrammarNotExclusive();
+                  DeactivateRule("post_plot");
+               }
+
             })
+         );
+
+         AddRule("mouse_click", e => e
+            .OptionallySay("Mouse")
+            .SayOneOf(_clickList)
          );
 
          Load();
