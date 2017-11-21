@@ -67,7 +67,7 @@ namespace Renfrew.Grammar {
          _grammarService.ActivateRule(this, (IntPtr) null, name);
       }
 
-      protected void AddRule(String name, IRule rule) {
+      public void AddRule(String name, IRule rule) {
          if (String.IsNullOrWhiteSpace(name) == true)
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
 
@@ -93,7 +93,7 @@ namespace Renfrew.Grammar {
          _rulesById.Add(ruleId, rule);
       }
 
-      protected void AddRule(String name, Func<IRule, IRule> ruleFunc) =>
+      public void AddRule(String name, Func<IRule, IRule> ruleFunc) =>
          AddRule(name, ruleFunc?.Invoke(RuleFactory.Create()));
 
       public abstract void Dispose();
@@ -226,14 +226,17 @@ namespace Renfrew.Grammar {
             // look it up and traverse it as well...a
             if (element is IRuleElement) {
                var ruleElement = element as IRuleElement;
+               var nestedRule = _rules[ruleElement.ToString()];
 
-               try {
-                  InvokeRule(RuleIds[ruleElement.ToString()], spokenWordsStack);
-               } catch (InvalidSequenceInCallbackException) {
+               var nestedResult = ProcessSpokenWords(
+                  nestedRule.Elements,
+                  spokenWordsStack,
+                  callbacks,
+                  actionWords
+               );
+
+               if (nestedResult == false)
                   return false;
-               } catch (TooManyWordsInCallbackException) {
-                  return false;
-               }
 
                continue;
             }
