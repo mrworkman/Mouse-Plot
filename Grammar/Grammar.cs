@@ -96,6 +96,10 @@ namespace Renfrew.Grammar {
       public void AddRule(String name, Func<IRule, IRule> ruleFunc) =>
          AddRule(name, ruleFunc?.Invoke(RuleFactory.Create()));
 
+      protected void DeactivateRule(String name) {
+         _grammarService.DeactivateRule(this, name);
+      }
+
       public abstract void Dispose();
 
       private void EnforceRuleNaming(String ruleName) {

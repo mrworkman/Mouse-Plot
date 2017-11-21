@@ -106,10 +106,7 @@ GrammarExecutive ^GrammarService::AddGrammarToList(IGrammar ^grammar) {
 void GrammarService::DeactivateRule(IGrammar ^grammar, String ^ruleName) {
    pin_ptr<const WCHAR> wstrRuleName = PtrToStringChars(ruleName);
 
-   if (_grammars->ContainsKey(grammar) == false)
-      throw gcnew GrammarNotLoadedException("FILL ME IN");
-
-   auto ge = _grammars[grammar];
+   auto ge = GetGrammarExecutive(grammar);
 
    // TODO: Check that the grammar actually has the matching rule name!
 
