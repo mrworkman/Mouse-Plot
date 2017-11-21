@@ -155,5 +155,38 @@ namespace GrammarTests {
          Assert.That(f2, Is.EqualTo(3));
       }
 
+      [Test]
+      public void InvokingMultipleNestedRulesShouldSucceed() {
+         int f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0;
+
+         _grammar.AddRule("outer", e => e
+            .Say("Something").WithRule("inner").Say("To").Say("Eat")
+               .Do(() => f1++)
+         );
+         _grammar.AddRule("inner", e => e
+            .Say("Good").OptionallyWithRule("inner2")
+               .Do(() => f2++)
+         );
+         _grammar.AddRule("inner2", e => e
+            .Say("Is")
+               .Do(() => f3++)
+            .OptionallySay("Sometimes")
+               .Do(() => f4++)
+            .Say("Nice")
+               .Do(() => f5++)
+         );
+
+         _grammar.InvokeRule(1, new[] { "Something", "Good", "Is", "Nice", "To", "Eat" });
+         _grammar.InvokeRule(1, new[] { "Something", "Good", "Is", "Sometimes", "Nice", "To", "Eat" });
+         _grammar.InvokeRule(1, new[] { "Something", "Good", "To", "Eat" });
+
+         Assert.That(f1, Is.EqualTo(3), "f1");
+         Assert.That(f2, Is.EqualTo(3), "f2");
+         Assert.That(f3, Is.EqualTo(2), "f3");
+         Assert.That(f4, Is.EqualTo(2), "f4");
+         Assert.That(f5, Is.EqualTo(2), "f5");
+
+      }
+
    }
 }
