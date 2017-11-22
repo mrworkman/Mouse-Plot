@@ -21,10 +21,12 @@ using System.Linq;
 
 namespace Renfrew.Grammar.Dragon {
    using Elements;
+   using Exceptions;
 
    public class RuleDefinitionFactory {
       private readonly RuleDirectiveFactory _ruleDirectiveFactory;
       private IReadOnlyDictionary<String, UInt32> _wordLookup;
+      private IReadOnlyDictionary<String, UInt32> _ruleLookup;
 
       public RuleDefinitionFactory(RuleDirectiveFactory ruleDirectiveFactory) {
          _ruleDirectiveFactory = ruleDirectiveFactory;
@@ -53,13 +55,14 @@ namespace Renfrew.Grammar.Dragon {
          var ruleDirectives = new List<IEnumerable<RuleDirective>>();
 
          _wordLookup = grammar.WordIds;
-         
+         _ruleLookup = grammar.RuleIds;
+
          foreach (var rule in grammar.Rules)
             ruleDirectives.Add( CreateDefinitionTable(rule.Elements) );
 
          return ruleDirectives;
       }
-      
+
       private IEnumerable<RuleDirective> GenerateRuleDirectives(IElementContainer elementContainer) {
          var directives = new List<RuleDirective>();
 
@@ -78,11 +81,21 @@ namespace Renfrew.Grammar.Dragon {
 
             } else if (element is IGrammarAction) {
                continue;
-            } else {
-               String word = element.ToString().ToLower();
+            } else if (element is IRuleElement) {
+               var ruleName = element.ToString();
+
+               directives.Add(
+                  _ruleDirectiveFactory.CreateElementDirective(element, _ruleLookup[ruleName])
+               );
+            } else if (element is IWordElement) {
+               var word = element.ToString().ToLower();
 
                directives.Add(
                   _ruleDirectiveFactory.CreateElementDirective(element, _wordLookup[word])
+               );
+            } else {
+               throw new InvalidGrammarElementException(
+                  $"Unrecognized grammar element type '{element.GetType().Name}'"
                );
             }
 
