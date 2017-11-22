@@ -170,7 +170,11 @@ namespace Renfrew.Core {
             try {
                grammar.Initialize();
             } catch (Exception e) {
-               DebugConsole.WriteLine($"{e.Message} {e.StackTrace}");
+               DebugConsole.WriteLine();
+               DebugConsole.WriteLine("---=== EXCEPTION CAUGHT ===---");
+               DebugConsole.WriteLine($"{e.GetType().Name}: {e.Message}");
+               DebugConsole.WriteLine(e.StackTrace);
+               DebugConsole.WriteLine("---=== END OF EXCEPTION DETAIL ===---");
                continue;
             }
 
