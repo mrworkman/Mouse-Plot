@@ -52,7 +52,8 @@ namespace GrammarTests {
             .Say("Good")
          );
 
-         _grammar.InvokeRule(1, new [] { "Something", "Good" });
+         _grammar.ActivateRule("outer");
+         _grammar.InvokeRule(new [] { "Something", "Good" });
       }
 
       [Test]
@@ -65,7 +66,9 @@ namespace GrammarTests {
                .Say("Good")
             );
 
-            _grammar.InvokeRule(1, new[] { "Something", "Strange" });
+            _grammar.ActivateRule("outer");
+
+            _grammar.InvokeRule(new[] { "Something", "Strange" });
          }, Throws.InstanceOf<InvalidSequenceInCallbackException>());
       }
 
@@ -79,8 +82,10 @@ namespace GrammarTests {
                .Say("Good")
             );
 
-            _grammar.InvokeRule(1, new[] { "Something", "Good", "To", "Eat" });
-         }, Throws.InstanceOf<TooManyWordsInCallbackException>());
+            _grammar.ActivateRule("outer");
+
+            _grammar.InvokeRule(new[] { "Something", "Good", "To", "Eat" });
+         }, Throws.InstanceOf<InvalidSequenceInCallbackException>());
       }
 
       [Test]
@@ -93,7 +98,9 @@ namespace GrammarTests {
                .Say("Good")
             );
 
-            _grammar.InvokeRule(1, new[] { "Something" });
+            _grammar.ActivateRule("outer");
+
+            _grammar.InvokeRule(new[] { "Something" });
          }, Throws.InstanceOf<InvalidSequenceInCallbackException>());
       }
 
@@ -106,7 +113,9 @@ namespace GrammarTests {
             .Say("Good")
          );
 
-         _grammar.InvokeRule(1, new[] { "Something", "Good", "To", "Eat" });
+         _grammar.ActivateRule("outer");
+
+         _grammar.InvokeRule(new[] { "Something", "Good", "To", "Eat" });
       }
 
       [Test]
@@ -118,7 +127,9 @@ namespace GrammarTests {
             .Say("Good")
          );
 
-         _grammar.InvokeRule(1, new[] { "Something", "Good", "To", "Eat" });
+         _grammar.ActivateRule("outer");
+
+         _grammar.InvokeRule(new[] { "Something", "Good", "To", "Eat" });
       }
 
       [Test]
@@ -130,7 +141,9 @@ namespace GrammarTests {
             .Say("Good")
          );
 
-         _grammar.InvokeRule(1, new[] { "Something", "To", "Eat" });
+         _grammar.ActivateRule("outer");
+
+         _grammar.InvokeRule(new[] { "Something", "To", "Eat" });
       }
 
       [Test]
@@ -147,9 +160,11 @@ namespace GrammarTests {
             .Optionally(o => o.Say("Is").Say("Nice"))
          );
 
-         _grammar.InvokeRule(1, new[] { "Something", "Awesome", "To", "Eat" });
-         _grammar.InvokeRule(1, new[] { "Something", "Great", "Is", "Nice", "To", "Eat" });
-         _grammar.InvokeRule(1, new[] { "Something", "To", "Eat" });
+         _grammar.ActivateRule("outer");
+
+         _grammar.InvokeRule(new[] { "Something", "Awesome", "To", "Eat" });
+         _grammar.InvokeRule(new[] { "Something", "Great", "Is", "Nice", "To", "Eat" });
+         _grammar.InvokeRule(new[] { "Something", "To", "Eat" });
 
          Assert.That(f1, Is.EqualTo(2));
          Assert.That(f2, Is.EqualTo(3));
@@ -176,9 +191,11 @@ namespace GrammarTests {
                .Do(() => f5++)
          );
 
-         _grammar.InvokeRule(1, new[] { "Something", "Good", "Is", "Nice", "To", "Eat" });
-         _grammar.InvokeRule(1, new[] { "Something", "Good", "Is", "Sometimes", "Nice", "To", "Eat" });
-         _grammar.InvokeRule(1, new[] { "Something", "Good", "To", "Eat" });
+         _grammar.ActivateRule("outer");
+
+         _grammar.InvokeRule(new[] { "Something", "Good", "Is", "Nice", "To", "Eat" });
+         _grammar.InvokeRule(new[] { "Something", "Good", "Is", "Sometimes", "Nice", "To", "Eat" });
+         _grammar.InvokeRule(new[] { "Something", "Good", "To", "Eat" });
 
          Assert.That(f1, Is.EqualTo(3), "f1");
          Assert.That(f2, Is.EqualTo(3), "f2");

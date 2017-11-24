@@ -18,16 +18,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Renfrew.Grammar.Exceptions {
-   public class TooManyWordsInCallbackException : Exception {
+   public class NoActiveRulesException : Exception {
+      public NoActiveRulesException()
+         : base("There aren't any active rules in this grammar!") {
 
-      public List<String> Words { get; private set; }
-
-      public TooManyWordsInCallbackException(String message, IEnumerable<String> words = null) 
-         : base(message) {
-
-         Words = words?.ToList();
       }
    }
 }

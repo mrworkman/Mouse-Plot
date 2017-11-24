@@ -27,6 +27,6 @@ namespace Renfrew::NatSpeakInterop {
          IReadOnlyDictionary<String^, UInt32> ^get();
       };
 
-      public: void InvokeRule(UInt32 ruleNumber, IEnumerable<String^> ^words);
+      public: void InvokeRule(IEnumerable<String^> ^words);
    };
 }

@@ -262,8 +262,8 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
 
       isrResGraph->GetWordNode(path[i], &node, srWord, srWordSize, &srWordSize);
 
-      if (ruleNumber == 0)
-         ruleNumber = node.dwCFGParse;
+      //if (ruleNumber == 0)
+      //   ruleNumber = node.dwCFGParse;
 
       Debug::WriteLine(
          "Word Number: {0}, Word: {1}, Rule: {2}",
@@ -279,7 +279,7 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
 
    delete[] path;
 
-   ge->Grammar->InvokeRule(ruleNumber, spokenWords);
+   ge->Grammar->InvokeRule(spokenWords);
 
 }
 

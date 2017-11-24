@@ -43,6 +43,8 @@ namespace Renfrew.Grammar {
       private UInt32 _ruleCount = 1;
       private readonly Dictionary<String, UInt32> _ruleIds;
 
+      private readonly Dictionary<String, UInt32> _activeRules;
+
       protected Grammar(IGrammarService grammarService)
          : this(new RuleFactory(), grammarService) {
 
@@ -53,6 +55,8 @@ namespace Renfrew.Grammar {
          // These are lookups to find the numeric ids for words/rule names
          _wordIds = new Dictionary<String, UInt32>(StringComparer.CurrentCultureIgnoreCase);
          _ruleIds = new Dictionary<String, UInt32>(StringComparer.CurrentCultureIgnoreCase);
+
+         _activeRules = new Dictionary<String, UInt32>();
       }
 
       protected Grammar(RuleFactory ruleFactory, IGrammarService grammarService) {
@@ -63,8 +67,9 @@ namespace Renfrew.Grammar {
          RuleFactory = ruleFactory;
       }
 
-      protected void ActivateRule(String name) {
+      public void ActivateRule(String name) {
          _grammarService.ActivateRule(this, (IntPtr) null, name);
+         _activeRules.Add(name, _ruleIds[name]);
       }
 
       public void AddRule(String name, IRule rule) {
@@ -96,8 +101,9 @@ namespace Renfrew.Grammar {
       public void AddRule(String name, Func<IRule, IRule> ruleFunc) =>
          AddRule(name, ruleFunc?.Invoke(RuleFactory.Create()));
 
-      protected void DeactivateRule(String name) {
+      public void DeactivateRule(String name) {
          _grammarService.DeactivateRule(this, name);
+         _activeRules.Remove(name);
       }
 
       public abstract void Dispose();
@@ -160,39 +166,56 @@ namespace Renfrew.Grammar {
          }
       }
 
-      public void InvokeRule(UInt32 ruleNumber, IEnumerable<String> spokenWords) {
+      public void InvokeRule(IEnumerable<String> spokenWords) {
 
          if (spokenWords == null)
             throw new ArgumentNullException(nameof(spokenWords));
 
-         if (_rulesById.ContainsKey(ruleNumber) == false)
-            throw new ArgumentOutOfRangeException();
+         // Make sure there is at least one rule activated
+         if (_activeRules.Any() == false)
+            throw new NoActiveRulesException();
 
-         var rule = _rulesById[ruleNumber];
+         bool result = false;
 
-         var spokenWordsStack = new Stack<String>(spokenWords.Reverse());
-         var callbacks = new List<KeyValuePair<IGrammarAction, IEnumerable<String>>>();
+         foreach (var ruleNumber in _activeRules.Values) {
+            var rule = _rulesById[ruleNumber];
 
-         var result = ProcessSpokenWords(
-            rule.Elements,
-            spokenWordsStack,
-            callbacks
-         );
+            var spokenWordsStack = new Stack<String>(spokenWords.Reverse());
+            var callbacks = new List<KeyValuePair<IGrammarAction, IEnumerable<String>>>();
+
+            result = ProcessSpokenWords(
+               rule.Elements,
+               spokenWordsStack,
+               callbacks
+            );
+
+            //// Make sure there are no words left in the stack
+            if (spokenWordsStack.Any() == true) {
+               Debug.WriteLine(
+                  $"There are extra words in the callback: {String.Join(", ", spokenWords)}"
+               );
+               result = false;
+            }
+
+            // Invoke callback(s)
+            if (result == true) {
+               foreach (var callback in callbacks)
+                  callback.Key.InvokeAction(callback.Value);
+               break;
+            }
+         }
+
 
          // Did the spoken words match the rule's structure?
          if (result == false)
             throw new InvalidSequenceInCallbackException();
 
-         // Make sure there are no words left in the stack
-         if (spokenWordsStack.Any()) {
-            throw new TooManyWordsInCallbackException(
-               "There are extra words in the callback!", spokenWords.ToList()
-            );
-         }
-
-         // Invoke callback(s)
-         foreach (var callback in callbacks)
-            callback.Key.InvokeAction(callback.Value);
+         //// Make sure there are no words left in the stack
+         //if (spokenWordsStack.Any()) {
+         //   throw new TooManyWordsInCallbackException(
+         //      "There are extra words in the callback!", spokenWords.ToList()
+         //   );
+         //}
 
       }
 

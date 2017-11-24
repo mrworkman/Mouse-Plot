@@ -64,7 +64,7 @@
     <Compile Include="Elements\RuleElement.cs" />
     <Compile Include="Exceptions\InvalidGrammarElementException.cs" />
     <Compile Include="Exceptions\InvalidSequenceInCallbackException.cs" />
-    <Compile Include="Exceptions\TooManyWordsInCallbackException.cs" />
+    <Compile Include="Exceptions\NoActiveRulesException.cs" />
     <Compile Include="FluentApi\ActionableRule.cs" />
     <Compile Include="FluentApi\Interfaces\IActionableRule.cs" />
     <Compile Include="FluentApi\Interfaces\IRule.cs" />
