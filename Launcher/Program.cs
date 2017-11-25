@@ -20,6 +20,8 @@ using System.Windows.Forms;
 
 namespace Renfrew.Launcher {
    public class Program {
+
+      [STAThread]
       public static void Main(params String[] args) {
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault(true);
