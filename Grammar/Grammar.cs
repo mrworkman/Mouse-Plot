@@ -69,7 +69,9 @@ namespace Renfrew.Grammar {
 
       public void ActivateRule(String name) {
          _grammarService.ActivateRule(this, (IntPtr) null, name);
-         _activeRules.Add(name, _ruleIds[name]);
+
+         if (_activeRules.ContainsKey(name) == false)
+            _activeRules.Add(name, _ruleIds[name]);
       }
 
       public void AddRule(String name, IRule rule) {
@@ -103,7 +105,9 @@ namespace Renfrew.Grammar {
 
       public void DeactivateRule(String name) {
          _grammarService.DeactivateRule(this, name);
-         _activeRules.Remove(name);
+
+         if (_activeRules.ContainsKey(name) == true)
+            _activeRules.Remove(name);
       }
 
       public abstract void Dispose();
