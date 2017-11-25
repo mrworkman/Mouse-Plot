@@ -19,16 +19,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 
+using Renfrew.Grammar;
 using Renfrew.NatSpeakInterop;
 
-namespace Renfrew.Core.Grammars {
-   using Grammar;
+namespace Renfrew.Core.Grammars.MousePlot {
 
    [GrammarExport("Mouse Plot", "A replacement for \"Mouse Grid\".")]
-   public class MousePlotGrammar : Grammar {
+   public class MousePlotGrammar : Grammar.Grammar {
+
+      private PlotWindow _plotWindow;
+      private ZoomWindow _zoomWindow;
 
       #region Word Lists
       private Dictionary<String, String> _alphaList = new Dictionary<String, String> {
@@ -98,18 +100,24 @@ namespace Renfrew.Core.Grammars {
       public override void Initialize() {
          var alphaWords = _alphaList.Select(e => e.Key).ToArray();
 
+         _plotWindow = new PlotWindow();
+         _zoomWindow = new ZoomWindow();
+
          AddRule("mouse_plot", e => e
             .Say("Plot")
                .Do(() => {
                   ActivateRule("post_plot");
                   MakeGrammarExclusive();
+
+                  _zoomWindow.Close();
+                  _plotWindow.Show();
+
                })
             .OptionallyWithRule("post_plot")
          );
 
          AddRule("post_plot", e => e
             .OneOf(
-
                p => p.WithRule("mouse_click"),
 
                p => p.Say("Monitor")
@@ -118,11 +126,14 @@ namespace Renfrew.Core.Grammars {
                p => p.SayOneOf(_colourList),
                p => p.SayOneOf("Mark", "Drag"),
 
-               p => p.SayOneOf(alphaWords)
+               p => p
                   .SayOneOf(alphaWords)
+                  .SayOneOf(alphaWords)
+                     .Do(Zoom)
                   .OptionallyOneOf(
                      o => o.WithRule("mouse_click"),
-                     o => o.SayOneOf(alphaWords)
+                     o => o
+                        .SayOneOf(alphaWords)
                         .SayOneOf(alphaWords)
                         .Optionally(q => q.WithRule("mouse_click"))
                   )
@@ -133,23 +144,30 @@ namespace Renfrew.Core.Grammars {
                   Debug.WriteLine($"Spoken: {w}");
                }
 
-               if (spokenWords.Any() == true) {
-                  MakeGrammarNotExclusive();
-                  DeactivateRule("post_plot");
-               }
-
             })
          );
 
          AddRule("mouse_click", e => e
             .OptionallySay("Mouse")
             .SayOneOf(_clickList)
+               .Do(() => {
+                  MakeGrammarNotExclusive();
+                  DeactivateRule("post_plot");
+
+                  _zoomWindow.Close();
+                  _plotWindow.Close();
+            })
          );
 
          Load();
 
          ActivateRule("mouse_plot");
 
+      }
+
+      private void Zoom() {
+         _plotWindow.Close();
+         _zoomWindow.Show();
       }
    }
 }

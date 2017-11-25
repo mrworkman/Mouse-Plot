@@ -7,6 +7,7 @@
 *.cs text eol=crlf
 *.sln text eol=crlf
 *.csproj text eol=crlf
+*.xaml text eol=crlf
 
 ###############################################################################
 # Set default behavior for command prompt diff.

@@ -68,9 +68,23 @@
       <DependentUpon>DebugConsole.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Grammars\MousePlot\PlotWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Grammars\MousePlot\ZoomWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Grammars\MousePlotGrammar.cs" />
+    <Compile Include="Grammars\MousePlot\PlotWindow.xaml.cs">
+      <DependentUpon>PlotWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Grammars\MousePlot\MousePlotGrammar.cs" />
+    <Compile Include="Grammars\MousePlot\ZoomWindow.xaml.cs">
+      <DependentUpon>ZoomWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Grammars\TestGrammar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

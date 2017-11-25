@@ -1,0 +1,53 @@
+﻿<!--
+ Project Renfrew
+ Copyright(C) 2017 Stephen Workman (workman.stephen@gmail.com)
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.If not, see<http://www.gnu.org/licenses/>.
+
+-->
+<Window x:Class="Renfrew.Core.Grammars.MousePlot.PlotWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Renfrew.Core.Grammars.MousePlot"
+        mc:Ignorable="d"
+        AllowsTransparency="True" WindowStyle="None"
+        Title="PlotWindow" Height="357.415" Width="537.606"
+        WindowState="Maximized"
+        Topmost="True"
+>
+    <Window.Background>
+        <SolidColorBrush Color="White" Opacity="0.0" />
+    </Window.Background>
+    <Canvas Loaded="Canvas_Loaded" Name="mainCanvas">
+        <Canvas.Effect>
+            <DropShadowEffect ShadowDepth="2" />
+        </Canvas.Effect>
+        <Canvas.Background>
+            <VisualBrush TileMode="Tile" Viewport="7,7,100,100" ViewportUnits="Absolute" ViewboxUnits="Absolute">
+                <VisualBrush.Visual>
+                    <Canvas>
+                        <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" X1="1" StrokeDashArray="11" />
+                        <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" Y1="1" StrokeDashArray="11" />
+                    </Canvas>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Canvas.Background>
+        <Label x:Name="label" Content="00" Canvas.Left="8" Canvas.Top="8" FontSize="48" Background="{x:Null}" Foreground="Yellow" Opacity="0.7" Height="98" Width="98" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" />
+
+    </Canvas>
+
+
+</Window>
