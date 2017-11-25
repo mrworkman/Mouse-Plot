@@ -177,23 +177,31 @@ namespace Renfrew.Grammar {
 
          bool result = false;
 
-         foreach (var ruleNumber in _activeRules.Values) {
+         // Enumerate each rule in the grammar, trying to invoke each one.
+         // The one that "works" will be assumed to be the correct rule.
+         foreach (var ruleNumber in _activeRules.Values.OrderBy(e => e)) {
             var rule = _rulesById[ruleNumber];
 
             var spokenWordsStack = new Stack<String>(spokenWords.Reverse());
             var callbacks = new List<KeyValuePair<IGrammarAction, IEnumerable<String>>>();
 
+            // Check the word sequence to see if it's a match.
             result = ProcessSpokenWords(
                rule.Elements,
                spokenWordsStack,
                callbacks
             );
 
-            //// Make sure there are no words left in the stack
+            // Make sure there are no words left in the stack
             if (spokenWordsStack.Any() == true) {
                Debug.WriteLine(
                   $"There are extra words in the callback: {String.Join(", ", spokenWords)}"
                );
+
+               // The result of ProcessSpokenWords above could be "true", but
+               // that doesn't mean that this rule is the correct one. If there
+               // are spoken words that aren't accounted for, then it's the wrong
+               // rule.
                result = false;
             }
 
@@ -205,17 +213,9 @@ namespace Renfrew.Grammar {
             }
          }
 
-
          // Did the spoken words match the rule's structure?
          if (result == false)
             throw new InvalidSequenceInCallbackException();
-
-         //// Make sure there are no words left in the stack
-         //if (spokenWordsStack.Any()) {
-         //   throw new TooManyWordsInCallbackException(
-         //      "There are extra words in the callback!", spokenWords.ToList()
-         //   );
-         //}
 
       }
 

@@ -241,7 +241,6 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
       }
    }
 
-   UInt32 ruleNumber = 0;
    auto spokenWords = gcnew List<String^>();
 
    DWORD numWords = pathSize / sizeof(DWORD);
@@ -262,8 +261,11 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
 
       isrResGraph->GetWordNode(path[i], &node, srWord, srWordSize, &srWordSize);
 
-      //if (ruleNumber == 0)
-      //   ruleNumber = node.dwCFGParse;
+      // Ignore the rule number, because it's only really useful if we
+      // want to invoke nested "sub-rules" directly - which we don't.
+      //
+      // if (ruleNumber == 0)
+      //    ruleNumber = node.dwCFGParse;
 
       Debug::WriteLine(
          "Word Number: {0}, Word: {1}, Rule: {2}",
@@ -279,6 +281,8 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
 
    delete[] path;
 
+   // Evaluate the list of spoken words against the
+   // list of available rules in the grammar.
    ge->Grammar->InvokeRule(spokenWords);
 
 }
