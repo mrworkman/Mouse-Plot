@@ -23,7 +23,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
    /// <summary>
    /// Interaction logic for ZoomWindow.xaml
    /// </summary>
-   public partial class ZoomWindow : Window {
+   public partial class ZoomWindow : Window, IWindow {
       public ZoomWindow() {
          InitializeComponent();
       }
@@ -54,5 +54,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
          }));
       }
       #endregion
+
+      public void Move(Double x, Double y) {
+         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+            Left = x;
+            Top = y;
+         }));
+      }
+
    }
 }

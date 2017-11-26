@@ -18,8 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Drawing = System.Drawing;
 using System.Linq;
-using System.Windows;
+using System.Windows.Forms;
 
 using Renfrew.Grammar;
 using Renfrew.NatSpeakInterop;
@@ -29,8 +30,11 @@ namespace Renfrew.Core.Grammars.MousePlot {
    [GrammarExport("Mouse Plot", "A replacement for \"Mouse Grid\".")]
    public class MousePlotGrammar : Grammar.Grammar {
 
-      private PlotWindow _plotWindow;
-      private ZoomWindow _zoomWindow;
+      private IScreen _currentScreen;
+      private Drawing.Size _cellSize = new Drawing.Size(100, 100);
+
+      private IWindow _plotWindow;
+      private IWindow _zoomWindow;
 
       #region Word Lists
       private Dictionary<String, String> _alphaList = new Dictionary<String, String> {
@@ -88,8 +92,17 @@ namespace Renfrew.Core.Grammars.MousePlot {
       };
       #endregion
 
-      public MousePlotGrammar(IGrammarService grammarService)
+      // For Testing
+      public MousePlotGrammar(IGrammarService grammarService, IScreen screen, IWindow plotWindow, IWindow zoomWindow)
          : base(grammarService) {
+
+         _currentScreen = screen;
+         _plotWindow = plotWindow;
+         _zoomWindow = zoomWindow;
+      }
+
+      public MousePlotGrammar(IGrammarService grammarService)
+         : this(grammarService, new TestableScreen().PrimaryScreen, new PlotWindow(), new ZoomWindow()) {
 
       }
 
@@ -99,9 +112,6 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       public override void Initialize() {
          var alphaWords = _alphaList.Select(e => e.Key).ToArray();
-
-         _plotWindow = new PlotWindow();
-         _zoomWindow = new ZoomWindow();
 
          AddRule("mouse_plot", e => e
             .Say("Plot")
@@ -129,7 +139,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
                p => p
                   .SayOneOf(alphaWords)
                   .SayOneOf(alphaWords)
-                     .Do(Zoom)
+                     .Do(spokenWords => Zoom(spokenWords.Last(), spokenWords.First()))
                   .OptionallyOneOf(
                      o => o.WithRule("mouse_click"),
                      o => o
@@ -165,8 +175,39 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       }
 
-      private void Zoom() {
+      public Int32 GetCoordinateOrdinal(String c) {
+         if (_alphaList.ContainsKey(c) == false)
+            throw new ArgumentOutOfRangeException(nameof(c), c);
+
+         c = _alphaList[c];
+
+         if (Int32.TryParse(c, out int i) == true)
+            return i;
+
+         return c.First() - 'A' + 10;
+      }
+
+      public Int32 GetMouseXCoord(Int32 x) {
+         var i = (_cellSize.Width * x) + (_cellSize.Width / 2);
+
+         return (i > _currentScreen.Bounds.Right) ? _currentScreen.Bounds.Right : i;
+      }
+
+      public Int32 GetMouseYCoord(Int32 y) {
+         var i = (_cellSize.Height * y) + (_cellSize.Height / 2);
+
+         return (i > _currentScreen.Bounds.Bottom) ? _currentScreen.Bounds.Bottom : i;
+      }
+
+      private void Zoom(String x, String y) {
+         var mouseX = GetMouseXCoord(GetCoordinateOrdinal(x));
+         var mouseY = GetMouseYCoord(GetCoordinateOrdinal(y));
+
+         Cursor.Position = new Drawing.Point(mouseX, mouseY);
+
          _plotWindow.Close();
+
+         _zoomWindow.Move(mouseX, mouseY);
          _zoomWindow.Show();
       }
    }

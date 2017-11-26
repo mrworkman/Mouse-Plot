@@ -25,7 +25,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
    /// <summary>
    /// Interaction logic for PlotWindow.xaml
    /// </summary>
-   public partial class PlotWindow : Window {
+   public partial class PlotWindow : Window, IWindow {
       public PlotWindow() {
          InitializeComponent();
       }
@@ -95,5 +95,11 @@ namespace Renfrew.Core.Grammars.MousePlot {
          return ((char)('A' + i - 10)).ToString();
       }
 
+      public void Move(Double x, Double y) {
+         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+            Left = x;
+            Top = y;
+         }));
+      }
    }
 }
