@@ -42,6 +42,12 @@ namespace Renfrew.Core.Grammars.MousePlot {
          }));
       }
 
+      public new double Height {
+         get {
+            return (double) Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Height));
+         }
+      }
+
       public new void Show() {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.Show();
@@ -53,6 +59,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
             base.ShowDialog();
          }));
       }
+
+      public new double Width {
+         get {
+            return (double) Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Width));
+         }
+      }
+
       #endregion
 
       public void Move(Double x, Double y) {
@@ -61,6 +74,5 @@ namespace Renfrew.Core.Grammars.MousePlot {
             Top = y;
          }));
       }
-
    }
 }

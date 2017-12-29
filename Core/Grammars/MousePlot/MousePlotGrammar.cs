@@ -90,6 +90,20 @@ namespace Renfrew.Core.Grammars.MousePlot {
          "Triple Click", "Right Triple",
          "Middle Click",
       };
+      private Dictionary<String, Int32> _screenList = new Dictionary<String, Int32> {
+         { "One",    1 },
+         { "Two",    2 },
+         { "Three",  3 },
+         { "Four",   4 },
+         { "Five",   5 },
+         { "Six",    6 },
+         { "Seven",  7 },
+         { "Eight",  8 },
+         { "Nine",   9 },
+         { "Ten",    10 },
+         { "Eleven", 11 },
+         { "Twelve", 12 },
+      };
       #endregion
 
       // For Testing
@@ -130,8 +144,9 @@ namespace Renfrew.Core.Grammars.MousePlot {
             .OneOf(
                p => p.WithRule("mouse_click"),
 
-               p => p.Say("Monitor")
-                  .SayOneOf("One", "Two", "Three", "Four"),
+               p => p.SayOneOf("Monitor", "Screen")
+                  .SayOneOf(_screenList.Keys)
+                  .Do(spokenWords => SwitchScreen( _screenList[spokenWords.Last()] )),
 
                p => p.SayOneOf(_colourList),
                p => p.SayOneOf("Mark", "Drag"),
@@ -188,15 +203,27 @@ namespace Renfrew.Core.Grammars.MousePlot {
       }
 
       public Int32 GetMouseXCoord(Int32 x) {
-         var i = (_cellSize.Width * x) + (_cellSize.Width / 2);
+         var i = _currentScreen.Bounds.Left + (_cellSize.Width * x) + (_cellSize.Width / 2);
 
-         return (i > _currentScreen.Bounds.Right) ? _currentScreen.Bounds.Right : i;
+         return (i > _currentScreen.Bounds.Right) ? _currentScreen.Bounds.Right - 1 : i;
       }
 
       public Int32 GetMouseYCoord(Int32 y) {
-         var i = (_cellSize.Height * y) + (_cellSize.Height / 2);
+         var i = _currentScreen.Bounds.Top + (_cellSize.Height * y) + (_cellSize.Height / 2);
 
-         return (i > _currentScreen.Bounds.Bottom) ? _currentScreen.Bounds.Bottom : i;
+         return (i > _currentScreen.Bounds.Bottom) ? _currentScreen.Bounds.Bottom - 1: i;
+      }
+
+      private void SwitchScreen(Int32 screenNumber) {
+         screenNumber--;
+
+         if (screenNumber >= Screen.AllScreens.Length)
+            return;
+
+         _currentScreen = _currentScreen.AllScreens[screenNumber];
+
+         _plotWindow.Move(_currentScreen.Bounds.Left, _currentScreen.Bounds.Top);
+         _plotWindow.Show();
       }
 
       private void Zoom(String x, String y) {
@@ -207,7 +234,19 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          _plotWindow.Close();
 
-         _zoomWindow.Move(mouseX, mouseY);
+         // Position the zoom window so it appears
+         // on the current screen in its entirety.
+         Int32 offsetX = _cellSize.Width / 2;
+         Int32 offsetY = _cellSize.Height / 2;
+
+         if (mouseX + offsetX + _zoomWindow.Width >= _currentScreen.Bounds.Right)
+            offsetX = -offsetX - (Int32) _zoomWindow.Width;
+
+         if (mouseY + offsetY + _zoomWindow.Height >= _currentScreen.Bounds.Bottom)
+            offsetY = -offsetY - (Int32) _zoomWindow.Height;
+
+         _zoomWindow.Move(mouseX + offsetX, mouseY + offsetY);
+
          _zoomWindow.Show();
       }
    }

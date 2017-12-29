@@ -28,5 +28,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
       void Move(Double x, Double y);
       void Show();
       void ShowDialog();
+
+      double Height { get; }
+      double Width { get; }
    }
 }

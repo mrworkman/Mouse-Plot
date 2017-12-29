@@ -23,7 +23,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Renfrew.Core.Grammars.MousePlot"
         mc:Ignorable="d"
-        Title="MainWindow" Height="400" Width="400"
+        Title="MainWindow" Height="352" Width="352"
 
         AllowsTransparency="True"
         WindowStyle="None"
@@ -42,12 +42,13 @@
                     <VisualBrush TileMode="Tile" Viewport="5,5,100,100" ViewportUnits="Absolute" ViewboxUnits="Absolute">
                         <VisualBrush.Visual>
                             <Canvas>
-                                <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" X1="1" StrokeDashArray="11" />
-                                <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" Y1="1" StrokeDashArray="11" />
+                                <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" X1="3" StrokeDashArray="11" />
+                                <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" Y1="3" StrokeDashArray="11" />
                             </Canvas>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </Canvas.Background>
+                <Label x:Name="label" Content="00" Canvas.Left="8" Canvas.Top="8" FontSize="48" Background="{x:Null}" Foreground="Yellow" Opacity="0.7" Height="98" Width="98" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" />
 
             </Canvas>
         </Border>

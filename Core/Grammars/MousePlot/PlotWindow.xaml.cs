@@ -78,7 +78,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
                   Opacity = 0.7,
 
-                  Margin = new Thickness(8 + i * 100, 8 + j * 100, 0, 0),
+                  Margin = new Thickness(2 + i * 100, 2 + j * 100, 0, 0),
                };
 
                //label.MouseEnter += Label_MouseEnter;
@@ -97,8 +97,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       public void Move(Double x, Double y) {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+            WindowState = WindowState.Normal;
             Left = x;
             Top = y;
+            WindowState = WindowState.Maximized;
          }));
       }
    }
