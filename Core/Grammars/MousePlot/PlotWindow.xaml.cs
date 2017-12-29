@@ -16,46 +16,22 @@
 //
 
 using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
+
+using Brushes = System.Windows.Media.Brushes;
+using FontFamily = System.Windows.Media.FontFamily;
 
 namespace Renfrew.Core.Grammars.MousePlot {
    /// <summary>
    /// Interaction logic for PlotWindow.xaml
    /// </summary>
-   public partial class PlotWindow : Window, IWindow {
+   public partial class PlotWindow : BaseWindow, IWindow {
       public PlotWindow() {
          InitializeComponent();
       }
-
-      #region Builtins
-      public new void Close() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            base.Hide();
-         }));
-      }
-
-      public new void Focus() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            base.Focus();
-            Activate();
-         }));
-      }
-
-      public new void Show() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            base.Show();
-         }));
-      }
-
-      public new void ShowDialog() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            base.ShowDialog();
-         }));
-      }
-      #endregion
 
       private void Canvas_Loaded(Object sender, RoutedEventArgs e) {
 
@@ -95,7 +71,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          return ((char)('A' + i - 10)).ToString();
       }
 
-      public void Move(Double x, Double y) {
+      public override void Move(Double x, Double y) {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             WindowState = WindowState.Normal;
             Left = x;

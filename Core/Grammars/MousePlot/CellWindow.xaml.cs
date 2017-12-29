@@ -15,21 +15,10 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Renfrew.Core.Grammars.MousePlot {
-   public interface IWindow {
-      void Close();
-      void Focus();
-      void Move(Double x, Double y);
-      void Show();
-      void ShowDialog();
-
-      double Height { get; }
-      double Width { get; }
+   public partial class CellWindow : BaseWindow, IWindow {
+      public CellWindow() {
+         InitializeComponent();
+      }
    }
 }

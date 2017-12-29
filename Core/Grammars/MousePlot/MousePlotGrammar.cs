@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Drawing = System.Drawing;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -30,11 +30,26 @@ namespace Renfrew.Core.Grammars.MousePlot {
    [GrammarExport("Mouse Plot", "A replacement for \"Mouse Grid\".")]
    public class MousePlotGrammar : Grammar.Grammar {
 
+      #region Move Elsewhere
+      [System.Runtime.InteropServices.DllImport("user32.dll")]
+      public static extern void mouse_event(Int32 dwFlags, Int32 dx, Int32 dy, Int32 cButtons, Int32 dwExtraInfo);
+
+      public const Int32 MOUSEEVENTF_LEFTDOWN   = 0x02;
+      public const Int32 MOUSEEVENTF_LEFTUP     = 0x04;
+      public const Int32 MOUSEEVENTF_RIGHTDOWN  = 0x08;
+      public const Int32 MOUSEEVENTF_RIGHTUP    = 0x10;
+      public const Int32 MOUSEEVENTF_MIDDLEDOWN = 0x20;
+      public const Int32 MOUSEEVENTF_MIDDLEUP   = 0x40;
+      #endregion
+
       private IScreen _currentScreen;
-      private Drawing.Size _cellSize = new Drawing.Size(100, 100);
+      private Size _cellSize = new Size(100, 100);
 
       private IWindow _plotWindow;
       private IWindow _zoomWindow;
+      private IWindow _cellWindow;
+
+      private Bitmap _bitmap;
 
       #region Word Lists
       private Dictionary<String, String> _alphaList = new Dictionary<String, String> {
@@ -107,16 +122,19 @@ namespace Renfrew.Core.Grammars.MousePlot {
       #endregion
 
       // For Testing
-      public MousePlotGrammar(IGrammarService grammarService, IScreen screen, IWindow plotWindow, IWindow zoomWindow)
+      public MousePlotGrammar(IGrammarService grammarService, IScreen screen,
+                              IWindow plotWindow, IWindow zoomWindow, IWindow cellWindow)
          : base(grammarService) {
 
          _currentScreen = screen;
          _plotWindow = plotWindow;
          _zoomWindow = zoomWindow;
+         _cellWindow = cellWindow;
       }
 
       public MousePlotGrammar(IGrammarService grammarService)
-         : this(grammarService, new TestableScreen().PrimaryScreen, new PlotWindow(), new ZoomWindow()) {
+         : this(grammarService, new TestableScreen().PrimaryScreen,
+              new PlotWindow(), new ZoomWindow(), new CellWindow()) {
 
       }
 
@@ -134,6 +152,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
                   MakeGrammarExclusive();
 
                   _zoomWindow.Close();
+                  _cellWindow.Close();
                   _plotWindow.Show();
 
                })
@@ -144,7 +163,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
             .OneOf(
                p => p.WithRule("mouse_click"),
 
-               p => p.SayOneOf("Monitor", "Screen")
+               p => p
+                  .SayOneOf("Monitor", "Screen")
                   .SayOneOf(_screenList.Keys)
                   .Do(spokenWords => SwitchScreen( _screenList[spokenWords.Last()] )),
 
@@ -175,12 +195,31 @@ namespace Renfrew.Core.Grammars.MousePlot {
          AddRule("mouse_click", e => e
             .OptionallySay("Mouse")
             .SayOneOf(_clickList)
-               .Do(() => {
+               .Do(spokenWords => {
                   MakeGrammarNotExclusive();
                   DeactivateRule("post_plot");
 
                   _zoomWindow.Close();
+                  _cellWindow.Close();
                   _plotWindow.Close();
+
+                  var s = spokenWords.Last();
+                  var b = MouseButtons.Left;
+                  var c = 1;
+
+                  // Which button ?
+                  if (s.Contains("Right") == true)
+                     b = MouseButtons.Right;
+                  if (s.Contains("Middle") == true)
+                     b = MouseButtons.Middle;
+
+                  // How many clicks ?
+                  if (s.Contains("Double") == true)
+                     c = 2;
+                  if (s.Contains("Triple") == true)
+                     c = 3;
+
+                  ClickMouse(b, c);
             })
          );
 
@@ -188,6 +227,33 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          ActivateRule("mouse_plot");
 
+      }
+
+      private void ClickMouse(MouseButtons button, Int32 times) {
+         Int32 downButton, upButton;
+
+         switch (button) {
+            case MouseButtons.Right:
+               downButton = MOUSEEVENTF_RIGHTDOWN;
+               upButton   = MOUSEEVENTF_RIGHTUP;
+               break;
+            case MouseButtons.Middle:
+               downButton = MOUSEEVENTF_MIDDLEDOWN;
+               upButton   = MOUSEEVENTF_MIDDLEUP;
+               break;
+            default:
+               downButton = MOUSEEVENTF_LEFTDOWN;
+               upButton   = MOUSEEVENTF_LEFTUP;
+               break;
+         }
+
+         Int32 x = Cursor.Position.X;
+         Int32 y = Cursor.Position.Y;
+
+         for (int i = 0; i < times; i++) {
+            mouse_event(downButton, x, y, 0, 0);
+            mouse_event(upButton,   x, y, 0, 0);
+         }
       }
 
       public Int32 GetCoordinateOrdinal(String c) {
@@ -226,11 +292,26 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _plotWindow.Show();
       }
 
+      private void TakeScreenshot(Int32 x, Int32 y, Int32 width, Int32 height) {
+         if (_bitmap != null) {
+            _bitmap.Dispose();
+         }
+
+         _bitmap = new Bitmap(width, height);
+
+         // Take the screenshot
+         using (var g = Graphics.FromImage(_bitmap)) {
+            g.CopyFromScreen(x, y, 0, 0, _bitmap.Size);
+         }
+
+         _bitmap.Save(@"C:\Opt\TEST.BMP");
+      }
+
       private void Zoom(String x, String y) {
          var mouseX = GetMouseXCoord(GetCoordinateOrdinal(x));
          var mouseY = GetMouseYCoord(GetCoordinateOrdinal(y));
 
-         Cursor.Position = new Drawing.Point(mouseX, mouseY);
+         Cursor.Position = new Point(mouseX, mouseY);
 
          _plotWindow.Close();
 
@@ -245,6 +326,22 @@ namespace Renfrew.Core.Grammars.MousePlot {
          if (mouseY + offsetY + _zoomWindow.Height >= _currentScreen.Bounds.Bottom)
             offsetY = -offsetY - (Int32) _zoomWindow.Height;
 
+         // TODO: Testing, move elsewhere
+         TakeScreenshot(
+            mouseX - 2 - (_cellSize.Width / 2),
+            mouseY - 2 - (_cellSize.Height / 2),
+            _cellSize.Width + 2,
+            _cellSize.Height + 2
+         );
+
+         _cellWindow.Move(
+            mouseX - (_cellSize.Width / 2),
+            mouseY - (_cellSize.Height / 2)
+         );
+
+         _cellWindow.Show();
+
+         _zoomWindow.SetImage(_bitmap);
          _zoomWindow.Move(mouseX + offsetX, mouseY + offsetY);
 
          _zoomWindow.Show();

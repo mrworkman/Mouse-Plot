@@ -16,63 +16,43 @@
 //
 
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Renfrew.Core.Grammars.MousePlot {
    /// <summary>
    /// Interaction logic for ZoomWindow.xaml
    /// </summary>
-   public partial class ZoomWindow : Window, IWindow {
+   public partial class ZoomWindow : BaseWindow, IWindow {
       public ZoomWindow() {
          InitializeComponent();
       }
 
-      #region Builtins
-      public new void Close() {
+      public override void SetImage(Bitmap bitmap) {
+         if (bitmap == null)
+            throw new ArgumentNullException(nameof(bitmap));
+
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            base.Hide();
+            using (var s = new MemoryStream()) {
+               bitmap.Save(s, ImageFormat.Bmp);
+               s.Seek(0, SeekOrigin.Begin);
+
+               var bitmapImage = new BitmapImage();
+               bitmapImage.BeginInit();
+               bitmapImage.StreamSource = s;
+               bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+               bitmapImage.EndInit();
+
+
+               _screenshot.Fill = new ImageBrush(bitmapImage);
+            }
          }));
-      }
 
-      public new void Focus() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            base.Focus();
-            Activate();
-         }));
-      }
-
-      public new double Height {
-         get {
-            return (double) Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Height));
-         }
-      }
-
-      public new void Show() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            base.Show();
-         }));
-      }
-
-      public new void ShowDialog() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            base.ShowDialog();
-         }));
-      }
-
-      public new double Width {
-         get {
-            return (double) Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Width));
-         }
-      }
-
-      #endregion
-
-      public void Move(Double x, Double y) {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            Left = x;
-            Top = y;
-         }));
       }
    }
 }

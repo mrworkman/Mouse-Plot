@@ -33,18 +33,21 @@ namespace GrammarTests {
 
       private Mock<IWindow> _plotWindowMock;
       private Mock<IWindow> _zoomWindowMock;
+      private Mock<IWindow> _cellWindowMock;
 
       [SetUp]
       public void SetUp() {
          _screenMock = new Mock<IScreen>(MockBehavior.Strict);
          _plotWindowMock = new Mock<IWindow>(MockBehavior.Strict);
          _zoomWindowMock = new Mock<IWindow>(MockBehavior.Strict);
+         _cellWindowMock = new Mock<IWindow>(MockBehavior.Strict);
 
          _grammar = new MousePlotGrammar(
             grammarService: new Mock<IGrammarService>().Object,
             screen:         _screenMock.Object,
             plotWindow:     _plotWindowMock.Object,
-            zoomWindow:     _zoomWindowMock.Object
+            zoomWindow:     _zoomWindowMock.Object,
+            cellWindow:     _cellWindowMock.Object
          );
       }
 
