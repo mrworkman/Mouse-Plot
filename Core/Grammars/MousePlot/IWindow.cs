@@ -31,5 +31,6 @@ namespace Renfrew.Core.Grammars.MousePlot {
       double Width { get; }
 
       void SetImage(Bitmap bitmap);
+      void DrawMouseCursor(Bitmap bitmap, int x, int y);
    }
 }

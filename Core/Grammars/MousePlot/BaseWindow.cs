@@ -25,7 +25,7 @@ using System.Windows;
 using System.Windows.Threading;
 
 namespace Renfrew.Core.Grammars.MousePlot {
-   public class BaseWindow : Window, IWindow {
+   public abstract class BaseWindow : Window, IWindow {
 
       public BaseWindow() {
 
@@ -79,6 +79,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          }));
       }
 
+      public virtual void DrawMouseCursor(Bitmap bitmap, int x, int y) { }
       public virtual void SetImage(Bitmap bitmap) { }
    }
 }
