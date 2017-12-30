@@ -23,7 +23,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Renfrew.Core.Grammars.MousePlot"
         mc:Ignorable="d"
-        Title="MainWindow" Height="352" Width="352"
+        Title="MainWindow" Height="362" Width="352"
 
         AllowsTransparency="True"
         WindowStyle="None"
@@ -32,27 +32,45 @@
     <Window.Background>
         <SolidColorBrush Color="White" Opacity="0.0" />
     </Window.Background>
+    <Window.Resources>
+        <Style x:Key="DigitLabel" TargetType="Label">
+            <Setter Property="Foreground" Value="Yellow" />
+            <Setter Property="Opacity" Value="0.3" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="FontSize" Value="26" />
+
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Width" Value="33.3333" />
+            <Setter Property="Height" Value="33.3333" />
+
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.Effect>
             <DropShadowEffect ShadowDepth="2" />
         </Grid.Effect>
-        <Canvas Margin="20">
+        <Canvas Margin="20,20,20,30" Loaded="Canvas_Loaded" Name="_mainCanvas">
             <Canvas.Effect>
                 <DropShadowEffect ShadowDepth="2" />
             </Canvas.Effect>
             <Canvas.Background>
-                <VisualBrush TileMode="Tile" Viewport="5,5,100,100" ViewportUnits="Absolute" ViewboxUnits="Absolute">
+                <VisualBrush TileMode="Tile" Viewport="5,5,33.3333,33.3333" ViewportUnits="Absolute" ViewboxUnits="Absolute">
                     <VisualBrush.Visual>
                         <Canvas>
-                            <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" X1="3" StrokeDashArray="11" />
-                            <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" Y1="3" StrokeDashArray="11" />
+                            <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".03" X1="3" StrokeDashArray="1" />
+                            <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".03" Y1="3" StrokeDashArray="1" />
                         </Canvas>
                     </VisualBrush.Visual>
                 </VisualBrush>
             </Canvas.Background>
-            <Label x:Name="_label" Content="00" Canvas.Left="8" Canvas.Top="8" FontSize="48" Background="{x:Null}" Foreground="Yellow" Opacity="0.7" Height="98" Width="98" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" />
+
+            <Label x:Name="_label1" Style="{StaticResource DigitLabel}" Content="00" Canvas.Top="5" Canvas.Left="5"/>
         </Canvas>
-        <Border CornerRadius="20" BorderThickness="10" BorderBrush="Yellow" Margin="10" />
-        <Rectangle x:Name="_screenshot" Width="312" Height="312" Fill="Black" Canvas.ZIndex="-10" SnapsToDevicePixels="True" />
+        <Border CornerRadius="20" BorderThickness="10" BorderBrush="Yellow" Margin="10,10,10,20" />
+        <Rectangle x:Name="_screenshot" Width="312" Height="312" Fill="Black" Canvas.ZIndex="-10" Margin="10,10,10,20" />
+
+        <Label x:Name="_mouseLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,26,0,0" Width="100" Height="100" Background="Magenta" />
     </Grid>
 </local:BaseWindow>

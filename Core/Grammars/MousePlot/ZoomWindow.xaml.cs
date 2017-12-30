@@ -20,9 +20,14 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+
+using Brushes = System.Windows.Media.Brushes;
+using FontFamily = System.Windows.Media.FontFamily;
 
 namespace Renfrew.Core.Grammars.MousePlot {
    /// <summary>
@@ -31,6 +36,29 @@ namespace Renfrew.Core.Grammars.MousePlot {
    public partial class ZoomWindow : BaseWindow, IWindow {
       public ZoomWindow() {
          InitializeComponent();
+      }
+
+      private void Canvas_Loaded(Object sender, RoutedEventArgs e) {
+
+         for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+               if (i == 0 && j == 0)
+                  continue;
+
+               var label = new Label {
+                  Style = Resources["DigitLabel"] as Style,
+                  Content = $"{GetDigitValue(j)}{GetDigitValue(i)}",
+                  Margin = new Thickness(5 + i * 33.3333, 5 + j * 33.3333, 0, 0),
+               };
+
+               _mainCanvas.Children.Add(label);
+            }
+         }
+      }
+      private String GetDigitValue(int i) {
+         if (i < 10)
+            return ((char)('0' + i)).ToString();
+         return ((char)('A' + i - 10)).ToString();
       }
 
       public override void SetImage(Bitmap bitmap) {
@@ -50,6 +78,28 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
 
                _screenshot.Fill = new ImageBrush(bitmapImage);
+            }
+         }));
+
+      }
+
+      public override void DrawMouseCursor(Bitmap bitmap, int x, int y) {
+         if (bitmap == null)
+            throw new ArgumentNullException(nameof(bitmap));
+
+         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+            using (var s = new MemoryStream()) {
+               bitmap.Save(s, ImageFormat.Png);
+               s.Seek(0, SeekOrigin.Begin);
+
+               var bitmapImage = new BitmapImage();
+               bitmapImage.BeginInit();
+               bitmapImage.StreamSource = s;
+               bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+               bitmapImage.EndInit();
+
+               _mouseLabel.Background = new ImageBrush(bitmapImage);
+               _mouseLabel.Margin = new Thickness(x + 26, y + 26, 0, 0);
             }
          }));
 
