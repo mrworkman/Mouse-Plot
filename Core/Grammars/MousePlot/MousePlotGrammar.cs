@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -49,7 +50,12 @@ namespace Renfrew.Core.Grammars.MousePlot {
       private IWindow _zoomWindow;
       private IWindow _cellWindow;
 
+      private Point _currentCell = Point.Empty;
+
       private Bitmap _bitmap;
+      private Bitmap _cursorBitmap;
+
+      private bool _isZoomed = false;
 
       #region Word Lists
       private Dictionary<String, String> _alphaList = new Dictionary<String, String> {
@@ -155,6 +161,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
                   _cellWindow.Close();
                   _plotWindow.Show();
 
+                  _isZoomed = false;
                })
             .OptionallyWithRule("post_plot")
          );
@@ -174,12 +181,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
                p => p
                   .SayOneOf(alphaWords)
                   .SayOneOf(alphaWords)
-                     .Do(spokenWords => Zoom(spokenWords.Last(), spokenWords.First(), true))
+                     .Do(spokenWords => MoveCursor(spokenWords.Last(), spokenWords.First()))
                   .OptionallyOneOf(
                      o => o.WithRule("mouse_click"),
                      o => o
                         .SayOneOf(alphaWords)
                         .SayOneOf(alphaWords)
+                           .Do(spokenWords => MoveCursor(spokenWords.Last(), spokenWords.First()))
                         .Optionally(q => q.WithRule("mouse_click"))
                   )
             )
@@ -220,6 +228,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
                      c = 3;
 
                   ClickMouse(b, c);
+
+                  _isZoomed = false;
             })
          );
 
@@ -312,6 +322,101 @@ namespace Renfrew.Core.Grammars.MousePlot {
       public Int32 GetYScreenOffset(Int32 y) =>
          _currentScreen.Bounds.Top + (_cellSize.Height * y);
 
+      public Int32 GetZoomedCellXCoord(Int32 x) {
+         if (x > 8) x = 8;
+
+         var subCellWidth = _cellSize.Width * 3 / 9;
+         return (subCellWidth * x) + (subCellWidth / 2);
+      }
+
+      public Int32 GetZoomedCellYCoord(Int32 y) {
+         if (y > 8) y = 8;
+
+         var subCellHeight = _cellSize.Height * 3 / 9;
+         return (subCellHeight * y) + (subCellHeight / 2);
+      }
+
+      public Int32 GetZoomedMouseXCoord(Int32 x) {
+         if (x > 8) x = 8;
+
+         var subCellWidth = _cellSize.Width / 9;
+         return _currentCell.X + (subCellWidth * x) + (subCellWidth / 2);
+      }
+
+      public Int32 GetZoomedMouseYCoord(Int32 y) {
+         if (y > 8) y = 8;
+
+         var subCellHeight = _cellSize.Height / 9;
+         return _currentCell.Y + (subCellHeight * y) + (subCellHeight / 2);
+      }
+
+      public void MoveCursor(String x, String y) {
+         Int32 mouseX, mouseY, cellX, cellY;
+
+         if (_isZoomed == true) {
+            mouseX = GetZoomedMouseXCoord(GetCoordinateOrdinal(x));
+            mouseY = GetZoomedMouseYCoord(GetCoordinateOrdinal(y));
+
+            Cursor.Position = new Point(mouseX, mouseY);
+
+            // TODO: Change to use local bitmap that won't get disposed prematurely
+            // RenderMouseCursor();
+
+            _zoomWindow.DrawMouseCursor(
+               _cursorBitmap,
+               GetZoomedCellXCoord(GetCoordinateOrdinal(x)),
+               GetZoomedCellYCoord(GetCoordinateOrdinal(y))
+            );
+
+            return;
+         }
+
+         mouseX = GetMouseXCoord(GetCoordinateOrdinal(x));
+         mouseY = GetMouseYCoord(GetCoordinateOrdinal(y));
+
+         _currentCell = new Point(
+            GetCellXCoord(GetCoordinateOrdinal(x)),
+            GetCellYCoord(GetCoordinateOrdinal(y))
+         );
+
+         Zoom(x, y);
+
+         Cursor.Position = new Point(mouseX, mouseY);
+
+         RenderMouseCursor();
+
+         _zoomWindow.DrawMouseCursor(
+            _cursorBitmap,
+            GetZoomedCellXCoord(4),
+            GetZoomedCellYCoord(4)
+         );
+      }
+
+      private void RenderMouseCursor() {
+         if (_cursorBitmap != null) {
+            _cursorBitmap.Dispose();
+         }
+
+         _cursorBitmap = new Bitmap(100, 100);
+
+         var c = Cursor.Current;
+
+         // Cursor.Current doesn't seem to actually reflect the real cursor displayed :/
+         c = Cursors.Arrow;
+
+         using (var g = Graphics.FromImage(_cursorBitmap)) {
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = PixelOffsetMode.None;
+
+            g.FillRectangle(Brushes.Transparent, 0, 0, 100, 100);
+            g.DrawIcon(Icon.FromHandle(c.Handle), new Rectangle(
+               0, 0,
+               c.Size.Width * 3,
+               c.Size.Height * 3
+            ));
+         }
+      }
+
       private void SwitchScreen(Int32 screenNumber) {
          screenNumber--;
 
@@ -333,18 +438,18 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Take the screenshot
          using (var g = Graphics.FromImage(_bitmap)) {
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = PixelOffsetMode.None;
+
             g.CopyFromScreen(x, y, 0, 0, _bitmap.Size);
          }
       }
 
-      public void Zoom(String x, String y, bool setMouse = false) {
+      public void Zoom(String x, String y) {
          var mouseX = GetMouseXCoord(GetCoordinateOrdinal(x));
          var mouseY = GetMouseYCoord(GetCoordinateOrdinal(y));
          var cellX  = GetCellXCoord(GetCoordinateOrdinal(x));
          var cellY  = GetCellYCoord(GetCoordinateOrdinal(y));
-
-         if (setMouse == true)
-            Cursor.Position = new Point(mouseX, mouseY);
 
          _plotWindow.Close();
 
@@ -368,6 +473,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _zoomWindow.SetImage(_bitmap);
          _zoomWindow.Move(mouseX + offsetX, mouseY + offsetY);
          _zoomWindow.Show();
+
+         _isZoomed = true;
       }
    }
 }
