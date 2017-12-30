@@ -38,9 +38,9 @@ namespace GrammarTests {
       [SetUp]
       public void SetUp() {
          _screenMock = new Mock<IScreen>(MockBehavior.Strict);
-         _plotWindowMock = new Mock<IWindow>(MockBehavior.Strict);
-         _zoomWindowMock = new Mock<IWindow>(MockBehavior.Strict);
-         _cellWindowMock = new Mock<IWindow>(MockBehavior.Strict);
+         _plotWindowMock = new Mock<IWindow>();
+         _zoomWindowMock = new Mock<IWindow>();
+         _cellWindowMock = new Mock<IWindow>();
 
          _grammar = new MousePlotGrammar(
             grammarService: new Mock<IGrammarService>().Object,
@@ -196,6 +196,166 @@ namespace GrammarTests {
          );
 
          Assert.That(_grammar.GetMouseYCoord(y), Is.EqualTo(expected));
+      }
+
+      [Test]
+      [TestCase(0, 0)]
+      [TestCase(1, 100)]
+      [TestCase(2, 200)]
+      [TestCase(7, 700)]
+      [TestCase(12, 1200)]
+      [TestCase(15, 1500)]
+      [TestCase(19, 1900)]
+      [TestCase(20, 1900)] // <-- Beyond the edge of the screen
+      [TestCase(36, 1900)] // <-- Beyond the edge of the screen
+      public void ShouldGetCorrectCellXCoordFor100X100CellsOn1920X1080Screen(Int32 x, Int32 expected) {
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(0, 0, 1920, 1080)
+         );
+
+         Assert.That(_grammar.GetCellXCoord(x), Is.EqualTo(expected));
+      }
+
+      [Test]
+      [TestCase(0, 0)]
+      [TestCase(1, 100)]
+      [TestCase(2, 200)]
+      [TestCase(7, 700)]
+      [TestCase(10, 1000)]
+      [TestCase(11, 1000)] // <-- Beyond the edge of the screen
+      [TestCase(36, 1000)] // <-- Beyond the edge of the screen
+      public void ShouldGetCorrectCellYCoord100X100CellsOn1920X1080Screen(Int32 y, Int32 expected) {
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(0, 0, 1920, 1080)
+         );
+
+         Assert.That(_grammar.GetCellYCoord(y), Is.EqualTo(expected));
+      }
+
+      [Test]
+      [TestCase(0, 0)]
+      [TestCase(1, 100)]
+      [TestCase(2, 200)]
+      [TestCase(7, 700)]
+      [TestCase(12, 1200)]
+      [TestCase(15, 1500)]
+      [TestCase(19, 1900)]
+      [TestCase(20, 2000)]
+      [TestCase(36, 3600)]
+      public void ShouldGetCorrectXOffsetFor100X100CellsOn1920X1080Screen(Int32 x, Int32 expected) {
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(0, 0, 1920, 1080)
+         );
+
+         Assert.That(_grammar.GetXScreenOffset(x), Is.EqualTo(expected));
+      }
+
+      [Test]
+      [TestCase(0, 0)]
+      [TestCase(1, 100)]
+      [TestCase(2, 200)]
+      [TestCase(7, 700)]
+      [TestCase(10, 1000)]
+      [TestCase(11, 1100)]
+      [TestCase(36, 3600)]
+      public void ShouldGetCorrectYOffsetFor100X100CellsOn1920X1080Screen(Int32 y, Int32 expected) {
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(0, 0, 1920, 1080)
+         );
+
+         Assert.That(_grammar.GetYScreenOffset(y), Is.EqualTo(expected));
+      }
+
+      [Test]
+      [TestCase(0, 0 - 1920)]
+      [TestCase(1, 100 - 1920)]
+      [TestCase(2, 200 - 1920)]
+      [TestCase(7, 700 - 1920)]
+      [TestCase(12, 1200 - 1920)]
+      [TestCase(15, 1500 - 1920)]
+      [TestCase(19, 1900 - 1920)]
+      [TestCase(20, 2000 - 1920)]
+      [TestCase(36, 3600 - 1920)]
+      public void ShouldGetCorrectXOffsetFor100X100CellsOn1920X1080SecondaryScreen(Int32 x, Int32 expected) {
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(-1920, -10, 1920, 1080)
+         );
+
+         Assert.That(_grammar.GetXScreenOffset(x), Is.EqualTo(expected));
+      }
+
+      [Test]
+      [TestCase(0, 0 - 1080)]
+      [TestCase(1, 100 - 1080)]
+      [TestCase(2, 200 - 1080)]
+      [TestCase(7, 700 - 1080)]
+      [TestCase(10, 1000 - 1080)]
+      [TestCase(11, 1100 - 1080)]
+      [TestCase(36, 3600 - 1080)]
+      public void ShouldGetCorrectYOffsetFor100X100CellsOn1920X1080SecondaryScreen(Int32 y, Int32 expected) {
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(-1300, -1080, 1920, 1080)
+         );
+
+         Assert.That(_grammar.GetYScreenOffset(y), Is.EqualTo(expected));
+      }
+
+
+      [Test]
+      public void ShouldOpenZoomWindowAndCloseMainPlotWindow() {
+         // Arrange
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(0, 0, 1920, 1080)
+         );
+
+         _zoomWindowMock.Setup(e => e.Width).Returns(300);
+         _zoomWindowMock.Setup(e => e.Height).Returns(300);
+
+         // Act
+         _grammar.Zoom("One", "One");
+
+         // Assert
+         _plotWindowMock.Verify(e => e.Close(), Times.Once);
+
+         _zoomWindowMock.Verify(e => e.SetImage(It.IsAny<Bitmap>()), Times.Once);
+         _zoomWindowMock.Verify(e => e.Move(200.0, 200.0), Times.Once);
+         _zoomWindowMock.Verify(e => e.Show(), Times.Once);
+
+         _cellWindowMock.Verify(e => e.Move(100.0, 100.0), Times.Once);
+         _cellWindowMock.Verify(e => e.Show(), Times.Once);
+      }
+
+
+      [Test]
+      [TestCase("Zero", "Zero",  0,    0)]
+      [TestCase("Nine", "Zero",  0,    900)]
+      [TestCase("Zero", "India", 1800, 0)]
+      [TestCase("Nine", "India", 1800, 900)]
+      public void ShouldRepositionZoomWindowSoItStaysOnScreen(String y, String x, Int32 ox, Int32 oy) {
+         // Arrange
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(0, 0, 1920, 1080)
+         );
+
+         Int32 cellSize = 100;
+         Int32 zoomWindowSize = 350;
+         Int32 zoomx = ox + cellSize;
+         Int32 zoomy = oy + cellSize;
+
+         if (ox + zoomWindowSize > 1920)
+            zoomx -= zoomWindowSize + cellSize;
+         if (oy + zoomWindowSize > 1080)
+            zoomy -= zoomWindowSize + cellSize;
+
+         _zoomWindowMock.Setup(e => e.Width).Returns(zoomWindowSize);
+         _zoomWindowMock.Setup(e => e.Height).Returns(zoomWindowSize);
+
+         // Act
+         _grammar.Zoom(x, y);
+
+         // Assert
+         _cellWindowMock.Verify(e => e.Move(ox, oy), Times.Once);
+         _zoomWindowMock.Verify(e => e.Move(zoomx, zoomy), Times.Once);
       }
 
    }

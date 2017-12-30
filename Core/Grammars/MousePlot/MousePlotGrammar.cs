@@ -174,7 +174,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
                p => p
                   .SayOneOf(alphaWords)
                   .SayOneOf(alphaWords)
-                     .Do(spokenWords => Zoom(spokenWords.Last(), spokenWords.First()))
+                     .Do(spokenWords => Zoom(spokenWords.Last(), spokenWords.First(), true))
                   .OptionallyOneOf(
                      o => o.WithRule("mouse_click"),
                      o => o
@@ -256,6 +256,26 @@ namespace Renfrew.Core.Grammars.MousePlot {
          }
       }
 
+      public Int32 GetCellXCoord(Int32 x) {
+         var i = GetXScreenOffset(x);
+
+         // Integer truncation will have the desired effect
+         if (i > _currentScreen.Bounds.Right)
+            i = (_currentScreen.Bounds.Width / _cellSize.Width) * _cellSize.Width;
+
+         return i;
+      }
+
+      public Int32 GetCellYCoord(Int32 y) {
+         var i = GetYScreenOffset(y);
+
+         // Integer truncation will have the desired effect
+         if (i > _currentScreen.Bounds.Bottom)
+            i = (_currentScreen.Bounds.Height / _cellSize.Height) * _cellSize.Height;
+
+         return i;
+      }
+
       public Int32 GetCoordinateOrdinal(String c) {
          if (_alphaList.ContainsKey(c) == false)
             throw new ArgumentOutOfRangeException(nameof(c), c);
@@ -269,16 +289,28 @@ namespace Renfrew.Core.Grammars.MousePlot {
       }
 
       public Int32 GetMouseXCoord(Int32 x) {
-         var i = _currentScreen.Bounds.Left + (_cellSize.Width * x) + (_cellSize.Width / 2);
+         x = GetXScreenOffset(x) + (_cellSize.Width / 2);
 
-         return (i > _currentScreen.Bounds.Right) ? _currentScreen.Bounds.Right - 1 : i;
+         if (x > _currentScreen.Bounds.Right)
+            x = _currentScreen.Bounds.Right - 1;
+
+         return x;
       }
 
       public Int32 GetMouseYCoord(Int32 y) {
-         var i = _currentScreen.Bounds.Top + (_cellSize.Height * y) + (_cellSize.Height / 2);
+         y = GetYScreenOffset(y) + (_cellSize.Height / 2);
 
-         return (i > _currentScreen.Bounds.Bottom) ? _currentScreen.Bounds.Bottom - 1: i;
+         if (y > _currentScreen.Bounds.Bottom)
+            y = _currentScreen.Bounds.Bottom - 1;
+
+         return y;
       }
+
+      public Int32 GetXScreenOffset(Int32 x) =>
+         _currentScreen.Bounds.Left + (_cellSize.Width * x);
+
+      public Int32 GetYScreenOffset(Int32 y) =>
+         _currentScreen.Bounds.Top + (_cellSize.Height * y);
 
       private void SwitchScreen(Int32 screenNumber) {
          screenNumber--;
@@ -303,15 +335,16 @@ namespace Renfrew.Core.Grammars.MousePlot {
          using (var g = Graphics.FromImage(_bitmap)) {
             g.CopyFromScreen(x, y, 0, 0, _bitmap.Size);
          }
-
-         _bitmap.Save(@"C:\Opt\TEST.BMP");
       }
 
-      private void Zoom(String x, String y) {
+      public void Zoom(String x, String y, bool setMouse = false) {
          var mouseX = GetMouseXCoord(GetCoordinateOrdinal(x));
          var mouseY = GetMouseYCoord(GetCoordinateOrdinal(y));
+         var cellX  = GetCellXCoord(GetCoordinateOrdinal(x));
+         var cellY  = GetCellYCoord(GetCoordinateOrdinal(y));
 
-         Cursor.Position = new Point(mouseX, mouseY);
+         if (setMouse == true)
+            Cursor.Position = new Point(mouseX, mouseY);
 
          _plotWindow.Close();
 
@@ -326,24 +359,14 @@ namespace Renfrew.Core.Grammars.MousePlot {
          if (mouseY + offsetY + _zoomWindow.Height >= _currentScreen.Bounds.Bottom)
             offsetY = -offsetY - (Int32) _zoomWindow.Height;
 
-         // TODO: Testing, move elsewhere
-         TakeScreenshot(
-            mouseX - 2 - (_cellSize.Width / 2),
-            mouseY - 2 - (_cellSize.Height / 2),
-            _cellSize.Width + 2,
-            _cellSize.Height + 2
-         );
+         // Take a screenshot that will act as our zoomed image.
+         TakeScreenshot(cellX - 2, cellY - 2, _cellSize.Width + 2, _cellSize.Height + 2);
 
-         _cellWindow.Move(
-            mouseX - (_cellSize.Width / 2),
-            mouseY - (_cellSize.Height / 2)
-         );
-
+         _cellWindow.Move(cellX, cellY);
          _cellWindow.Show();
 
          _zoomWindow.SetImage(_bitmap);
          _zoomWindow.Move(mouseX + offsetX, mouseY + offsetY);
-
          _zoomWindow.Show();
       }
    }
