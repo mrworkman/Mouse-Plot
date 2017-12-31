@@ -211,6 +211,9 @@ namespace Renfrew.Core.Grammars.MousePlot {
                   _cellWindow.Close();
                   _plotWindow.Close();
 
+                  // Wait a short period to make sure the windows have closed
+                  System.Threading.Thread.Sleep(100);
+
                   var s = spokenWords.Last();
                   var b = MouseButtons.Left;
                   var c = 1;

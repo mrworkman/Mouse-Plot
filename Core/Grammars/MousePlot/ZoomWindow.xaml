@@ -71,6 +71,6 @@
         <Border CornerRadius="20" BorderThickness="10" BorderBrush="Yellow" Margin="10,10,10,20" />
         <Rectangle x:Name="_screenshot" Width="312" Height="312" Fill="Black" Canvas.ZIndex="-10" Margin="10,10,10,20" />
 
-        <Label x:Name="_mouseLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,26,0,0" Width="100" Height="100" Background="Magenta" />
+        <Label x:Name="_mouseLabel" Content="" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,26,0,0" Width="100" Height="100" Background="Magenta" />
     </Grid>
 </local:BaseWindow>
