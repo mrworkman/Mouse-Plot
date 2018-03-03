@@ -85,6 +85,7 @@
     <Compile Include="Grammars\MousePlot\CellWindow.xaml.cs">
       <DependentUpon>CellWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Grammars\MousePlot\GridColour.cs" />
     <Compile Include="Grammars\MousePlot\IWindow.cs" />
     <Compile Include="Grammars\MousePlot\IScreen.cs" />
     <Compile Include="Grammars\MousePlot\PlotWindow.xaml.cs">

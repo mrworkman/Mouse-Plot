@@ -21,10 +21,15 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Interop;
 
 using Renfrew.Grammar;
 using Renfrew.NatSpeakInterop;
+
+using Point = System.Drawing.Point;
+using Size = System.Drawing.Size;
 
 namespace Renfrew.Core.Grammars.MousePlot {
 
@@ -99,11 +104,11 @@ namespace Renfrew.Core.Grammars.MousePlot {
       };
       private List<String> _colourList = new List<String> {
          "Black",
-         "White",
-         "Yellow",
+         "Grey",
          "Green",
          "Red",
-         "Gray",
+         "Yellow",
+         "White",
       };
       private List<String> _clickList = new List<String> {
          "Click",        "Right Click",
@@ -274,7 +279,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Integer truncation will have the desired effect
          if (i > _currentScreen.Bounds.Right)
-            i = (_currentScreen.Bounds.Width / _cellSize.Width) * _cellSize.Width;
+            i = _currentScreen.Bounds.Left + (_currentScreen.Bounds.Width / _cellSize.Width) * _cellSize.Width;
 
          return i;
       }
@@ -284,7 +289,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Integer truncation will have the desired effect
          if (i > _currentScreen.Bounds.Bottom)
-            i = (_currentScreen.Bounds.Height / _cellSize.Height) * _cellSize.Height;
+            i = _currentScreen.Bounds.Top + (_currentScreen.Bounds.Height / _cellSize.Height) * _cellSize.Height;
 
          return i;
       }
