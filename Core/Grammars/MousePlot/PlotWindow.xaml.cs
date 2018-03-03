@@ -41,19 +41,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
                   continue;
 
                var label = new Label {
+                  Style = Resources["DigitLabel"] as Style,
                   Content = $"{GetDigitValue(j)}{GetDigitValue(i)}",
-                  Height = 99,
-                  Width = 99,
-                  FontSize = 48,
-                  FontFamily = new FontFamily("Consolas"),
-                  Background = (i == 0 && j == 0) ? Brushes.Wheat : null,
-                  Foreground = Brushes.Yellow,
-
-                  HorizontalContentAlignment = HorizontalAlignment.Center,
-                  VerticalContentAlignment = VerticalAlignment.Center,
-
-                  Opacity = 0.7,
-
                   Margin = new Thickness(2 + i * 100, 2 + j * 100, 0, 0),
                };
 

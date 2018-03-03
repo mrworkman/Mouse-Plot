@@ -29,12 +29,17 @@
         WindowStyle="None"
         Topmost="True"
 >
-    <Window.Background>
-        <SolidColorBrush Color="White" Opacity="0.0" />
-    </Window.Background>
-    <Window.Resources>
-        <Style x:Key="DigitLabel" TargetType="Label">
-            <Setter Property="Foreground" Value="Yellow" />
+   <Window.Background>
+      <SolidColorBrush Color="White" Opacity="0.0" />
+   </Window.Background>
+   <Window.Resources>
+      <ResourceDictionary>
+         <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="Themes/Yellow.xaml"></ResourceDictionary>
+         </ResourceDictionary.MergedDictionaries>
+
+         <Style x:Key="ZoomDigitLabel" TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource BaseThemeColor}" />
             <Setter Property="Opacity" Value="0.3" />
             <Setter Property="FontFamily" Value="Consolas" />
             <Setter Property="FontSize" Value="26" />
@@ -45,32 +50,35 @@
 
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
-        </Style>
-    </Window.Resources>
-    <Grid>
-        <Grid.Effect>
+         </Style>
+
+      </ResourceDictionary>
+   </Window.Resources>
+   <Grid>
+      <Grid.Effect>
+         <DropShadowEffect ShadowDepth="2" />
+      </Grid.Effect>
+      <Canvas Margin="20,20,20,30" Loaded="Canvas_Loaded" Name="_mainCanvas">
+         <Canvas.Effect>
             <DropShadowEffect ShadowDepth="2" />
-        </Grid.Effect>
-        <Canvas Margin="20,20,20,30" Loaded="Canvas_Loaded" Name="_mainCanvas">
-            <Canvas.Effect>
-                <DropShadowEffect ShadowDepth="2" />
-            </Canvas.Effect>
-            <Canvas.Background>
-                <VisualBrush TileMode="Tile" Viewport="5,5,33.3333,33.3333" ViewportUnits="Absolute" ViewboxUnits="Absolute">
-                    <VisualBrush.Visual>
-                        <Canvas>
-                            <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".03" X1="3" StrokeDashArray="1" />
-                            <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".03" Y1="3" StrokeDashArray="1" />
-                        </Canvas>
-                    </VisualBrush.Visual>
-                </VisualBrush>
-            </Canvas.Background>
+         </Canvas.Effect>
+         <Canvas.Background>
+            <VisualBrush TileMode="Tile" Viewport="5,5,33.3333,33.3333" ViewportUnits="Absolute" ViewboxUnits="Absolute">
+               <VisualBrush.Visual>
+                  <Canvas>
+                     <Line SnapsToDevicePixels="True" Stroke="{DynamicResource BaseThemeColor}" StrokeThickness=".03" X1="3" StrokeDashArray="1" />
+                     <Line SnapsToDevicePixels="True" Stroke="{DynamicResource BaseThemeColor}" StrokeThickness=".03" Y1="3" StrokeDashArray="1" />
+                  </Canvas>
+               </VisualBrush.Visual>
+            </VisualBrush>
+         </Canvas.Background>
 
-            <Label x:Name="_label1" Style="{StaticResource DigitLabel}" Content="00" Canvas.Top="5" Canvas.Left="5"/>
-        </Canvas>
-        <Border CornerRadius="20" BorderThickness="10" BorderBrush="Yellow" Margin="10,10,10,20" />
-        <Rectangle x:Name="_screenshot" Width="312" Height="312" Fill="Black" Canvas.ZIndex="-10" Margin="10,10,10,20" />
+         <Label Style="{DynamicResource ZoomDigitLabel}" Content="00" Canvas.Top="5" Canvas.Left="5"/>
+      </Canvas>
 
-        <Label x:Name="_mouseLabel" Content="" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,26,0,0" Width="100" Height="100" Background="Magenta" />
-    </Grid>
+      <Border CornerRadius="20" BorderThickness="10" BorderBrush="{DynamicResource BaseThemeColor}" Margin="10,10,10,20" />
+      <Rectangle x:Name="_screenshot" Width="312" Height="312" Fill="Black" Canvas.ZIndex="-10" Margin="10,10,10,20" />
+
+      <Label x:Name="_mouseLabel" Content="" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,26,0,0" Width="100" Height="100" Background="Magenta" />
+   </Grid>
 </local:BaseWindow>

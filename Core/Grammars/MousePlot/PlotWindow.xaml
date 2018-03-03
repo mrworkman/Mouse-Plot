@@ -31,23 +31,40 @@
     <Window.Background>
         <SolidColorBrush Color="White" Opacity="0.0" />
     </Window.Background>
-    <Canvas Loaded="Canvas_Loaded" Name="mainCanvas">
-        <Canvas.Effect>
-            <DropShadowEffect ShadowDepth="2" />
-        </Canvas.Effect>
-        <Canvas.Background>
-            <VisualBrush TileMode="Tile" Viewport="0,0,100,100" ViewportUnits="Absolute" ViewboxUnits="Absolute">
-                <VisualBrush.Visual>
-                    <Canvas>
-                        <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" X1="3" StrokeDashArray="11" />
-                        <Line SnapsToDevicePixels="True" Stroke="Yellow" StrokeThickness=".01" Y1="3" StrokeDashArray="11" />
-                    </Canvas>
-                </VisualBrush.Visual>
-            </VisualBrush>
-        </Canvas.Background>
-        <Label x:Name="label" Content="00" Canvas.Left="2" Canvas.Top="2" FontSize="48" Background="{x:Null}" Foreground="Yellow" Opacity="0.7" Height="98" Width="98" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" />
+   <Window.Resources>
+      <ResourceDictionary>
+         <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="Themes/Yellow.xaml"></ResourceDictionary>
+         </ResourceDictionary.MergedDictionaries>
+         <Style x:Key="DigitLabel" TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource BaseThemeColor}" />
+            <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="FontSize" Value="48" />
 
-    </Canvas>
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Width" Value="98" />
+            <Setter Property="Height" Value="98" />
 
-
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+         </Style>
+      </ResourceDictionary>
+   </Window.Resources>
+   <Canvas Loaded="Canvas_Loaded" Name="mainCanvas">
+      <Canvas.Effect>
+         <DropShadowEffect ShadowDepth="2" />
+      </Canvas.Effect>
+      <Canvas.Background>
+         <VisualBrush TileMode="Tile" Viewport="0,0,100,100" ViewportUnits="Absolute" ViewboxUnits="Absolute">
+            <VisualBrush.Visual>
+               <Canvas>
+                  <Line SnapsToDevicePixels="True" Stroke="{DynamicResource BaseThemeColor}" StrokeThickness=".01" X1="3" StrokeDashArray="11" />
+                  <Line SnapsToDevicePixels="True" Stroke="{DynamicResource BaseThemeColor}" StrokeThickness=".01" Y1="3" StrokeDashArray="11" />
+               </Canvas>
+            </VisualBrush.Visual>
+         </VisualBrush>
+      </Canvas.Background>
+      <Label Style="{DynamicResource DigitLabel}" Content="00" Canvas.Left="2" Canvas.Top="2" />
+   </Canvas>
 </local:BaseWindow>

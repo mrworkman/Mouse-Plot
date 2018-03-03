@@ -104,11 +104,12 @@ namespace Renfrew.Core.Grammars.MousePlot {
       };
       private List<String> _colourList = new List<String> {
          "Black",
-         "Grey",
+         "Blue",
          "Green",
+         "Grey",
          "Red",
-         "Yellow",
          "White",
+         "Yellow",
       };
       private List<String> _clickList = new List<String> {
          "Click",        "Right Click",
@@ -180,7 +181,9 @@ namespace Renfrew.Core.Grammars.MousePlot {
                   .SayOneOf(_screenList.Keys)
                   .Do(spokenWords => SwitchScreen( _screenList[spokenWords.Last()] )),
 
-               p => p.SayOneOf(_colourList),
+               p => p.SayOneOf(_colourList)
+                  .Do(spokenWords => SetColour(spokenWords.First())),
+
                p => p.SayOneOf("Mark", "Drag"),
 
                p => p
@@ -423,6 +426,15 @@ namespace Renfrew.Core.Grammars.MousePlot {
                c.Size.Height * 3
             ));
          }
+      }
+
+      private void SetColour(String colourName) {
+         if (Enum.TryParse(colourName, out GridColour colour) == false)
+            colour = GridColour.Yellow;
+
+         _plotWindow.SetColour(colour);
+         _zoomWindow.SetColour(colour);
+         _cellWindow.SetColour(colour);
       }
 
       private void SwitchScreen(Int32 screenNumber) {

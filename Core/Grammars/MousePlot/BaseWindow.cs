@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ using System.Windows.Threading;
 
 namespace Renfrew.Core.Grammars.MousePlot {
    public abstract class BaseWindow : Window, IWindow {
+      private readonly String DefaultColourName = "Yellow";
 
       public BaseWindow() {
 
@@ -80,6 +82,30 @@ namespace Renfrew.Core.Grammars.MousePlot {
       }
 
       public virtual void DrawMouseCursor(Bitmap bitmap, int x, int y) { }
+
+      public virtual void SetColour(GridColour colour) {
+         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+            try {
+               SetColour(colour.ToString());
+            } catch (IOException e) {
+               SetColour(DefaultColourName);
+            }
+         }));
+      }
+
+      private void SetColour(String c) {
+         var merged = this.Resources.MergedDictionaries;
+
+         merged.Clear();
+
+         merged.Add(new ResourceDictionary() {
+            Source = new Uri(
+               $"Core;component/Grammars/MousePlot/Themes/{c}.xaml",
+               UriKind.RelativeOrAbsolute
+            )
+         });
+      }
+
       public virtual void SetImage(Bitmap bitmap) { }
    }
 }

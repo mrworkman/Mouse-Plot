@@ -46,7 +46,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
                   continue;
 
                var label = new Label {
-                  Style = Resources["DigitLabel"] as Style,
+                  Style = Resources["ZoomDigitLabel"] as Style,
                   Content = $"{GetDigitValue(j)}{GetDigitValue(i)}",
                   Margin = new Thickness(5 + i * 33.3333, 5 + j * 33.3333, 0, 0),
                };

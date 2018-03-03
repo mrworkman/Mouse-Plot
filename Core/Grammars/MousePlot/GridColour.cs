@@ -8,8 +8,9 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
    public enum GridColour {
       Black,
-      Grey,
+      Blue,
       Green,
+      Grey,
       Red,
       White,
       Yellow,

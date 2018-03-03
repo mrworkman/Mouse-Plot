@@ -30,7 +30,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
       double Height { get; }
       double Width { get; }
 
-      void SetColor(GridColour colour);
+      void SetColour(GridColour colour);
+
       void SetImage(Bitmap bitmap);
       void DrawMouseCursor(Bitmap bitmap, int x, int y);
    }

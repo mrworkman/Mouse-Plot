@@ -29,11 +29,18 @@
         WindowStyle="None"
         Topmost="True"
 >
-    <Window.Background>
-        <SolidColorBrush Color="White" Opacity="0.0" />
-    </Window.Background>
-    <Grid>
-        <Border BorderBrush="Yellow" BorderThickness="4" SnapsToDevicePixels="True" />
-        <Rectangle Stroke="Black" StrokeThickness="1" />
+   <Window.Background>
+      <SolidColorBrush Color="White" Opacity="0.0" />
+   </Window.Background>
+   <Window.Resources>
+      <ResourceDictionary>
+         <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="Themes/Yellow.xaml"></ResourceDictionary>
+         </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary>
+   </Window.Resources>
+   <Grid>
+        <Border BorderBrush="{DynamicResource BaseThemeColor}" BorderThickness="4" SnapsToDevicePixels="True" />
+        <Rectangle Stroke="{DynamicResource BaseThemeContrastColor}" StrokeThickness="1" />
     </Grid>
 </local:BaseWindow>
