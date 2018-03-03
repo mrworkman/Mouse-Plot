@@ -233,6 +233,40 @@ namespace GrammarTests {
       }
 
       [Test]
+      [TestCase(0, 0 - 1920)]
+      [TestCase(1, 100 - 1920)]
+      [TestCase(2, 200 - 1920)]
+      [TestCase(7, 700 - 1920)]
+      [TestCase(12, 1200 - 1920)] // <-- Beyond the edge of the screen
+      [TestCase(15, 1200 - 1920)] // <-- Beyond the edge of the screen
+      [TestCase(19, 1200 - 1920)] // <-- Beyond the edge of the screen
+      [TestCase(20, 1200 - 1920)] // <-- Beyond the edge of the screen
+      [TestCase(36, 1200 - 1920)] // <-- Beyond the edge of the screen
+      public void ShouldGetCorrectCellXCoordFor100X100CellsOn1280X720SecondaryScreen(Int32 x, Int32 expected) {
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(-1920, 0, 1280, 720)
+         );
+
+         Assert.That(_grammar.GetCellXCoord(x), Is.EqualTo(expected));
+      }
+
+      [Test]
+      [TestCase(0, 0 - 1080)]
+      [TestCase(1, 100 - 1080)]
+      [TestCase(2, 200 - 1080)]
+      [TestCase(7, 700 - 1080)]
+      [TestCase(10, 700 - 1080)]
+      [TestCase(11, 700 - 1080)] // <-- Beyond the edge of the screen
+      [TestCase(36, 700 - 1080)] // <-- Beyond the edge of the screen
+      public void ShouldGetCorrectCellYCoord100X100CellsOn1280X720SecondaryScreen(Int32 y, Int32 expected) {
+         _screenMock.Setup(e => e.Bounds).Returns(
+            new Rectangle(0, -1080, 1280, 720)
+         );
+
+         Assert.That(_grammar.GetCellYCoord(y), Is.EqualTo(expected));
+      }
+
+      [Test]
       [TestCase(0, 0)]
       [TestCase(1, 100)]
       [TestCase(2, 200)]
