@@ -157,6 +157,10 @@
       <Project>{fcf06529-2adc-4f27-804f-260b598ea492}</Project>
       <Name>Grammar</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Magnifier\Magnifier.vcxproj">
+      <Project>{783891b5-042d-4cea-bb20-2de9310598c1}</Project>
+      <Name>Magnifier</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NatSpeakInterop\NatspeakInterop.vcxproj">
       <Project>{0b7df2f5-d3ad-415d-8b73-b8b9b9efe75d}</Project>
       <Name>NatSpeakInterop</Name>

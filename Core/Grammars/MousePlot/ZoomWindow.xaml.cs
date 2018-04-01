@@ -29,6 +29,8 @@ using System.Windows.Threading;
 using Brushes = System.Windows.Media.Brushes;
 using FontFamily = System.Windows.Media.FontFamily;
 
+using Renfrew;
+
 namespace Renfrew.Core.Grammars.MousePlot {
    /// <summary>
    /// Interaction logic for ZoomWindow.xaml
@@ -103,6 +105,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
             }
          }));
 
+      }
+
+      public Magnifier Magnifier {
+         set { _magnifierSurface.Child = value; }
       }
    }
 }
