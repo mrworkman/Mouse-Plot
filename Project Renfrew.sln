@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrammarTests", "GrammarTest
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Magnifier", "Magnifier\Magnifier.vcxproj", "{783891B5-042D-4CEA-BB20-2DE9310598C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnifier_Tester", "Magnifier_Tester\Magnifier_Tester.csproj", "{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -177,26 +175,6 @@ Global
 		{783891B5-042D-4CEA-BB20-2DE9310598C1}.Release|x64.Build.0 = Release|x64
 		{783891B5-042D-4CEA-BB20-2DE9310598C1}.Release|x86.ActiveCfg = Release|Win32
 		{783891B5-042D-4CEA-BB20-2DE9310598C1}.Release|x86.Build.0 = Release|Win32
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|Win32.Build.0 = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|x64.Build.0 = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Debug|x86.Build.0 = Debug|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|Win32.ActiveCfg = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|Win32.Build.0 = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|x64.ActiveCfg = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|x64.Build.0 = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|x86.ActiveCfg = Release|Any CPU
-		{F7C02681-E4A5-4A0B-88A5-15BF71686A5F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
