@@ -34,7 +34,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
       }
 
       #region Builtins
-      public new void Close() {
+      public new virtual void Close() {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.Hide();
          }));
@@ -54,13 +54,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
          set => base.Height = value;
       }
 
-      public new void Show() {
+      public new virtual void Show() {        
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.Show();
          }));
       }
 
-      public new void ShowDialog() {
+      public new virtual void ShowDialog() {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.ShowDialog();
          }));
@@ -80,8 +80,6 @@ namespace Renfrew.Core.Grammars.MousePlot {
             Top = y;
          }));
       }
-
-      public virtual void DrawMouseCursor(Bitmap bitmap, int x, int y) { }
 
       public virtual void SetColour(GridColour colour) {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
@@ -106,6 +104,6 @@ namespace Renfrew.Core.Grammars.MousePlot {
          });
       }
 
-      public virtual void SetImage(Bitmap bitmap) { }
+
    }
 }

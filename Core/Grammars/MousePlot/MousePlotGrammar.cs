@@ -52,8 +52,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
       private Size _cellSize = new Size(100, 100);
 
       private IWindow _plotWindow;
-      private IWindow _zoomWindow;
       private IWindow _cellWindow;
+      private IZoomWindow _zoomWindow;
 
       private Point _currentCell = Point.Empty;
 
@@ -135,7 +135,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       // For Testing
       public MousePlotGrammar(IGrammarService grammarService, IScreen screen,
-                              IWindow plotWindow, IWindow zoomWindow, IWindow cellWindow)
+                              IWindow plotWindow, IZoomWindow zoomWindow, IWindow cellWindow)
          : base(grammarService) {
 
          _currentScreen = screen;
@@ -165,6 +165,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
                   _zoomWindow.Close();
                   _cellWindow.Close();
+                  
                   _plotWindow.Show();
 
                   _isZoomed = false;
@@ -373,11 +374,11 @@ namespace Renfrew.Core.Grammars.MousePlot {
             // TODO: Change to use local bitmap that won't get disposed prematurely
             // RenderMouseCursor();
 
-            _zoomWindow.DrawMouseCursor(
-               _cursorBitmap,
-               GetZoomedCellXCoord(GetCoordinateOrdinal(x)),
-               GetZoomedCellYCoord(GetCoordinateOrdinal(y))
-            );
+            //_zoomWindow.DrawMouseCursor(
+            //   _cursorBitmap,
+            //   GetZoomedCellXCoord(GetCoordinateOrdinal(x)),
+            //   GetZoomedCellYCoord(GetCoordinateOrdinal(y))
+            //);
 
             return;
          }
@@ -394,39 +395,39 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          Cursor.Position = new Point(mouseX, mouseY);
 
-         RenderMouseCursor();
+         //RenderMouseCursor();
 
-         _zoomWindow.DrawMouseCursor(
-            _cursorBitmap,
-            GetZoomedCellXCoord(4),
-            GetZoomedCellYCoord(4)
-         );
+         //_zoomWindow.DrawMouseCursor(
+         //   _cursorBitmap,
+         //   GetZoomedCellXCoord(4),
+         //   GetZoomedCellYCoord(4)
+         //);
       }
 
-      private void RenderMouseCursor() {
-         if (_cursorBitmap != null) {
-            _cursorBitmap.Dispose();
-         }
+      //private void RenderMouseCursor() {
+      //   if (_cursorBitmap != null) {
+      //      _cursorBitmap.Dispose();
+      //   }
 
-         _cursorBitmap = new Bitmap(100, 100);
+      //   _cursorBitmap = new Bitmap(100, 100);
 
-         var c = Cursor.Current;
+      //   var c = Cursor.Current;
 
-         // Cursor.Current doesn't seem to actually reflect the real cursor displayed :/
-         c = Cursors.Arrow;
+      //   // Cursor.Current doesn't seem to actually reflect the real cursor displayed :/
+      //   c = Cursors.Arrow;
 
-         using (var g = Graphics.FromImage(_cursorBitmap)) {
-            g.InterpolationMode = InterpolationMode.NearestNeighbor;
-            g.PixelOffsetMode = PixelOffsetMode.None;
+      //   using (var g = Graphics.FromImage(_cursorBitmap)) {
+      //      g.InterpolationMode = InterpolationMode.NearestNeighbor;
+      //      g.PixelOffsetMode = PixelOffsetMode.None;
 
-            g.FillRectangle(Brushes.Transparent, 0, 0, 100, 100);
-            g.DrawIcon(Icon.FromHandle(c.Handle), new Rectangle(
-               0, 0,
-               c.Size.Width * 3,
-               c.Size.Height * 3
-            ));
-         }
-      }
+      //      g.FillRectangle(Brushes.Transparent, 0, 0, 100, 100);
+      //      g.DrawIcon(Icon.FromHandle(c.Handle), new Rectangle(
+      //         0, 0,
+      //         c.Size.Width * 3,
+      //         c.Size.Height * 3
+      //      ));
+      //   }
+      //}
 
       private void SetColour(String colourName) {
          if (Enum.TryParse(colourName, out GridColour colour) == false)
@@ -475,8 +476,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Position the zoom window so it appears
          // on the current screen in its entirety.
-         Int32 offsetX = _cellSize.Width / 2;
-         Int32 offsetY = _cellSize.Height / 2;
+         Int32 offsetX = (_cellSize.Width / 4) * 3;
+         Int32 offsetY = (_cellSize.Height / 4) * 3;
 
          if (mouseX + offsetX + _zoomWindow.Width >= _currentScreen.Bounds.Right)
             offsetX = -offsetX - (Int32) _zoomWindow.Width;
@@ -485,12 +486,14 @@ namespace Renfrew.Core.Grammars.MousePlot {
             offsetY = -offsetY - (Int32) _zoomWindow.Height;
 
          // Take a screenshot that will act as our zoomed image.
-         TakeScreenshot(cellX - 2, cellY - 2, _cellSize.Width + 2, _cellSize.Height + 2);
+         //TakeScreenshot(cellX - 2, cellY - 2, _cellSize.Width + 2, _cellSize.Height + 2);
 
-         _cellWindow.Move(cellX, cellY);
+         _cellWindow.Move(cellX-4, cellY-4);
          _cellWindow.Show();
 
-         _zoomWindow.SetImage(_bitmap);
+         _zoomWindow.SetSource(cellX, cellY, _cellSize.Width, _cellSize.Height);
+
+         //_zoomWindow.SetImage(_bitmap);
          _zoomWindow.Move(mouseX + offsetX, mouseY + offsetY);
          _zoomWindow.Show();
 

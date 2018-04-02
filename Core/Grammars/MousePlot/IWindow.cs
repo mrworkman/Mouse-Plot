@@ -16,8 +16,7 @@
 //
 
 using System;
-using System.Drawing;
-using System.Windows.Media;
+using System.Windows;
 
 namespace Renfrew.Core.Grammars.MousePlot {
    public interface IWindow {
@@ -25,14 +24,11 @@ namespace Renfrew.Core.Grammars.MousePlot {
       void Focus();
       void Move(Double x, Double y);
       void Show();
-      void ShowDialog();
+      bool? ShowDialog();
 
       double Height { get; }
       double Width { get; }
 
       void SetColour(GridColour colour);
-
-      void SetImage(Bitmap bitmap);
-      void DrawMouseCursor(Bitmap bitmap, int x, int y);
    }
 }

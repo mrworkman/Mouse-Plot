@@ -26,6 +26,8 @@ using namespace System::Windows;
 using namespace System::Windows::Interop;
 using namespace System::Runtime::InteropServices;
 
+using namespace System::Diagnostics;
+
 #include "Magnifier.h"
 
 using namespace Renfrew;
@@ -37,12 +39,12 @@ Magnifier::Magnifier() {
 
 HandleRef Magnifier::BuildWindowCore(HandleRef hwndParent) {
    _hInstance = GetModuleHandle(nullptr);
-
+   
    _parentHwnd = CreateWindow(
       TEXT("STATIC"), nullptr,
       WS_CHILD | WS_VISIBLE,
       0, 0, 100, 100, // x, y, w, h
-      (HWND)hwndParent.Handle.ToPointer(),
+      (HWND) hwndParent.Handle.ToPointer(),
       nullptr,
       _hInstance,
       0
@@ -65,16 +67,22 @@ void Magnifier::Initialize() {
       WC_MAGNIFIER, TEXT("MagnifierWindow"),
       WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE, // | MS_INVERTCOLORS,
       0, 0,
-      400,
-      400,
+      300,
+      300,
       _parentHwnd, NULL,
       _hInstance, NULL
    );
 
+   if (_magnifierHwnd == nullptr) {
+      DWORD res = GetLastError();
+
+      Debug::WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Result: " + res);
+   }
+
    MAGTRANSFORM matrix;
    memset(&matrix, 0, sizeof(matrix));
-   matrix.v[0][0] = 4;
-   matrix.v[1][1] = 4;
+   matrix.v[0][0] = 3;
+   matrix.v[1][1] = 3;
    matrix.v[2][2] = 1.0f;
 
    MagSetWindowTransform(_magnifierHwnd, &matrix);
@@ -87,7 +95,8 @@ void Magnifier::Initialize() {
    MagSetWindowSource(_magnifierHwnd, r);
 }
 
-void Magnifier::Update(Int32 x, Int32 y) {
-   RECT r = { x, y, 100, 100 };
+void Magnifier::Update(Int32 x, Int32 y, Int32 width, Int32 height) {
+   RECT r = { x, y, width, height };
    MagSetWindowSource(_magnifierHwnd, r);
 }
+

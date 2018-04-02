@@ -1,4 +1,4 @@
-// Project Renfrew
+﻿// Project Renfrew
 // Copyright(C) 2018 Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
@@ -15,25 +15,12 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-#pragma once
+using System;
+using System.Drawing;
 
-using namespace System;
-
-namespace Renfrew {
-
-   public ref class Magnifier : public HwndHost {
-      private: HWND _parentHwnd;
-      private: HWND _magnifierHwnd;
-      private: HINSTANCE _hInstance;
-
-      public: Magnifier();
-
-      // From HwndHost
-      protected: virtual HandleRef BuildWindowCore(HandleRef hwndParent) override;
-      protected: virtual void DestroyWindowCore(HandleRef hwnd) override;
-
-      public: void Initialize();
-      public: void Update(Int32 x, Int32 y, Int32 width, Int32 height);
-   };
-
+namespace Renfrew.Core.Grammars.MousePlot {
+   public interface IZoomWindow : IWindow {
+      void SetSource(Int32 x, Int32 y, Int32 width, Int32 height);
+      void SetSource(Rectangle sourceRectangle);
+   }
 }

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,17 +41,33 @@ namespace Magnifier_Tester {
    public partial class MainWindow : Window {
       private Magnifier _magnifier;
 
+      private Timer _tmr = null;
+
+
       public MainWindow() {
          InitializeComponent();
          _magnifier = new Magnifier();
+
+
+         _tmr = new Timer(state =>
+         {
+            _magnifier.Update(1920 / 2 - 150, 1080 / 2 - 150);
+            _tmr.Change(1, Timeout.Infinite);
+         }, null, 1, Timeout.Infinite);
+        
       }
-
+      
       private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
-         var z = new ZoomWindow();
-         z.Show();
+         //var z = new ZoomWindow();
 
-         _magnifierSurface.Child = _magnifier;
-         _magnifier.Initialize();
+         //z.Show();
+
+         //z.Magnifier.Child = _magnifier;
+         //_magnifier.Initialize();
+
+         //_tmr.Change(1, 10);
+
+         //WindowState = WindowState.Minimized;
       }
    }
 }
