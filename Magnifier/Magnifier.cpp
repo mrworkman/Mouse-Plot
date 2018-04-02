@@ -37,31 +37,32 @@ Magnifier::Magnifier() {
    _magnifierHwnd = nullptr;
 }
 
-HandleRef Magnifier::BuildWindowCore(HandleRef hwndParent) {
+HandleRef Magnifier::BuildWindowCore(HandleRef handleRef) {
    _hInstance = GetModuleHandle(nullptr);
    
    _parentHwnd = CreateWindow(
       TEXT("STATIC"), nullptr,
       WS_CHILD | WS_VISIBLE,
       0, 0, 100, 100, // x, y, w, h
-      (HWND) hwndParent.Handle.ToPointer(),
+      (HWND) handleRef.Handle.ToPointer(),
       nullptr,
       _hInstance,
       0
    );
 
+   if (_parentHwnd == nullptr)
+      throw gcnew Exception("Failed to create host window. Error Code: " + GetLastError());
+
    return HandleRef(this, IntPtr(_parentHwnd));
 }
 
-void Magnifier::DestroyWindowCore(HandleRef hwnd) {
+void Magnifier::DestroyWindowCore(HandleRef handleRef) {
 
 }
 
 void Magnifier::Initialize() {
-
-   if (MagInitialize() == FALSE) {
-      throw gcnew ApplicationException("Could not initialize magnification subsystem.");
-   }
+   if (MagInitialize() == FALSE)
+      throw gcnew Exception("Could not initialize magnification subsystem.");
 
    _magnifierHwnd = CreateWindow(
       WC_MAGNIFIER, TEXT("MagnifierWindow"),
@@ -73,26 +74,24 @@ void Magnifier::Initialize() {
       _hInstance, NULL
    );
 
-   if (_magnifierHwnd == nullptr) {
-      DWORD res = GetLastError();
+   if (_magnifierHwnd == nullptr)
+      throw gcnew Exception("Failed to create magnifier window. Error Code: " + GetLastError());
+   
+   SetMagnification(3);
+   Update(0, 0, 100, 100);
+}
 
-      Debug::WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Result: " + res);
-   }
+void Magnifier::SetMagnification(Int32 factor) {
+   if (factor < 0)
+      throw gcnew ArgumentOutOfRangeException("factor must be a positive number!");
 
    MAGTRANSFORM matrix;
    memset(&matrix, 0, sizeof(matrix));
-   matrix.v[0][0] = 3;
-   matrix.v[1][1] = 3;
+   matrix.v[0][0] = factor;
+   matrix.v[1][1] = factor;
    matrix.v[2][2] = 1.0f;
 
    MagSetWindowTransform(_magnifierHwnd, &matrix);
-
-   //HRESULT result = GetLastError();
-
-   //MessageBox::Show("ERROR: " + result.ToString());
-
-   RECT r = { 0, 0, 100, 100 };
-   MagSetWindowSource(_magnifierHwnd, r);
 }
 
 void Magnifier::Update(Int32 x, Int32 y, Int32 width, Int32 height) {

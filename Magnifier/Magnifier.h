@@ -33,6 +33,7 @@ namespace Renfrew {
       protected: virtual void DestroyWindowCore(HandleRef hwnd) override;
 
       public: void Initialize();
+      public: void SetMagnification(Int32 factor);
       public: void Update(Int32 x, Int32 y, Int32 width, Int32 height);
    };
 

@@ -371,15 +371,6 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
             Cursor.Position = new Point(mouseX, mouseY);
 
-            // TODO: Change to use local bitmap that won't get disposed prematurely
-            // RenderMouseCursor();
-
-            //_zoomWindow.DrawMouseCursor(
-            //   _cursorBitmap,
-            //   GetZoomedCellXCoord(GetCoordinateOrdinal(x)),
-            //   GetZoomedCellYCoord(GetCoordinateOrdinal(y))
-            //);
-
             return;
          }
 
@@ -394,40 +385,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          Zoom(x, y);
 
          Cursor.Position = new Point(mouseX, mouseY);
-
-         //RenderMouseCursor();
-
-         //_zoomWindow.DrawMouseCursor(
-         //   _cursorBitmap,
-         //   GetZoomedCellXCoord(4),
-         //   GetZoomedCellYCoord(4)
-         //);
       }
-
-      //private void RenderMouseCursor() {
-      //   if (_cursorBitmap != null) {
-      //      _cursorBitmap.Dispose();
-      //   }
-
-      //   _cursorBitmap = new Bitmap(100, 100);
-
-      //   var c = Cursor.Current;
-
-      //   // Cursor.Current doesn't seem to actually reflect the real cursor displayed :/
-      //   c = Cursors.Arrow;
-
-      //   using (var g = Graphics.FromImage(_cursorBitmap)) {
-      //      g.InterpolationMode = InterpolationMode.NearestNeighbor;
-      //      g.PixelOffsetMode = PixelOffsetMode.None;
-
-      //      g.FillRectangle(Brushes.Transparent, 0, 0, 100, 100);
-      //      g.DrawIcon(Icon.FromHandle(c.Handle), new Rectangle(
-      //         0, 0,
-      //         c.Size.Width * 3,
-      //         c.Size.Height * 3
-      //      ));
-      //   }
-      //}
 
       private void SetColour(String colourName) {
          if (Enum.TryParse(colourName, out GridColour colour) == false)
@@ -485,15 +443,11 @@ namespace Renfrew.Core.Grammars.MousePlot {
          if (mouseY + offsetY + _zoomWindow.Height >= _currentScreen.Bounds.Bottom)
             offsetY = -offsetY - (Int32) _zoomWindow.Height;
 
-         // Take a screenshot that will act as our zoomed image.
-         //TakeScreenshot(cellX - 2, cellY - 2, _cellSize.Width + 2, _cellSize.Height + 2);
-
          _cellWindow.Move(cellX-4, cellY-4);
          _cellWindow.Show();
 
          _zoomWindow.SetSource(cellX, cellY, _cellSize.Width, _cellSize.Height);
 
-         //_zoomWindow.SetImage(_bitmap);
          _zoomWindow.Move(mouseX + offsetX, mouseY + offsetY);
          _zoomWindow.Show();
 

@@ -88,59 +88,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
          return ((char)('A' + i - 10)).ToString();
       }
 
-      //public override void SetImage(Bitmap bitmap) {
-      //   if (bitmap == null)
-      //      throw new ArgumentNullException(nameof(bitmap));
-
-      //   Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-      //      using (var s = new MemoryStream())
-      //      {
-      //         bitmap.Save(s, ImageFormat.Bmp);
-      //         s.Seek(0, SeekOrigin.Begin);
-
-      //         var bitmapImage = new BitmapImage();
-      //         bitmapImage.BeginInit();
-      //         bitmapImage.StreamSource = s;
-      //         bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-      //         bitmapImage.EndInit();
-
-
-      //         _screenshot.Fill = new ImageBrush(bitmapImage);
-      //      }
-      //   }));
-      //}
-
-      //public override void DrawMouseCursor(Bitmap bitmap, int x, int y) {
-      //   if (bitmap == null)
-      //      throw new ArgumentNullException(nameof(bitmap));
-
-      //   Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-      //      using (var s = new MemoryStream())
-      //      {
-      //         bitmap.Save(s, ImageFormat.Png);
-      //         s.Seek(0, SeekOrigin.Begin);
-
-      //         var bitmapImage = new BitmapImage();
-      //         bitmapImage.BeginInit();
-      //         bitmapImage.StreamSource = s;
-      //         bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-      //         bitmapImage.EndInit();
-
-      //         _mouseLabel.Background = new ImageBrush(bitmapImage);
-      //         _mouseLabel.Margin = new Thickness(x + 26, y + 26, 0, 0);
-      //      }
-      //   }));
-      //}
-
-      //public Border Magnifier {
-      //   get { return _magnifierSurface; }
-      //   set { _magnifierSurface = value; }
-      //}
-
       public override void Close() {
          base.Close();
 
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => { _popup.IsOpen = false; }));
+         // Hide the overlaid grid (popup)
+         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+            _popup.IsOpen = false;
+         }));
       }
 
       public void SetSource(Int32 x, Int32 y, Int32 width, Int32 height) {
@@ -154,16 +108,15 @@ namespace Renfrew.Core.Grammars.MousePlot {
       public override void Show() {
          base.Show();
 
-
+         // Show the overlaid grid (popup)
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             _popup.IsOpen = true;
 
+            // Re-position relative to the parent window
             _popup.HorizontalOffset = -20;
             _popup.VerticalOffset = -20;
          }));
-         
+        
       }
-
-
    }
 }
