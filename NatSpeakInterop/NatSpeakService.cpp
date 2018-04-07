@@ -73,6 +73,7 @@ IntPtr NatSpeakService::CreateSiteObject() {
    }
    finally {
       Marshal::Release(i);
+      Marshal::ReleaseComObject(idgnSite);
    }
 
    return sitePtr;
@@ -85,6 +86,8 @@ void NatSpeakService::Disconnect() {
       _isrCentral->UnRegister(_key);
       _key = 0;
    }
+
+   ReleaseGrammarService();
 
    Marshal::ReleaseComObject(_isrCentral);
    Marshal::ReleaseComObject(_idgnSpeechServices);
@@ -221,6 +224,10 @@ void NatSpeakService::RegisterPlaybackSink() {
    _idgnSSvcInterpreter->Register(i);
 
    Marshal::Release(i);
+}
+
+void NatSpeakService::ReleaseGrammarService() {
+   delete _grammarService;
 }
 
 void NatSpeakService::ReleaseSiteObject(IntPtr sitePtr) {

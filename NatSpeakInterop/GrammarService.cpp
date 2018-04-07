@@ -48,7 +48,12 @@ GrammarService::GrammarService(ISrCentral ^isrCentral,
 }
 
 GrammarService::~GrammarService() {
+   auto grammars = gcnew List<IGrammar^>(_grammars->Keys);
 
+   Debug::WriteLine("GrammarService: Releasing.");
+
+   for each (auto g in grammars)
+      UnloadGrammar(g);
 }
 
 void GrammarService::ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName) {
@@ -304,6 +309,8 @@ void GrammarService::SetExclusiveGrammar(IGrammar ^grammar, bool exclusive) {
 void GrammarService::UnloadGrammar(IGrammar ^grammar) {
    if (grammar == nullptr)
       throw gcnew ArgumentNullException("grammar");
+
+   Debug::WriteLine("GrammarService: Unloading " + grammar + ".");
 
    auto ge = RemoveGrammarFromList(grammar);
 

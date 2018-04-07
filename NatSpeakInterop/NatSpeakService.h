@@ -49,6 +49,8 @@ namespace Renfrew::NatSpeakInterop {
       public: ~NatSpeakService();
 
       private: void CreateGrammarService();
+      private: void ReleaseGrammarService();
+
       private: void InitializeIsrCentral(::IServiceProvider *pServiceProvider);
       private: void InitializeSpeechServicesInterfaces();
       private: void InitializeSrEngineControlInterface();
