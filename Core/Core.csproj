@@ -166,6 +166,10 @@
       <Project>{0b7df2f5-d3ad-415d-8b73-b8b9b9efe75d}</Project>
       <Name>NatSpeakInterop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Win32Interop\Win32Interop.vcxproj">
+      <Project>{713c548e-95a4-47c9-b381-23db5f20f091}</Project>
+      <Name>Win32Interop</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\app.ico" />
