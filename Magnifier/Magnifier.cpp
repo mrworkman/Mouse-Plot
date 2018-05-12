@@ -29,14 +29,18 @@ using namespace System::Runtime::InteropServices;
 using namespace System::Diagnostics;
 
 #include "Magnifier.h"
+#include "MagnifierException.h"
 
-using namespace Renfrew;
+using namespace Renfrew::Utility;
 
+/// <summary>Creates a new Magnifier surface.</summary>
 Magnifier::Magnifier() {
    _parentHwnd = nullptr;
    _magnifierHwnd = nullptr;
 }
 
+/// <summary>Binds the Magnifier to the given WPF surface/window.</summary>
+/// <param name="handleRef">The window handle of the parent window.</param>
 HandleRef Magnifier::BuildWindowCore(HandleRef handleRef) {
    _hInstance = GetModuleHandle(nullptr);
 
@@ -51,15 +55,23 @@ HandleRef Magnifier::BuildWindowCore(HandleRef handleRef) {
    );
 
    if (_parentHwnd == nullptr)
-      throw gcnew Exception("Failed to create host window. Error Code: " + GetLastError());
+      throw gcnew MagnifierException("Failed to create magnifier host window.", GetLastError());
 
    return HandleRef(this, IntPtr(_parentHwnd));
 }
 
+/// <summary>Unbinds the Magnifier from the given WPF surface/window.</summary>
+/// <param name="handleRef">The window handle of the parent window.</param>
 void Magnifier::DestroyWindowCore(HandleRef handleRef) {
+   if (DestroyWindow(_parentHwnd) == TRUE)
+      return;
 
+   throw gcnew MagnifierException("Failed to destroy magnifier host window.", GetLastError());
 }
 
+/// <summary>
+/// Initializes the magnifier.
+/// </summary>
 void Magnifier::Initialize() {
    if (MagInitialize() == FALSE)
       throw gcnew Exception("Could not initialize magnification subsystem.");
@@ -75,27 +87,51 @@ void Magnifier::Initialize() {
    );
 
    if (_magnifierHwnd == nullptr)
-      throw gcnew Exception("Failed to create magnifier window. Error Code: " + GetLastError());
+      throw gcnew MagnifierException("Failed to create magnifier window.", GetLastError());
 
    SetMagnification(3);
    Update(0, 0, 100, 100);
 }
 
+/// <summary>
+/// Sets the magnification factor.
+/// </summary>
+/// <param name="factor">The factor to multiply the zoom-level by.</param>
 void Magnifier::SetMagnification(Int32 factor) {
    if (factor < 0)
       throw gcnew ArgumentOutOfRangeException("factor must be a positive number!");
 
    MAGTRANSFORM matrix;
    memset(&matrix, 0, sizeof(matrix));
-   matrix.v[0][0] = factor;
-   matrix.v[1][1] = factor;
+   matrix.v[0][0] = (float) factor;
+   matrix.v[1][1] = (float) factor;
    matrix.v[2][2] = 1.0f;
 
-   MagSetWindowTransform(_magnifierHwnd, &matrix);
+   if (MagSetWindowTransform(_magnifierHwnd, &matrix) == TRUE)
+      return;
+
+   throw gcnew MagnifierException("Failed to set magnification factor.", GetLastError());
 }
 
+/// <summary>
+/// Updates the magnifier surface with a new source rectangle.
+/// </summary>
+/// <param name="x">
+/// The offset, in pixels, from the left edge of the primary screen where the
+/// source rectangle starts (can be negative).
+/// </param>
+/// <param name="y">
+/// The offset, in pixels, from the top edge of the primary screen where the
+/// source rectangle starts (can be negative).
+/// </param>
+/// <param name="width">The width of the source rectangle, in pixels.</param>
+/// <param name="height">The height of the source rectangle, in pixels.</param>
 void Magnifier::Update(Int32 x, Int32 y, Int32 width, Int32 height) {
    RECT r = { x, y, width, height };
-   MagSetWindowSource(_magnifierHwnd, r);
+
+   if (MagSetWindowSource(_magnifierHwnd, r) == TRUE)
+      return;
+
+   throw gcnew MagnifierException("Failed to update magnifier.", GetLastError());
 }
 

@@ -17,24 +17,19 @@
 
 #pragma once
 
-using namespace System;
-
 namespace Renfrew::Utility {
+   public ref class MagnifierException : System::Exception {
+      private: System::String ^_internalErrorMessage;
+      private: int _errorCode;
 
-   public ref class Magnifier : public HwndHost {
-      private: HWND _parentHwnd;
-      private: HWND _magnifierHwnd;
-      private: HINSTANCE _hInstance;
+      public: MagnifierException(System::String ^message, int errorCode);
 
-      public: Magnifier();
+      public: property int ErrorCode {
+         int get();
+      }
 
-      // From HwndHost
-      protected: virtual HandleRef BuildWindowCore(HandleRef handleRef) override;
-      protected: virtual void DestroyWindowCore(HandleRef handleRef) override;
-
-      public: void Initialize();
-      public: void SetMagnification(Int32 factor);
-      public: void Update(Int32 x, Int32 y, Int32 width, Int32 height);
+      public: property System::String ^InternalErrorMessage {
+         System::String ^get();
+      }
    };
-
 }
