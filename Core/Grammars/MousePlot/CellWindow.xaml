@@ -23,7 +23,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Renfrew.Core.Grammars.MousePlot"
         mc:Ignorable="d"
-        Title="CellWindow" Height="100" Width="100"
+        Title="CellWindow" Height="108" Width="108"
 
         AllowsTransparency="True"
         WindowStyle="None"

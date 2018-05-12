@@ -32,14 +32,14 @@ namespace GrammarTests {
       private MousePlotGrammar _grammar;
 
       private Mock<IWindow> _plotWindowMock;
-      private Mock<IWindow> _zoomWindowMock;
       private Mock<IWindow> _cellWindowMock;
+      private Mock<IZoomWindow> _zoomWindowMock;
 
       [SetUp]
       public void SetUp() {
          _screenMock = new Mock<IScreen>(MockBehavior.Strict);
          _plotWindowMock = new Mock<IWindow>();
-         _zoomWindowMock = new Mock<IWindow>();
+         _zoomWindowMock = new Mock<IZoomWindow>();
          _cellWindowMock = new Mock<IWindow>();
 
          _grammar = new MousePlotGrammar(
@@ -351,11 +351,11 @@ namespace GrammarTests {
          // Assert
          _plotWindowMock.Verify(e => e.Close(), Times.Once);
 
-         _zoomWindowMock.Verify(e => e.SetImage(It.IsAny<Bitmap>()), Times.Once);
-         _zoomWindowMock.Verify(e => e.Move(200.0, 200.0), Times.Once);
+         //_zoomWindowMock.Verify(e => e.SetImage(It.IsAny<Bitmap>()), Times.Once);
+         _zoomWindowMock.Verify(e => e.Move(225, 225), Times.Once);
          _zoomWindowMock.Verify(e => e.Show(), Times.Once);
 
-         _cellWindowMock.Verify(e => e.Move(100.0, 100.0), Times.Once);
+         _cellWindowMock.Verify(e => e.Move(96.0, 96.0), Times.Once);
          _cellWindowMock.Verify(e => e.Show(), Times.Once);
       }
 
@@ -373,13 +373,13 @@ namespace GrammarTests {
 
          Int32 cellSize = 100;
          Int32 zoomWindowSize = 350;
-         Int32 zoomx = ox + cellSize;
-         Int32 zoomy = oy + cellSize;
+         Int32 zoomx = ox + cellSize + 25;
+         Int32 zoomy = oy + cellSize + 25;
 
          if (ox + zoomWindowSize > 1920)
-            zoomx -= zoomWindowSize + cellSize;
+            zoomx -= zoomWindowSize + cellSize + 50;
          if (oy + zoomWindowSize > 1080)
-            zoomy -= zoomWindowSize + cellSize;
+            zoomy -= zoomWindowSize + cellSize + 50;
 
          _zoomWindowMock.Setup(e => e.Width).Returns(zoomWindowSize);
          _zoomWindowMock.Setup(e => e.Height).Returns(zoomWindowSize);
@@ -388,7 +388,7 @@ namespace GrammarTests {
          _grammar.Zoom(x, y);
 
          // Assert
-         _cellWindowMock.Verify(e => e.Move(ox, oy), Times.Once);
+         _cellWindowMock.Verify(e => e.Move(ox - 4, oy - 4), Times.Once);
          _zoomWindowMock.Verify(e => e.Move(zoomx, zoomy), Times.Once);
       }
 

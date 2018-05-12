@@ -1,5 +1,5 @@
 ﻿// Project Renfrew
-// Copyright(C) 2017 Stephen Workman (workman.stephen@gmail.com)
+// Copyright(C) 2018 Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,20 +15,20 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-using System;
-using System.Windows;
+#pragma once
 
-namespace Renfrew.Core.Grammars.MousePlot {
-   public interface IWindow {
-      void Close();
-      void Focus();
-      void Move(Double x, Double y);
-      void Show();
-      bool? ShowDialog();
+#include "MouseButtons.h"
 
-      double Height { get; }
-      double Width { get; }
+namespace Renfrew::Win32::Interop {
+   public ref class Mouse abstract {
+      public: static void Animate(int startX, int startY, int endX, int endY);
+      public: static void Animate(int startX, int startY, int endX, int endY, int stepSize);
 
-      void SetColour(GridColour colour);
-   }
+      public: static void Click(MouseButtons buttons);
+
+      public: static void Down(MouseButtons buttons);
+      public: static void Up(MouseButtons buttons);
+
+      public: static void SetPosition(int x, int y);
+   };
 }

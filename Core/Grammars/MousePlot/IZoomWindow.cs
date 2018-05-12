@@ -1,5 +1,5 @@
 ﻿// Project Renfrew
-// Copyright(C) 2017 Stephen Workman (workman.stephen@gmail.com)
+// Copyright(C) 2018 Stephen Workman (workman.stephen@gmail.com)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,19 +16,11 @@
 //
 
 using System;
-using System.Windows;
+using System.Drawing;
 
 namespace Renfrew.Core.Grammars.MousePlot {
-   public interface IWindow {
-      void Close();
-      void Focus();
-      void Move(Double x, Double y);
-      void Show();
-      bool? ShowDialog();
-
-      double Height { get; }
-      double Width { get; }
-
-      void SetColour(GridColour colour);
+   public interface IZoomWindow : IWindow {
+      void SetSource(Int32 x, Int32 y, Int32 width, Int32 height);
+      void SetSource(Rectangle sourceRectangle);
    }
 }
