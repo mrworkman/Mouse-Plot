@@ -23,8 +23,8 @@ namespace Renfrew::Win32::Interop {
 
       public: Win32InteropException(int errorCode);
 
-      public: property int ^ErrorCode {
-         int ^get();
+      public: property int ErrorCode {
+         int get();
       }
    };
 }

@@ -29,7 +29,7 @@ Win32InteropException::Win32InteropException(int errorCode)
    _errorCode = 0;
 }
 
-int ^Win32InteropException::ErrorCode::get() {
+int Win32InteropException::ErrorCode::get() {
    return _errorCode;
 }
 
