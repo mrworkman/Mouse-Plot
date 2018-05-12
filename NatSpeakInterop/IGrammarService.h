@@ -20,7 +20,7 @@
 namespace Renfrew::NatSpeakInterop {
    public interface class IGrammarService {
       void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName);
-      void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName);
+      void ActivateRule(IGrammar ^grammar, IntPtr hWnd, String ^ruleName);
       void ActivateRules(IGrammar ^grammar);
       void DeactivateRule(IGrammar ^grammar, String ^ruleName);
 

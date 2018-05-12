@@ -86,8 +86,8 @@ void GrammarService::ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName
    }
 }
 
-void GrammarService::ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName) {
-   ActivateRule(grammar, (HWND)hWnd->ToPointer(), ruleName);
+void GrammarService::ActivateRule(IGrammar ^grammar, IntPtr hWnd, String ^ruleName) {
+   ActivateRule(grammar, (HWND) hWnd.ToPointer(), ruleName);
 }
 
 void GrammarService::ActivateRules(IGrammar ^grammar) {

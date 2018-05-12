@@ -43,7 +43,7 @@ namespace Renfrew::NatSpeakInterop {
       private: GrammarExecutive ^GetGrammarExecutive(IGrammar ^grammar);
 
       public: virtual void ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName);
-      public: virtual void ActivateRule(IGrammar ^grammar, IntPtr ^hWnd, String ^ruleName);
+      public: virtual void ActivateRule(IGrammar ^grammar, IntPtr hWnd, String ^ruleName);
       public: virtual void ActivateRules(IGrammar ^grammar);
       public: virtual void DeactivateRule(IGrammar ^grammar, String ^ruleName);
 

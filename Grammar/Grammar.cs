@@ -68,7 +68,7 @@ namespace Renfrew.Grammar {
       }
 
       public void ActivateRule(String name) {
-         _grammarService.ActivateRule(this, (IntPtr) null, name);
+         _grammarService.ActivateRule(this, IntPtr.Zero, name);
 
          if (_activeRules.ContainsKey(name) == false)
             _activeRules.Add(name, _ruleIds[name]);
