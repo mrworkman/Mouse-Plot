@@ -33,7 +33,7 @@ using System.Windows.Threading;
 using Brushes = System.Windows.Media.Brushes;
 using FontFamily = System.Windows.Media.FontFamily;
 
-using Renfrew;
+using Renfrew.Utility;
 
 namespace Renfrew.Core.Grammars.MousePlot {
    /// <summary>
@@ -116,7 +116,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
             _popup.HorizontalOffset = -20;
             _popup.VerticalOffset = -20;
          }));
-        
+
       }
    }
 }
