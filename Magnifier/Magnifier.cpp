@@ -39,7 +39,7 @@ Magnifier::Magnifier() {
 
 HandleRef Magnifier::BuildWindowCore(HandleRef handleRef) {
    _hInstance = GetModuleHandle(nullptr);
-   
+
    _parentHwnd = CreateWindow(
       TEXT("STATIC"), nullptr,
       WS_CHILD | WS_VISIBLE,
@@ -76,7 +76,7 @@ void Magnifier::Initialize() {
 
    if (_magnifierHwnd == nullptr)
       throw gcnew Exception("Failed to create magnifier window. Error Code: " + GetLastError());
-   
+
    SetMagnification(3);
    Update(0, 0, 100, 100);
 }
