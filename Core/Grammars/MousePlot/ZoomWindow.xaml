@@ -23,7 +23,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Renfrew.Core.Grammars.MousePlot"
         mc:Ignorable="d"
-        Title="MainWindow" Width="312" Height="312" 
+        Title="MainWindow" Width="312" Height="312"
 
         AllowsTransparency="False"
         WindowStyle="None"
@@ -54,23 +54,53 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
          </Style>
 
+         <Style x:Key="ZoomRearDigitLabel" TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource BaseThemeContrastColor}" />
+            <Setter Property="Opacity" Value="0.5" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="FontSize" Value="15" />
+
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Width" Value="33.3333" />
+            <Setter Property="Height" Value="33.3333" />
+
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+         </Style>
+
       </ResourceDictionary>
    </Window.Resources>
    <Grid>
-      <Popup Name="_popup"            
+      <Popup Name="_popup"
              Placement="RelativePoint"
              HorizontalAlignment="Left"
              VerticalAlignment="Top"
-             
+
              HorizontalOffset="0"
              VerticalOffset="0"
-             
+
              Width="352" Height="352"
              AllowsTransparency="True"
-             
+
              IsOpen="True"
              >
          <Grid>
+            <Canvas Margin="20,20,20,20" Name="_rearCanvas">
+               <Canvas.RenderTransform>
+                  <TranslateTransform X="1" Y="1"/>
+               </Canvas.RenderTransform>
+               <Canvas.Background>
+                  <VisualBrush TileMode="Tile" Viewport="5,5,33.3333,33.3333" ViewportUnits="Absolute" ViewboxUnits="Absolute">
+                     <VisualBrush.Visual>
+                        <Canvas>
+                           <Line Stroke="{DynamicResource BaseThemeContrastColor}" StrokeThickness=".03" X1="3" StrokeDashArray="1" />
+                           <Line Stroke="{DynamicResource BaseThemeContrastColor}" StrokeThickness=".03" Y1="3" StrokeDashArray="1" />
+                        </Canvas>
+                     </VisualBrush.Visual>
+                  </VisualBrush>
+               </Canvas.Background>
+            </Canvas>
+
             <Border CornerRadius="20" BorderThickness="10" BorderBrush="{DynamicResource BaseThemeColor}" Margin="10,10,10,10">
                <Border.Effect>
                   <DropShadowEffect ShadowDepth="2" />
@@ -82,8 +112,8 @@
                   <VisualBrush TileMode="Tile" Viewport="5,5,33.3333,33.3333" ViewportUnits="Absolute" ViewboxUnits="Absolute">
                      <VisualBrush.Visual>
                         <Canvas>
-                           <Line SnapsToDevicePixels="True" Stroke="{DynamicResource BaseThemeColor}" StrokeThickness=".03" X1="3" StrokeDashArray="1" />
-                           <Line SnapsToDevicePixels="True" Stroke="{DynamicResource BaseThemeColor}" StrokeThickness=".03" Y1="3" StrokeDashArray="1" />
+                           <Line Stroke="{DynamicResource BaseThemeColor}" StrokeThickness=".03" X1="3" StrokeDashArray="1" />
+                           <Line Stroke="{DynamicResource BaseThemeColor}" StrokeThickness=".03" Y1="3" StrokeDashArray="1" />
                         </Canvas>
                      </VisualBrush.Visual>
                   </VisualBrush>

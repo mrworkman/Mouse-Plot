@@ -16,23 +16,12 @@
 //
 
 using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-
-using Brushes = System.Windows.Media.Brushes;
-using FontFamily = System.Windows.Media.FontFamily;
-
 using Renfrew.Utility;
 
 namespace Renfrew.Core.Grammars.MousePlot {
@@ -66,7 +55,15 @@ namespace Renfrew.Core.Grammars.MousePlot {
                   Margin = new Thickness(5 + i * 33.3333, 5 + j * 33.3333, 0, 0),
                };
 
+               var rearLabel = new Label {
+                  Style = Resources["ZoomRearDigitLabel"] as Style,
+                  Content = $"{GetDigitValue(j)}{GetDigitValue(i)}",
+
+                  Margin = new Thickness(5 + i * 33.3333, 5 + j * 33.3333, 0, 0),
+               };
+
                _mainCanvas.Children.Add(label);
+               _rearCanvas.Children.Add(rearLabel);
             }
          }
 
