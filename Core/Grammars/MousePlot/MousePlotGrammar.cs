@@ -37,6 +37,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
       private IScreen _currentScreen;
       private Size _cellSize = new Size(100, 100);
 
+      private bool _firstLoad = true;
+
       private IWindow _plotWindow;
       private IWindow _cellWindow;
       private IWindow _markArrowWindow;
@@ -152,17 +154,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          AddRule("mouse_plot", e => e
             .Say("Plot")
-               .Do(() => {
-                  ActivateRule("post_plot");
-                  MakeGrammarExclusive();
-
-                  _zoomWindow.Close();
-                  _cellWindow.Close();
-
-                  _plotWindow.Show();
-
-                  _isZoomed = false;
-               })
+               .Do(ShowPlotWindow)
             .OptionallyWithRule("post_plot")
          );
 
@@ -452,6 +444,25 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _zoomWindow.SetColour(colour);
          _cellWindow.SetColour(colour);
          _markArrowWindow.SetColour(colour);
+      }
+
+      public void ShowPlotWindow() {
+         ActivateRule("post_plot");
+         MakeGrammarExclusive();
+
+         _zoomWindow.Close();
+         _cellWindow.Close();
+
+         _plotWindow.Show();
+
+         // Force the plot window onto the primary display if this is the first
+         // time that the window is being shown since application start.
+         if (_firstLoad == true) {
+            _plotWindow.Move(0, 0);
+            _firstLoad = false;
+         }
+
+         _isZoomed = false;
       }
 
       private void SwitchScreen(Int32 screenNumber) {
