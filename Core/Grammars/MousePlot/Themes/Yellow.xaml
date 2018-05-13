@@ -2,6 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
    <SolidColorBrush x:Key="BaseThemeColor" Color="Yellow" />
-   <SolidColorBrush x:Key="BaseThemeContrastColor" Color="White" />
+   <SolidColorBrush x:Key="BaseThemeContrastColor" Color="Black" />
 
 </ResourceDictionary>
