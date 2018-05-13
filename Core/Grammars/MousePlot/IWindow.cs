@@ -30,5 +30,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
       double Width { get; }
 
       void SetColour(GridColour colour);
+
+      void Rotate(double angle);
    }
 }

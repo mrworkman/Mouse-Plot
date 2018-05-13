@@ -54,7 +54,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          set => base.Height = value;
       }
 
-      public new virtual void Show() {        
+      public new virtual void Show() {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.Show();
          }));
@@ -104,6 +104,6 @@ namespace Renfrew.Core.Grammars.MousePlot {
          });
       }
 
-
+      public virtual void Rotate(double angle) { }
    }
 }
