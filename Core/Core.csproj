@@ -68,6 +68,10 @@
       <DependentUpon>DebugConsole.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Grammars\MousePlot\ArrowWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Grammars\MousePlot\CellWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -110,6 +114,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grammars\MousePlot\ArrowWindow.xaml.cs">
+      <DependentUpon>ArrowWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Grammars\MousePlot\CellWindow.xaml.cs">
       <DependentUpon>CellWindow.xaml</DependentUpon>
     </Compile>

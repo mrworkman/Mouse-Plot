@@ -1,0 +1,63 @@
+﻿<!--
+ Project Renfrew
+ Copyright(C) 2018 Stephen Workman (workman.stephen@gmail.com)
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.If not, see<http://www.gnu.org/licenses/>.
+
+-->
+<local:BaseWindow x:Class="Renfrew.Core.Grammars.MousePlot.ArrowWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Renfrew.Core.Grammars.MousePlot"
+        mc:Ignorable="d"
+        Title="ArrowWindow" Height="60" Width="60"
+
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Topmost="True"
+>
+    <Window.Background>
+        <SolidColorBrush Color="White" Opacity="0.0" />
+    </Window.Background>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Yellow.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.RenderTransform>
+        <RotateTransform Angle="0" CenterX="30" CenterY="30" />
+    </Window.RenderTransform>
+    <Grid Margin="5,5,0,0">
+        <Grid.Effect>
+            <DropShadowEffect ShadowDepth="1" />
+        </Grid.Effect>
+        <Line
+            X1="8" Y1="8"
+            X2="50" Y2="50"
+            Stroke="{DynamicResource BaseThemeColor}" StrokeThickness="10px" SnapsToDevicePixels="True" />
+        <Polygon
+            Points="0,0 2,20 20,2"
+            Fill="{DynamicResource BaseThemeColor}" />
+        <!--<TextBlock
+            Text="MARK" FontWeight="Bold" Padding="10,0,0,0">
+            <TextBlock.RenderTransform>
+                <RotateTransform Angle="45" CenterX="0" CenterY="30" />
+            </TextBlock.RenderTransform>
+        </TextBlock>-->
+    </Grid>
+</local:BaseWindow>
