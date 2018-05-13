@@ -39,6 +39,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       private IWindow _plotWindow;
       private IWindow _cellWindow;
+      private IWindow _markArrowWindow;
+
       private IZoomWindow _zoomWindow;
 
       private Point _currentCell = Point.Empty;
@@ -47,6 +49,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       private bool _isZoomed = false;
 
+      private bool  _dragSet = false;
       private Point _dragAnchor = Point.Empty;
 
       #region Word Lists
@@ -122,18 +125,21 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       // For Testing
       public MousePlotGrammar(IGrammarService grammarService, IScreen screen,
-                              IWindow plotWindow, IZoomWindow zoomWindow, IWindow cellWindow)
+                              IWindow plotWindow, IZoomWindow zoomWindow, IWindow cellWindow,
+                              IWindow markArrowWindow)
          : base(grammarService) {
 
-         _currentScreen = screen;
-         _plotWindow = plotWindow;
-         _zoomWindow = zoomWindow;
-         _cellWindow = cellWindow;
+         _currentScreen   = screen;
+         _plotWindow      = plotWindow;
+         _zoomWindow      = zoomWindow;
+         _cellWindow      = cellWindow;
+         _markArrowWindow = markArrowWindow;
       }
 
       public MousePlotGrammar(IGrammarService grammarService)
          : this(grammarService, new TestableScreen().PrimaryScreen,
-              new PlotWindow(), new ZoomWindow(), new CellWindow()) {
+              new PlotWindow(), new ZoomWindow(), new CellWindow(),
+              new ArrowWindow()) {
 
       }
 
@@ -252,6 +258,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _zoomWindow.Close();
          _cellWindow.Close();
          _plotWindow.Close();
+         _markArrowWindow.Close();
       }
 
       public void Drag() {
@@ -259,6 +266,16 @@ namespace Renfrew.Core.Grammars.MousePlot {
          Int32 y = Cursor.Position.Y;
 
          CloseWindows();
+
+         MakeGrammarNotExclusive();
+         DeactivateRule("post_plot");
+
+         // If no start point has been selected, then don't do anything.
+         if (_dragSet == false)
+            return;
+
+         // Show the arrow, wherever it was last time.
+         _markArrowWindow.Show();
 
          var handle = Win32.WindowFromPoint(x, y);
 
@@ -272,6 +289,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          Mouse.Animate(_dragAnchor.X, _dragAnchor.Y, x, y);
          Mouse.Up(MouseButtons.Left);
+
+         CloseWindows();
 
          _isZoomed = false;
       }
@@ -364,10 +383,40 @@ namespace Renfrew.Core.Grammars.MousePlot {
          Int32 x = Cursor.Position.X;
          Int32 y = Cursor.Position.Y;
 
+         MakeGrammarNotExclusive();
+         DeactivateRule("post_plot");
+
          CloseWindows();
 
          _dragAnchor = new Point(x, y);
+         _dragSet    = true;
          _isZoomed   = false;
+
+         Int32  offsetX = x;
+         Int32  offsetY = y;
+         double angle = 0;
+
+         // Position and rotate the "mark" arrow
+
+         if (offsetX + _markArrowWindow.Width >= _currentScreen.Bounds.Right) {
+            offsetX = x - (Int32) _markArrowWindow.Width;
+            angle = 90;
+         }
+
+         if (offsetY + _markArrowWindow.Height >= _currentScreen.Bounds.Bottom) {
+            offsetY = y - (Int32) _markArrowWindow.Height;
+
+            if (offsetX == x) {
+               angle = -90;
+            } else {
+               angle = 180;
+            }
+         }
+
+         _markArrowWindow.Rotate(angle);
+         _markArrowWindow.Move(offsetX, offsetY);
+
+         _markArrowWindow.Show();
       }
 
       public void MoveCursor(String x, String y) {
