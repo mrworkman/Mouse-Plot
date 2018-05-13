@@ -451,6 +451,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _plotWindow.SetColour(colour);
          _zoomWindow.SetColour(colour);
          _cellWindow.SetColour(colour);
+         _markArrowWindow.SetColour(colour);
       }
 
       private void SwitchScreen(Int32 screenNumber) {
