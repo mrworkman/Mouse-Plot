@@ -33,6 +33,8 @@ namespace Renfrew::NatSpeakInterop {
 
       private: Dictionary<IGrammar^, GrammarExecutive^> ^_grammars;
 
+      private: HashSet<String^> ^_activeRules;
+
       public: GrammarService(ISrCentral ^isrCentral,
                              IDgnSrEngineControl ^idgnSrEngineControl);
       public: ~GrammarService();

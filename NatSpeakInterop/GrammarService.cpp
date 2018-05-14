@@ -45,6 +45,7 @@ GrammarService::GrammarService(ISrCentral ^isrCentral,
    _idgnSrEngineControl = idgnSrEngineControl;
 
    _grammars = gcnew Dictionary<IGrammar^, GrammarExecutive^>();
+   _activeRules = gcnew HashSet<String^>();
 }
 
 GrammarService::~GrammarService() {
@@ -71,10 +72,13 @@ void GrammarService::ActivateRule(IGrammar ^grammar, HWND hWnd, String ^ruleName
    // TODO: Check that the grammar actually has the matching rule name!
 
    try {
-      ge->GramCommonInterface->Activate(
-         hWnd, // TODO: Set to hWnd (where applicable)
-         false, wstrRuleName
-      );
+      if (_activeRules->Contains(ruleName) == false) {
+         ge->GramCommonInterface->Activate(
+            hWnd, // TODO: Set to hWnd (where applicable)
+            false, wstrRuleName
+         );
+         _activeRules->Add(ruleName);
+      }
    } catch (COMException ^e) {
       if (e->HResult == SrErrorCodes::SRERR_INVALIDRULE)
          throw gcnew GrammarException(String::Format("Invalid Rule: {0}!", ruleName), e);
@@ -116,9 +120,12 @@ void GrammarService::DeactivateRule(IGrammar ^grammar, String ^ruleName) {
    // TODO: Check that the grammar actually has the matching rule name!
 
    try {
-      ge->GramCommonInterface->Deactivate(
-         wstrRuleName
-      );
+      if (_activeRules->Contains(ruleName) == true) {
+         ge->GramCommonInterface->Deactivate(
+            wstrRuleName
+         );
+         _activeRules->Remove(ruleName);
+      }
    } catch (COMException ^e) {
       if (e->HResult == SrErrorCodes::SRERR_RULENOTACTIVE)
          throw gcnew GrammarException(String::Format("Rule Is Not Active: {0}!", ruleName), e);
