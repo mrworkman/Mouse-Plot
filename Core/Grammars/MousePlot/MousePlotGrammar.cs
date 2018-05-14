@@ -109,7 +109,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          "Triple Click", "Right Triple",
          "Middle Click",
       };
-      private Dictionary<String, Int32> _screenList = new Dictionary<String, Int32> {
+      private Dictionary<String, Int32> _numbersList = new Dictionary<String, Int32> {
          { "One",    1 },
          { "Two",    2 },
          { "Three",  3 },
@@ -164,8 +164,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
                p => p
                   .SayOneOf("Monitor", "Screen")
-                  .SayOneOf(_screenList.Keys)
-                  .Do(spokenWords => SwitchScreen( _screenList[spokenWords.Last()] )),
+                  .SayOneOf(_numbersList.Keys)
+                  .Do(spokenWords => SwitchScreen( _numbersList[spokenWords.Last()] )),
 
                p => p.SayOneOf(_colourList)
                   .Do(spokenWords => SetColour(spokenWords.First())),
@@ -235,6 +235,14 @@ namespace Renfrew.Core.Grammars.MousePlot {
             })
          );
 
+         AddRule("mouse_nudge", e => e
+            .SayOneOf("Up", "Down", "Left", "Right")
+            .Optionally(p => p
+               .SayOneOf(_numbersList.Keys)
+            )
+            .Do(spokenWords => NudgeCursor(spokenWords.ToArray()))
+         );
+
          Load();
 
          ActivateRule("mouse_plot");
@@ -251,6 +259,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _cellWindow.Close();
          _plotWindow.Close();
          _markArrowWindow.Close();
+
+         DeactivateRule("mouse_nudge");
       }
 
       public void Drag() {
@@ -432,8 +442,65 @@ namespace Renfrew.Core.Grammars.MousePlot {
          );
 
          Zoom(x, y);
+         ActivateRule("mouse_nudge");
 
          Mouse.SetPosition(mouseX, mouseY);
+      }
+
+      public void NudgeCursor(String[] spokenWords) {
+         String direction = spokenWords[0];
+         String countStr = null;
+
+         if (spokenWords.Length == 2)
+            countStr = spokenWords[1];
+
+         Int32 count = 1;
+
+         if (countStr != null)
+            count = _numbersList[countStr];
+
+         var x = Cursor.Position.X;
+         var y = Cursor.Position.Y;
+
+         for (int i = 0; i < count; i++) {
+            switch (direction) {
+               case "Up":
+                  y--;
+                  break;
+               case "Down":
+                  y++;
+                  break;
+               case "Left":
+                  x--;
+                  break;
+               case "Right":
+                  x++;
+                  break;
+            }
+         }
+
+         // Keep the pointer from leaving the "cell" window
+
+         var borderThickness = 4;
+
+         var left   = _cellWindow.Left + borderThickness;
+         var top    = _cellWindow.Top + borderThickness;
+         var right  = left + _cellWindow.Width - borderThickness * 2 - 1;
+         var bottom = top + _cellWindow.Height - borderThickness * 2 - 1;
+
+         if (x >= right)
+            x = (Int32) right;
+         else if (x < left)
+            x = (Int32) left;
+
+         if (y >= bottom)
+            y = (Int32) bottom;
+         else if (y < top)
+            y = (Int32) top;
+
+         // Move the pointer
+
+         Mouse.SetPosition(x, y);
       }
 
       private void SetColour(String colourName) {
@@ -447,6 +514,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
       }
 
       public void ShowPlotWindow() {
+         CloseWindows();
+
          ActivateRule("post_plot");
          MakeGrammarExclusive();
 
