@@ -16,12 +16,7 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -51,7 +46,14 @@ namespace Renfrew.Core.Grammars.MousePlot {
          get {
             return (double)Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Height));
          }
-         set => base.Height = value;
+         protected set => base.Height = value;
+      }
+
+      public new double Left {
+         get {
+            return (double)Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Left));
+         }
+         protected set => base.Left = value;
       }
 
       public new virtual void Show() {
@@ -66,15 +68,22 @@ namespace Renfrew.Core.Grammars.MousePlot {
          }));
       }
 
+      public new double Top {
+         get {
+            return (double)Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Top));
+         }
+         protected set => base.Top = value;
+      }
+
       public new double Width {
          get {
             return (double)Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Width));
          }
-         set => base.Width = value;
+         protected set => base.Width = value;
       }
       #endregion
 
-      public virtual void Move(Double x, Double y) {
+      public virtual void Move(double x, double y) {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             Left = x;
             Top = y;

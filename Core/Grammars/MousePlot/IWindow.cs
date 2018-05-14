@@ -22,9 +22,12 @@ namespace Renfrew.Core.Grammars.MousePlot {
    public interface IWindow {
       void Close();
       void Focus();
-      void Move(Double x, Double y);
+      void Move(double x, double y);
       void Show();
       bool? ShowDialog();
+
+      double Left { get; }
+      double Top { get; }
 
       double Height { get; }
       double Width { get; }
