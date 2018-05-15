@@ -24,5 +24,7 @@ namespace Renfrew::Win32::Interop {
       public: static void SetForegroundWindow(WindowHandle ^handle);
 
       public: static WindowHandle ^WindowFromPoint(int x, int y);
+
+      public: static void SendKeystrokes(System::String ^keystrokes);
    };
 }

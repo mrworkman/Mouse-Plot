@@ -54,6 +54,35 @@ void Win32::SetForegroundWindow(WindowHandle ^handle) {
    throw gcnew Win32InteropException(GetLastError());
 }
 
+void Win32::SendKeystrokes(String ^keystrokes) {
+   
+   if (keystrokes == nullptr)
+      throw gcnew ArgumentNullException();
+
+   INPUT input;
+
+   memset(&input, 0, sizeof(INPUT));
+
+   for (int i = 0; i < keystrokes->Length; i++) {
+      Char c = keystrokes[i];
+
+      if (Char::IsLetterOrDigit(c) == true) {
+         c = Char::ToUpper(c);
+
+         input.type = INPUT_KEYBOARD;
+         input.ki.wVk = c;
+
+         SendInput(1, &input, sizeof(INPUT));
+
+         input.ki.dwFlags = KEYEVENTF_KEYUP;
+         SendInput(1, &input, sizeof(INPUT));
+
+      }
+   }
+
+
+}
+
 WindowHandle ^Win32::WindowFromPoint(int x, int y) {
    POINT p = { x, y };
 
