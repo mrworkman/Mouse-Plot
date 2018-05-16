@@ -29,6 +29,7 @@ using namespace Renfrew::NatSpeakInterop::Sinks;
 
 NatSpeakService::NatSpeakService() {
    _key = 0;
+   _playbackCode = 0;
 }
 
 NatSpeakService::~NatSpeakService() {
@@ -190,6 +191,35 @@ void NatSpeakService::InitializeSpeechServicesInterfaces() {
 
 void NatSpeakService::InitializeSrEngineControlInterface() {
    _idgnSrEngineControl = (IDgnSrEngineControl ^)_isrCentral;
+}
+
+void NatSpeakService::PlayString(String ^str) {
+
+   if (str == nullptr)
+      throw gcnew ArgumentNullException();
+
+   HRESULT result;
+   DWORD dwNumUndo;
+   BSTR bstr;
+
+   auto ptr = Marshal::StringToBSTR(str);
+
+   bstr = static_cast<BSTR>(ptr.ToPointer());
+   pin_ptr<BSTR> b = &bstr;
+
+   result = _idgnSSvcOutputEvent->PlayString(
+      bstr,
+      HOOK_F_DEFERTERMINATION,
+      -1,            // <-- delay?
+      _playbackCode, // <-- required?
+      &dwNumUndo     // <-- unused
+   );
+
+   // FIXME: Throw more appropriate exception
+   if (FAILED(result))
+      throw gcnew Exception("PlayString failed!");
+
+   Marshal::FreeBSTR(ptr);
 }
 
 void NatSpeakService::RegisterEngineSink() {

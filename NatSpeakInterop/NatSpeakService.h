@@ -32,7 +32,7 @@
 
 namespace Renfrew::NatSpeakInterop {
    public ref class NatSpeakService {
-      
+
       private: ::IServiceProvider *_piServiceProvider;
 
       private: ISrCentral ^_isrCentral = nullptr;
@@ -44,6 +44,7 @@ namespace Renfrew::NatSpeakInterop {
       private: GrammarService ^_grammarService = nullptr;
 
       private: DWORD _key;
+      private: DWORD _playbackCode;
 
       public: NatSpeakService();
       public: ~NatSpeakService();
@@ -84,5 +85,7 @@ namespace Renfrew::NatSpeakInterop {
       public: property ISrCentral ^SrCentral {
          ISrCentral ^get();
       };
+
+      public: void PlayString(String ^str);
    };
 }
