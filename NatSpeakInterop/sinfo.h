@@ -24,6 +24,17 @@
 #define ISRNOTEFIN_THISGRAMMAR     0x02
 #define ISRNOTEFIN_FROMTHISGRAMMAR 0x04
 
+// Related to IDgnSSvcOutputEvent (PlayString, in particular)
+#define HOOK_F_SHIFT             0x001 // Add SHIFT to the first character in the string
+#define HOOK_F_ALT               0x002 // Add ALT to the first character in the string
+#define HOOK_F_CTRL              0x004 // Add CTRL to the first character in the string
+#define HOOK_F_RIGHTSHIFT        0x008 // Add RIGHT SHIFT to the first character in the string
+#define HOOK_F_RIGHTALT          0x010 // Add RIGHT ALT to the first character in the string
+#define HOOK_F_RIGHTCTRL         0x020 // Add RIGHT CTRL to the first character in the string
+#define HOOK_F_EXTENDED          0x040 // Use the extended keyboard version of the first character in the string
+#define HOOK_F_DEFERTERMINATION  0x100 // Defer termination of PlayString until the event queue is emptied
+#define HOOK_F_SYSTEMKEYS        0x200 // Use kbd_event()/mouse_event() instead of JournalPlayback
+
 typedef enum {
    SRGRMFMT_CFG                 = 0x0000,
    SRGRMFMT_LIMITEDDOMAIN       = 0x0001,
