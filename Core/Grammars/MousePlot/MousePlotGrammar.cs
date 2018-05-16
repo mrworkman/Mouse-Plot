@@ -17,22 +17,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
-using Renfrew.Grammar;
-using Renfrew.NatSpeakInterop;
-
 using Cursor = System.Windows.Forms.Cursor;
 
 namespace Renfrew.Core.Grammars.MousePlot {
-   using Renfrew.Win32.Interop;
+   using Grammar;
+   using NatSpeakInterop;
+   using Win32.Interop;
 
    [GrammarExport("Mouse Plot", "A replacement for \"Mouse Grid\".")]
-   public class MousePlotGrammar : Grammar.Grammar {
+   public class MousePlotGrammar : Grammar {
 
       private IScreen _currentScreen;
       private Size _cellSize = new Size(100, 100);
@@ -152,26 +150,30 @@ namespace Renfrew.Core.Grammars.MousePlot {
       public override void Initialize() {
          var alphaWords = _alphaList.Select(e => e.Key).ToArray();
 
+         // The main rule that opens the full-screen plot grid
          AddRule("mouse_plot", e => e
             .Say("Plot")
                .Do(ShowPlotWindow)
             .OptionallyWithRule("post_plot")
          );
 
+         // After the plot grid is displayed
          AddRule("post_plot", e => e
             .OneOf(
                p => p.WithRule("mouse_click"),
 
+               p => p.Say("Dismiss").Do(Dismiss),
+               p => p.Say("Drag").Do(Drag),
+               p => p.Say("Mark").Do(Mark),
+
                p => p
                   .SayOneOf("Monitor", "Screen")
                   .SayOneOf(_numbersList.Keys)
-                  .Do(spokenWords => SwitchScreen( _numbersList[spokenWords.Last()] )),
+                     .Do(spokenWords => SwitchScreen( _numbersList[spokenWords.Last()] )),
 
-               p => p.SayOneOf(_colourList)
-                  .Do(spokenWords => SetColour(spokenWords.First())),
-
-               p => p.Say("Drag").Do(Drag),
-               p => p.Say("Mark").Do(Mark),
+               p => p
+                  .SayOneOf(_colourList)
+                     .Do(spokenWords => SetColour(spokenWords.First())),
 
                p => p
                   .SayOneOf(alphaWords)
@@ -192,49 +194,16 @@ namespace Renfrew.Core.Grammars.MousePlot {
                      o => o.Say("Mark").Do(Mark)
                   )
             )
-            .Do(spokenWords => {
-
-               foreach (var w in spokenWords) {
-                  Debug.WriteLine($"Spoken: {w}");
-               }
-
-            })
          );
 
+         // Mouse movement
          AddRule("mouse_click", e => e
             .OptionallySay("Mouse")
             .SayOneOf(_clickList)
-               .Do(spokenWords => {
-                  MakeGrammarNotExclusive();
-                  DeactivateRule("post_plot");
-
-                  CloseWindows();
-
-                  // Wait a short period to make sure the windows have closed
-                  System.Threading.Thread.Sleep(100);
-
-                  var s = spokenWords.Last();
-                  var b = MouseButtons.Left;
-                  var c = 1;
-
-                  // Which button ?
-                  if (s.Contains("Right") == true)
-                     b = MouseButtons.Right;
-                  if (s.Contains("Middle") == true)
-                     b = MouseButtons.Middle;
-
-                  // How many clicks ?
-                  if (s.Contains("Double") == true)
-                     c = 2;
-                  if (s.Contains("Triple") == true)
-                     c = 3;
-
-                  ClickMouse(b, c);
-
-                  _isZoomed = false;
-            })
+               .Do(Click)
          );
 
+         // Fine-grained movement of the mouse when zoomed
          AddRule("mouse_nudge", e => e
             .SayOneOf("Up", "Down", "Left", "Right")
             .Optionally(p => p
@@ -243,10 +212,41 @@ namespace Renfrew.Core.Grammars.MousePlot {
             .Do(spokenWords => NudgeCursor(spokenWords.ToArray()))
          );
 
+         // Load grammar into the grammar service
          Load();
 
+         // Enable the base rule
          ActivateRule("mouse_plot");
+      }
 
+      private void Click(IEnumerable<String> spokenWords) {
+         MakeGrammarNotExclusive();
+         DeactivateRule("post_plot");
+
+         CloseWindows();
+
+         // Wait a short period to make sure the windows have closed
+         System.Threading.Thread.Sleep(100);
+
+         var s = spokenWords.Last();
+         var b = MouseButtons.Left;
+         var c = 1;
+
+         // Which button ?
+         if (s.Contains("Right") == true)
+            b = MouseButtons.Right;
+         if (s.Contains("Middle") == true)
+            b = MouseButtons.Middle;
+
+         // How many clicks ?
+         if (s.Contains("Double") == true)
+            c = 2;
+         if (s.Contains("Triple") == true)
+            c = 3;
+
+         ClickMouse(b, c);
+
+         _isZoomed = false;
       }
 
       private void ClickMouse(MouseButtons buttons, Int32 times) {
@@ -261,6 +261,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _markArrowWindow.Close();
 
          DeactivateRule("mouse_nudge");
+      }
+
+      private void Dismiss() {
+         CloseWindows();
+
+         MakeGrammarNotExclusive();
+         DeactivateRule("post_plot");
       }
 
       public void Drag() {
@@ -514,8 +521,6 @@ namespace Renfrew.Core.Grammars.MousePlot {
       }
 
       public void ShowPlotWindow() {
-         CloseWindows();
-
          ActivateRule("post_plot");
          MakeGrammarExclusive();
 

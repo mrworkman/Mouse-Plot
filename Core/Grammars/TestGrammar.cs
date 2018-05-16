@@ -36,6 +36,10 @@ namespace Renfrew.Core.Grammars {
          AddRule("test_rule", e =>
             e.Say("hello").Say("jello").Do(() => MessageBox.Show("Hello!"))
          );
+
+         Load();
+
+         ActivateRule("test_rule");
       }
 
       public override void Dispose() {
