@@ -44,6 +44,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="app.manifest" />
+    <None Include="signing.md" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Launcher.cs" />
