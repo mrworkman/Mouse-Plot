@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ApplicationManifest>app_debug.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ApplicationManifest>app_release.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -38,12 +40,13 @@
   <PropertyGroup>
     <ApplicationIcon>ren.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
+  <!--<PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  </PropertyGroup>-->
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="app.manifest" />
+    <None Include="app_release.manifest" />
+    <None Include="app_debug.manifest" />
     <None Include="signing.md" />
   </ItemGroup>
   <ItemGroup>
@@ -73,7 +76,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
