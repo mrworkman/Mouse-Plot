@@ -15,8 +15,7 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
-using System;
-using System.Windows;
+using System.Drawing;
 
 namespace Renfrew.Core.Grammars.MousePlot {
    public interface IWindow {
@@ -33,6 +32,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
       double Width { get; }
 
       void SetColour(GridColour colour);
+      void SetScreenBounds(Rectangle rectangle);
 
       void Rotate(double angle);
    }

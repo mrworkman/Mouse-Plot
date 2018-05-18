@@ -34,6 +34,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
       private Timer _timer;
       private Rectangle _sourceRectangle;
 
+      private Rectangle _screenBounds = Rectangle.Empty;
+
       [DllImport("user32.dll", SetLastError = true)]
       private static extern int SetWindowPos(IntPtr hWnd, IntPtr hwndInsertAfter, int x, int y, int cx, int cy, int wFlags);
 
@@ -71,9 +73,19 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _magnifier.Initialize();
 
          _timer = new Timer(state => {
+
+            if (_screenBounds.IsEmpty == false) {
+               var r = Rectangle.Intersect(_screenBounds, _sourceRectangle);
+
+               Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+                  _magnifierSurface.Height = r.Height * 3;
+                  _magnifierSurface.Width  = r.Width * 3;
+               }));
+            }
+
             _magnifier.Update(
                _sourceRectangle.X, _sourceRectangle.Y,
-               _sourceRectangle.Width, _sourceRectangle.Height
+               _sourceRectangle.Width, _sourceRectangle.Height-30
             );
             _timer.Change(1, Timeout.Infinite);
          }, null, 1, Timeout.Infinite);
@@ -100,6 +112,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       public void SetSource(Rectangle sourceRectangle) {
          _sourceRectangle = sourceRectangle;
+      }
+
+      public override void SetScreenBounds(Rectangle rectangle) {
+         _screenBounds = rectangle;
       }
 
       public override void Show() {

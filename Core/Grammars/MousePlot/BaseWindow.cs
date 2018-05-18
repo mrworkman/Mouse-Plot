@@ -16,6 +16,7 @@
 //
 
 using System;
+using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
@@ -112,6 +113,8 @@ namespace Renfrew.Core.Grammars.MousePlot {
             )
          });
       }
+
+      public virtual void SetScreenBounds(Rectangle rectangle) { }
 
       public virtual void Rotate(double angle) { }
    }

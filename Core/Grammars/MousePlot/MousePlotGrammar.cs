@@ -591,6 +591,9 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          _zoomWindow.SetSource(cellX, cellY, _cellSize.Width, _cellSize.Height);
 
+         _zoomWindow.SetScreenBounds(_currentScreen.Bounds);
+         _cellWindow.SetScreenBounds(_currentScreen.Bounds);
+
          _zoomWindow.Move(mouseX + offsetX, mouseY + offsetY);
          _zoomWindow.Show();
 

@@ -15,10 +15,27 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //
 
+using System;
+using System.Drawing;
+using System.Windows.Threading;
+
 namespace Renfrew.Core.Grammars.MousePlot {
    public partial class CellWindow : BaseWindow, IWindow {
+      private Rectangle _screenBounds = Rectangle.Empty;
+
       public CellWindow() {
          InitializeComponent();
+      }
+
+      public override void SetScreenBounds(Rectangle rectangle) {
+         _screenBounds = rectangle;
+
+         var r = Rectangle.Intersect(_screenBounds, new Rectangle((Int32) Left, (Int32) Top, 108, 108));
+
+         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+            Width = r.Width + 4;
+            Height = r.Height + 4;
+         }));
       }
    }
 }

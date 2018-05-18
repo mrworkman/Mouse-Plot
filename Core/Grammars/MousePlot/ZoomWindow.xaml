@@ -122,6 +122,13 @@
             <Rectangle x:Name="_screenshot" Width="312" Height="312" Fill="Transparent" Canvas.ZIndex="-10" Margin="10,10,10,20" />
          </Grid>
       </Popup>
-      <Border Name="_magnifierSurface" Width="300" Height="300" Background="Magenta" />
+      <Border
+         Name="_magnifierSurface"
+         Background="Magenta"
+         Width="300" Height="300"
+         HorizontalAlignment="Left"
+         VerticalAlignment="Top"
+         Margin="6,6,6,6"
+         />
     </Grid>
 </local:BaseWindow>
