@@ -19,6 +19,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using NLog;
 
 namespace Renfrew.Launcher {
    using Core;
@@ -26,7 +27,9 @@ namespace Renfrew.Launcher {
    using System.Diagnostics;
 
    public class Launcher {
-      
+
+      private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
       private NatSpeakService _natSpeakService;
       private IntPtr _sitePtr;
 
@@ -41,36 +44,36 @@ namespace Renfrew.Launcher {
          Application.ApplicationExit += OnApplicationExit;
          Application.ThreadExit      += OnApplicationExit;
 
+         _logger.Info("Renfrew launcher starting...");
+
          try {
-            Debug.WriteLine("Creating 'site object'...");
+            _logger.Debug("Creating 'site object'...");
             _sitePtr = _natSpeakService.CreateSiteObject();
 
-            Debug.WriteLine("Calling Connect()...");
+            _logger.Debug("Calling Connect()...");
             _natSpeakService.Connect(_sitePtr);
 
-            Debug.WriteLine("Starting Core Application...");
+            _logger.Debug("Starting Core Application...");
             CoreApplication.Instance.Start(_natSpeakService);
          } catch (COMException e) {
-            Trace.WriteLine($"COM Exception: {e.Message}");
-            Trace.WriteLine($"COM Exception: {e.StackTrace}");
+            _logger.Fatal(e);
 
             MessageBox.Show(
                "There was an error connecting to Dragon Naturally Speaking:\r\n" +
-              $"  >> COM Error: {e.Message}\r\n" + 
+              $"  >> COM Error: {e.Message}\r\n" +
                "\r\n" +
                "Please make sure Dragon is running!",
                "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error
             );
 
-            Trace.WriteLine("Failure!");
+            _logger.Fatal("Renfrew launcher failed to start!");
 
             // Kill the application
             Application.ExitThread();
             Environment.Exit(-1);
          }
 
-         Trace.WriteLine("Success!");
-         Trace.WriteLine("");
+         _logger.Info("Renfrew launcher started.");
       }
 
       private void OnApplicationExit(Object sender, EventArgs eventArgs) {
