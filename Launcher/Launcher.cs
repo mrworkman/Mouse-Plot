@@ -28,7 +28,7 @@ namespace Renfrew.Launcher {
 
    public class Launcher {
 
-      private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+      private static Logger _logger = LogManager.GetCurrentClassLogger();
 
       private NatSpeakService _natSpeakService;
       private IntPtr _sitePtr;
@@ -56,17 +56,17 @@ namespace Renfrew.Launcher {
             _logger.Debug("Starting Core Application...");
             CoreApplication.Instance.Start(_natSpeakService);
          } catch (COMException e) {
+
+            _logger.Fatal("Could not connect to Dragon NaturallySpeaking. Is it running?");
             _logger.Fatal(e);
 
             MessageBox.Show(
-               "There was an error connecting to Dragon Naturally Speaking:\r\n" +
+               "There was an error connecting to Dragon NaturallySpeaking:\r\n" +
               $"  >> COM Error: {e.Message}\r\n" +
                "\r\n" +
                "Please make sure Dragon is running!",
                "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error
             );
-
-            _logger.Fatal("Renfrew launcher failed to start!");
 
             // Kill the application
             Application.ExitThread();
@@ -93,6 +93,8 @@ namespace Renfrew.Launcher {
 
          // Prevent re-entry
          _isTerminated = true;
+
+         _logger.Info("Exiting.");
       }
 
    }

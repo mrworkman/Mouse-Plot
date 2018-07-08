@@ -19,16 +19,12 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Windows;
-using System.Windows.Threading;
 using System.Windows.Forms;
 
-using Renfrew.Core.Grammars;
+using NLog;
+using NLog.Fluent;
+
 using Renfrew.Core.Properties;
-using Renfrew.Grammar.Dragon;
-using Renfrew.Grammar.FluentApi;
-using Renfrew.NatSpeakInterop.Sinks;
 
 using Application = System.Windows.Forms.Application;
 
@@ -37,14 +33,12 @@ namespace Renfrew.Core {
    using NatSpeakInterop;
 
    public class CoreApplication : ApplicationContext {
+      private static Logger _logger = LogManager.GetCurrentClassLogger();
+
       private static CoreApplication _instance;
 
       // Main interface to dragon
       private NatSpeakService _natSpeakService;
-
-      // Debug console
-      private DebugConsole _console;
-      private Thread       _consoleThread;
 
       // System tray icon and menu
       private readonly NotifyIcon _notifyIcon;
@@ -55,8 +49,11 @@ namespace Renfrew.Core {
       #region Application Init
       private CoreApplication() {
          _notifyIcon = new NotifyIcon();
-
          InitializeComponent();
+      }
+
+      private void CloseConsole() {
+         InfoConsole.Instance.Close();
       }
 
       private void InitializeComponent() {
@@ -77,10 +74,7 @@ namespace Renfrew.Core {
 
          // Add menu items to system tray icon menu
          _contextMenuStrip.Items.Add("&Show Debug Console", null, delegate(Object sender, EventArgs e) {
-            if (_console.Visibility == Visibility.Hidden)
-               _console.ShowDialog();
-            else
-               _console.Focus();
+            ShowConsole();
          });
          _contextMenuStrip.Items.Add("-");
          _contextMenuStrip.Items.Add("E&xit Project Renfrew", null, OnApplicationExit);
@@ -88,13 +82,8 @@ namespace Renfrew.Core {
          _notifyIcon.Visible = true;
       }
 
-      public static CoreApplication Instance {
-         get {
-            if (_instance == null)
-               _instance = new CoreApplication();
-            return _instance;
-         }
-      }
+      public static CoreApplication Instance => _instance ?? (_instance = new CoreApplication());
+
       #endregion
 
       #region Application Termination
@@ -104,7 +93,7 @@ namespace Renfrew.Core {
 
          _notifyIcon.Visible = false;
 
-         _console.Close();
+         CloseConsole();
 
          Application.Exit();
          Application.ExitThread();
@@ -117,32 +106,7 @@ namespace Renfrew.Core {
       }
       #endregion
 
-      private DebugConsole DebugConsole => _console;
-
-      private void InitializeDebugConsole() {
-         if (_console != null)
-            return;
-
-         // The debug console runs on a thread of its own
-         _consoleThread = new Thread(() => {
-            _console = new DebugConsole();
-            _console.ShowDialog();
-
-            Dispatcher.Run();
-         });
-
-         // Start the thread in the background. STA is needed to support WPF
-         _consoleThread.SetApartmentState(ApartmentState.STA);
-         _consoleThread.IsBackground = true;
-         _consoleThread.Start();
-
-         // Wait a spell
-         while (_console == null)
-            Thread.Sleep(100);
-      }
-
       private void LoadGrammars() {
-
          IGrammarService grammarService = _natSpeakService.GrammarService;
 
          grammarService.GrammarSerializer = new GrammarSerializer();
@@ -155,13 +119,13 @@ namespace Renfrew.Core {
                Attr = e.GetCustomAttributes<GrammarExportAttribute>().FirstOrDefault()
             }).Where(e => e.Attr != null).ToList();
 
-         DebugConsole.WriteLine();
-         DebugConsole.WriteLine($"Found {types.Count} system grammars:");
+         _logger.Info();
+         _logger.Info($"Found {types.Count} system grammars:");
 
          foreach (var type in types) {
             var a = type.Attr;
 
-            DebugConsole.WriteLine($"{type.Type}: (Name: {a.Name}, Description: {a.Description})");
+            _logger.Info($"{type.Type}: (Name: {a.Name}, Description: {a.Description})");
 
             var grammar = (Grammar) Activator.CreateInstance(
                type.Type, grammarService
@@ -170,41 +134,46 @@ namespace Renfrew.Core {
             try {
                grammar.Initialize();
             } catch (Exception e) {
-               DebugConsole.WriteLine();
-               DebugConsole.WriteLine("---=== EXCEPTION CAUGHT ===---");
-               DebugConsole.WriteLine($"{e.GetType().Name}: {e.Message}");
-               DebugConsole.WriteLine(e.StackTrace);
-               DebugConsole.WriteLine("---=== END OF EXCEPTION DETAIL ===---");
+               _logger.Error();
+               _logger.Error("---=== EXCEPTION CAUGHT ===---");
+               _logger.Error($"{e.GetType().Name}: {e.Message}");
+               _logger.Error(e.StackTrace);
+               _logger.Error("---=== END OF EXCEPTION DETAIL ===---");
                continue;
             }
 
-            DebugConsole.WriteLine($"Grammar's words: {String.Join(", ", grammar.WordIds.Keys)}");
+            _logger.Info($"Grammar's words: {String.Join(", ", grammar.WordIds.Keys)}");
 
          }
       }
 
+      private void ShowConsole() {
+         if (InfoConsole.Instance.IsVisible == false) {
+            InfoConsole.Instance.ShowDialog();
+            return;
+         }
+
+         InfoConsole.Instance.Focus();
+      }
+
       public void Start(NatSpeakService natSpeakService) {
+         _natSpeakService = natSpeakService ?? throw new ArgumentNullException(nameof(natSpeakService));
 
-         if (natSpeakService == null)
-            throw new ArgumentNullException(nameof(natSpeakService));
+         ShowConsole();
 
-         _natSpeakService = natSpeakService;
-
-         InitializeDebugConsole();
-
-         DebugConsole.WriteLine("Querying Dragon Naturally Speaking...");
+         _logger.Info("Querying Dragon Naturally Speaking...");
 
          try {
             var profileName = _natSpeakService.GetCurrentUserProfileName();
             var profilePath = _natSpeakService.GetUserDirectory(profileName);
 
-            DebugConsole.WriteLine($"Dragon Profile Loaded: {profileName}");
-            DebugConsole.WriteLine($"Dragon Profile Path: {profilePath}");
+            _logger.Info($"Dragon Profile Loaded: {profileName}");
+            _logger.Info($"Dragon Profile Path: {profilePath}");
 
             LoadGrammars();
 
          } catch (COMException e) {
-            DebugConsole.WriteLine($"Fatal error: {e.Message}! Cannot continue!");
+            _logger.Fatal(e, "Cannot continue.");
             throw;
          }
       }
