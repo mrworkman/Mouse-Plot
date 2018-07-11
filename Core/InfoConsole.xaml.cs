@@ -19,6 +19,8 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 using NLog;
@@ -59,6 +61,8 @@ namespace Renfrew.Core {
       /// </summary>
       private InfoConsole() {
          InitializeComponent();
+         RtbConsole.FontFamily = new FontFamily("Consolas, Courier New");
+         RtbConsole.FontSize = 14;
       }
 
       /// <summary>
@@ -138,9 +142,18 @@ namespace Renfrew.Core {
       /// Print a message to the console.
       /// </summary>
       /// <param name="message">The message to be printed.</param>
-      private void WriteLine(String message = "") {
+      private void WriteText(String message, Brush brush, FontWeight fontWeight) {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-            RtbConsole.AppendText(message);
+
+            var end = RtbConsole.Document.ContentEnd;
+            var r = new TextRange(end, end) {
+               Text = message
+            };
+            
+            r.ApplyPropertyValue(TextElement.ForegroundProperty, brush);
+            r.ApplyPropertyValue(TextElement.FontWeightProperty, fontWeight);
+            
+            RtbConsole.ScrollToEnd();
          }));
       }
 
@@ -156,7 +169,24 @@ namespace Renfrew.Core {
          /// </summary>
          /// <param name="logEvent">The log message object.</param>
          protected override void Write(LogEventInfo logEvent) {
-            InfoConsole?.WriteLine(Layout.Render(logEvent));
+            FontWeight weight = FontWeights.Regular;
+            Brush colour = Brushes.Black;
+
+            if (logEvent.Level >= LogLevel.Error) {
+               weight = FontWeights.Bold;
+               colour = Brushes.Red;
+            }
+
+            if (logEvent.Level == LogLevel.Warn) {
+               weight = FontWeights.Bold;
+               colour = Brushes.DarkOrange;
+            }
+
+            InfoConsole?.WriteText(
+               Layout.Render(logEvent), 
+               colour, 
+               weight
+            );
          }
       }
 

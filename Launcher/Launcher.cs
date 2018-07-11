@@ -17,14 +17,12 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Forms;
 using NLog;
 
 namespace Renfrew.Launcher {
    using Core;
    using NatSpeakInterop;
-   using System.Diagnostics;
 
    public class Launcher {
 
@@ -44,7 +42,7 @@ namespace Renfrew.Launcher {
          Application.ApplicationExit += OnApplicationExit;
          Application.ThreadExit      += OnApplicationExit;
 
-         _logger.Info("Renfrew launcher starting...");
+         _logger.Info("Renfrew starting...");
 
          try {
             _logger.Debug("Creating 'site object'...");
@@ -57,8 +55,7 @@ namespace Renfrew.Launcher {
             CoreApplication.Instance.Start(_natSpeakService);
          } catch (COMException e) {
 
-            _logger.Fatal("Could not connect to Dragon NaturallySpeaking. Is it running?");
-            _logger.Fatal(e);
+            _logger.Fatal(e, "Could not connect to Dragon NaturallySpeaking. Is it running?");
 
             MessageBox.Show(
                "There was an error connecting to Dragon NaturallySpeaking:\r\n" +
@@ -73,7 +70,6 @@ namespace Renfrew.Launcher {
             Environment.Exit(-1);
          }
 
-         _logger.Info("Renfrew launcher started.");
       }
 
       private void OnApplicationExit(Object sender, EventArgs eventArgs) {
