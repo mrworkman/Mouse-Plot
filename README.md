@@ -23,6 +23,10 @@ This project is an offshoot of another in-progress project of mine: [Project Ren
 
 Currently, I have only tested this project against NatSpeak 12. I do plan on testing it against 13, and 15 in the near future. It may continue to work on  13, but [from what I've read](http://handsfreecoding.org/2018/02/24/dragon-15-now-works-with-natlink-and-dragonfly/) there may be compatibility issues with 15 (This project is based on the code from [NatLink](https://qh.antenna.nl/unimacro/), so it currently has the same limitations).
 
+### Can I use MousePlot at the same time as NatLink?
+
+Yes, MousePlot can be installed alongside NatLink. As long as none of your NatLink grammars use "plot" as a command, then you should not have any issues!
+
 ## Some Background
 
 Several years ago, I developed a chronic pain condition in both of my arms which made it impossible to use the computer, and thus, do my job. Without the help of a number of tools, I would not have been able to continue to work!
