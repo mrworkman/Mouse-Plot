@@ -141,7 +141,6 @@
     <Compile Include="Grammars\MousePlot\ZoomWindow.xaml.cs">
       <DependentUpon>ZoomWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Grammars\TestGrammar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
