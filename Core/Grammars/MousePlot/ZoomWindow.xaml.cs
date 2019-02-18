@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using Renfrew.Utility;
 
@@ -123,11 +124,17 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Show the overlaid grid (popup)
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+
+            // Use absolute coordinates. Relative ones seem to behave oddly on some systems.
+            _popup.Placement = PlacementMode.Absolute;
+
+            // Re-position relative to the parent window.
+            _popup.HorizontalOffset = Left - 20;
+            _popup.VerticalOffset = Top - 20;
+
+            // Show the popup (the grid).
             _popup.IsOpen = true;
 
-            // Re-position relative to the parent window
-            _popup.HorizontalOffset = -20;
-            _popup.VerticalOffset = -20;
          }));
 
       }
