@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/aavqsh68n845t44f/branch/master?svg=true)](https://ci.appveyor.com/project/mrworkman/mouse-plot/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/kpy76l8cla5xdhu3?svg=true)](https://ci.appveyor.com/project/mrworkman/mouse-plot)
 
 # Mouse Plot
 
