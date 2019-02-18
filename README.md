@@ -6,14 +6,25 @@
 
 For anyone who has used NatSpeak's mouse-grid control, it becomes obvious &ndash; very quickly &ndash; that it has a number of shortcomings, most notably:
 
- * the mouse grid closes when things like menus are opened (like the start menu/screen);
+ * the mouse grid closes when things like menus are opened (like the start menu/screen)
  * there can be a lot of steps just to click on what you're trying to click on. (e.g. "mouse grid, 3, 9, 5, 5, 7, click, dammit!")
+ * doesn't work properly with multiple monitors
 
 **MousePlot** tries to overcome these shortcomings, and it also tries to improve the expreience in genereal. At least, I found it to be better when I needed it! :D
 
 ## How it Works
 
- I'm working on it.
+ I'm working on it...
+
+ <hr />
+
+ Grid that splits the screen. Refer to cells by name, like `three six`, to position the mouse, and "select" the cell.
+
+ ![grid](images/grid.png)
+
+ Zooms for a closer view when a cell is selected. Gives fine-grained sub-cell selection. Refer to sub-cells by name, like `two four`, to position the mouse. Use commands like `up`, `down`, `left`, and `right` to move the mouse a pixel at a time. Use commands like `left 3` to move left by 3 pixels (for example).
+
+ ![zoomed](images/zoomed.png)
 
 ## Status
 
