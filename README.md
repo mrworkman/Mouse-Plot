@@ -10,7 +10,7 @@ For anyone who has used NatSpeak's mouse-grid control, it becomes obvious &ndash
  * there can be a lot of steps just to click on what you're trying to click on. (e.g. "mouse grid, 3, 9, 5, 5, 7, click, dammit!")
  * doesn't work properly with multiple monitors
 
-**MousePlot** tries to overcome these shortcomings, and it also tries to improve the expreience in genereal. At least, I found it to be better when I needed it! :D
+**MousePlot** tries to overcome these shortcomings, and it also tries to improve the experience in general. At least, I found it to be better when I needed it! :D
 
 ## How it Works
 
@@ -28,9 +28,9 @@ For anyone who has used NatSpeak's mouse-grid control, it becomes obvious &ndash
 
 ## Status
 
-This project is an offshoot of another in-progress project of mine: [Project Renfrew](https://github.com/mrworkman/Project-Renfrew) (which has its roots in [NatLink](https://qh.antenna.nl/unimacro/) code). Project Renfrew hass a *much* larger scope than MousePlot has alone, so I forked off MousePlot into its own projetc with the hopes that I can actually release it at some point soon!
+This project is an offshoot of another in-progress project of mine: [Project Renfrew](https://github.com/mrworkman/Project-Renfrew) (which has its roots in [NatLink](https://qh.antenna.nl/unimacro/) code). Project Renfrew has a *much* larger scope than MousePlot has alone, so I forked off MousePlot into its own project with the hopes that I can actually release it at some point soon!
 
-## Compatability
+## Compatibility
 
 Currently, I have only tested this project against NatSpeak 12. I do plan on testing it against 13, and 15 in the near future. It may continue to work on  13, but [from what I've read](http://handsfreecoding.org/2018/02/24/dragon-15-now-works-with-natlink-and-dragonfly/) there may be compatibility issues with 15 (This project is based on the code from [NatLink](https://qh.antenna.nl/unimacro/), so it currently has the same limitations).
 
