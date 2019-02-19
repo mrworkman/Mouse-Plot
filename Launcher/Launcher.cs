@@ -57,7 +57,8 @@ namespace Renfrew.Launcher {
             CoreApplication.Instance.Start(_natSpeakService);
          } catch (COMException e) {
 
-            _logger.Fatal(e, "Could not connect to Dragon NaturallySpeaking. Is it running?");
+            _logger.Fatal("Could not connect to Dragon NaturallySpeaking. Is it running?");
+            _logger.Fatal(e);
 
             MessageBox.Show(
                "There was an error connecting to Dragon NaturallySpeaking:\r\n" +

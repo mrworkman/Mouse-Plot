@@ -16,7 +16,6 @@
 //
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -74,7 +73,7 @@ namespace Renfrew.Core {
          _notifyIcon.ContextMenuStrip = _contextMenuStrip;
 
          // Add menu items to system tray icon menu
-         _contextMenuStrip.Items.Add("&Show Console", null, delegate(Object sender, EventArgs e) {
+         _contextMenuStrip.Items.Add("&Show Debug Console", null, delegate(Object sender, EventArgs e) {
             ShowConsole();
          });
          _contextMenuStrip.Items.Add("-");
@@ -111,22 +110,6 @@ namespace Renfrew.Core {
          IGrammarService grammarService = _natSpeakService.GrammarService;
 
          grammarService.GrammarSerializer = new GrammarSerializer();
-
-         var currentDirectory = Directory.GetCurrentDirectory();
-
-         foreach (var f in Directory.EnumerateFiles(currentDirectory, "*.dll")) {
-            _logger.Info(f);
-            _logger.Info(Directory.GetCurrentDirectory());
-
-            var path = Path.Combine(Directory.GetCurrentDirectory(), f);
-
-            try {
-               var a = Assembly.LoadFrom(path);
-
-            } catch (FileLoadException e) {
-               _logger.Error(e, "NAWP");
-            }
-         }
 
          var currentAssembly = Assembly.GetExecutingAssembly();
 
