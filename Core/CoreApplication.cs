@@ -66,7 +66,7 @@ namespace Renfrew.Core {
          // Set up the system tray icon
          _notifyIcon = new NotifyIcon();
          _notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-         _notifyIcon.Text = "Project Renfrew";
+         _notifyIcon.Text = "Mouse Plot";
          _notifyIcon.Icon = Resources.SystemTrayIcon;
 
          // Create a new context menu for the system tray icon
@@ -80,7 +80,7 @@ namespace Renfrew.Core {
             ShowConsole();
          });
          _contextMenuStrip.Items.Add("-");
-         _contextMenuStrip.Items.Add("E&xit Project Renfrew", null, OnApplicationExit);
+         _contextMenuStrip.Items.Add("E&xit MousePlot", null, OnApplicationExit);
 
          _notifyIcon.Visible = true;
       }
@@ -110,7 +110,7 @@ namespace Renfrew.Core {
       #endregion
 
       private void InitializeGrammarsFromAssembly(Assembly assembly) {
-         
+
          // Get a list of all of the classes marked with the GrammarExportAttribute.
          var types = assembly.GetTypes()
             .Select(e => new {
@@ -129,7 +129,7 @@ namespace Renfrew.Core {
                var fileName = Path.GetFileName(assembly.Location);
 
                _logger.Warn(
-                  $"Class '{type.Type.FullName}' in {fileName} marked as exported grammar, " + 
+                  $"Class '{type.Type.FullName}' in {fileName} marked as exported grammar, " +
                   $"but it does not extend {typeof(Grammar).FullName}. Ignoring."
                );
 
@@ -161,33 +161,6 @@ namespace Renfrew.Core {
 
       private void LoadGrammars() {
          LoadInternalGrammars();
-         LoadExternalGrammars();
-      }
-
-      private void LoadExternalGrammars() {
-         var currentDirectory = Directory.GetCurrentDirectory();
-         var grammarDirectory = Path.Combine(currentDirectory, @"Grammars");
-
-         _logger.Info("Looking for external grammars.");
-
-         // Do nothing if the Grammars subdirectory doesn't exist.
-         if (Directory.Exists(grammarDirectory) == false)
-            return;
-
-         // Load each DLL in the directory.
-         foreach (var f in Directory.EnumerateFiles(grammarDirectory, "*.dll")) {
-            _logger.Info($"Found grammar file {f}.");
-
-            // Get the full path to the DLL file.
-            var path = Path.Combine(grammarDirectory, f);
-
-            try {
-               InitializeGrammarsFromAssembly(Assembly.LoadFrom(path));
-            } catch (FileLoadException e) {
-               _logger.Error(e, "Could not load assembly!");
-            }
-         }
-
       }
 
       private void LoadInternalGrammars() {
@@ -207,14 +180,14 @@ namespace Renfrew.Core {
 
       public void Start(NatSpeakService natSpeakService) {
          _natSpeakService = natSpeakService ?? throw new ArgumentNullException(nameof(natSpeakService));
-         
+
          ShowConsole();
 
          _logger.Info("Starting...");
          _logger.Info(
             $"Product version: {Assembly.GetExecutingAssembly().GetName().Version}"
          );
-         
+
          // Get a reference to the GrammarService instance.
          _grammarService = _natSpeakService.GrammarService;
          _grammarService.GrammarSerializer = new GrammarSerializer();
@@ -229,6 +202,7 @@ namespace Renfrew.Core {
 
          LoadGrammars();
 
+         CloseConsole();
       }
    }
 }
