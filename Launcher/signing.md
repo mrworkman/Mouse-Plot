@@ -2,7 +2,7 @@
 
 ## Creating a certificate in PowerShell 
 
-```ps
+```ps1
 # Create a new code-signing certificate (self-signed).
 $thumbprint = ( `
    New-SelfSignedCertificate `
@@ -21,7 +21,7 @@ Move-Item `
 
 ### Signing an application's .exe
 
-```ps
+```ps1
 Set-AuthenticodeSignature `
    -Certificate ( `
       Get-ChildItem `
@@ -35,7 +35,7 @@ Set-AuthenticodeSignature `
 
 #### Get an existing certificate's thumbprint
 
-```ps
+```ps1
 $thumbprint = ( `
    Get-ChildItem -Path Cert:\CurrentUser\My | `
    Where-Object { $_.Subject -like "CN=mrworkman" } `
