@@ -8,6 +8,7 @@ $thumbprint = ( `
    New-SelfSignedCertificate `
       -Type CodeSigningCert `
       -KeyUsage DigitalSignature `
+      -KeyLength 8192 `
       -Subject mrworkman `
       -CertStoreLocation Cert:\CurrentUser\My `
       -NotAfter (Get-Date 2030-01-01)
@@ -27,7 +28,7 @@ Set-AuthenticodeSignature `
       Get-ChildItem `
          -Path Cert:\CurrentUser\Root | `
             Where-Object { `
-               $_.Thumbprint -like $thumbprint `
+               $_.Thumbprint -like "1ec65cd489fffa0dd5602ec95816068942750645" `
             })[0] `
    -TimestampServer http://timestamp.comodoca.com/authenticode `
    '.\Mouse Plot.exe'
