@@ -71,8 +71,7 @@ IntPtr NatSpeakService::CreateSiteObject() {
    try {
       // http://stackoverflow.com/a/22160325/1254575
       Marshal::QueryInterface(i, iServiceProviderGuid, sitePtr);
-   }
-   finally {
+   } finally {
       Marshal::Release(i);
       Marshal::ReleaseComObject(idgnSite);
    }
@@ -103,8 +102,7 @@ String ^NatSpeakService::GetCurrentUserProfileName() {
    // Find out how big our buffer should be
    try {
       isrSpeaker->Query(profileName, 0, &dwNeeded);
-   }
-   catch (COMException ^e) {
+   } catch (COMException ^e) {
       if (!(e->ErrorCode == EVENT_E_CANT_MODIFY_OR_DELETE_CONFIGURED_OBJECT ||
          e->ErrorCode == E_BUFFERTOOSMALL || e->ErrorCode == SRERR_NOUSERSELECTED)) {
          throw;
@@ -123,8 +121,7 @@ String ^NatSpeakService::GetCurrentUserProfileName() {
 
    try {
       return gcnew String(profileName);
-   }
-   finally {
+   } finally {
       delete profileName;
    }
 }
@@ -140,8 +137,7 @@ String ^NatSpeakService::GetUserDirectory(String ^userProfile) {
    // Find out how big our buffer should be
    try {
       idgnSrSpeaker->GetSpeakerDirectory(user, path, 0, &dwNeeded);
-   }
-   catch (COMException ^e) {
+   } catch (COMException ^e) {
       if (!(e->ErrorCode == EVENT_E_CANT_MODIFY_OR_DELETE_CONFIGURED_OBJECT ||
          e->ErrorCode == E_BUFFERTOOSMALL || e->ErrorCode == SRERR_NOUSERSELECTED)) {
          throw;
@@ -160,8 +156,7 @@ String ^NatSpeakService::GetUserDirectory(String ^userProfile) {
 
    try {
       return gcnew String(path) + "\\current";
-   }
-   finally {
+   } finally {
       delete path;
    }
 }
