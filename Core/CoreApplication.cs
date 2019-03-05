@@ -178,6 +178,10 @@ namespace Renfrew.Core {
          InfoConsole.Instance.Focus();
       }
 
+      public void ShowNotifyError(String message, String title = "Error") {
+         _notifyIcon.ShowBalloonTip(2000, title, message, ToolTipIcon.Error);
+      }
+
       public void Start(NatSpeakService natSpeakService) {
          _natSpeakService = natSpeakService ?? throw new ArgumentNullException(nameof(natSpeakService));
 

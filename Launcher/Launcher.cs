@@ -57,12 +57,9 @@ namespace Renfrew.Launcher {
 
             _logger.Fatal(e, "Could not connect to Dragon NaturallySpeaking. Is it running?");
 
-            MessageBox.Show(
-               "There was an error connecting to Dragon NaturallySpeaking:\r\n" +
-              $"  >> COM Error: {e.Message}\r\n" +
-               "\r\n" +
-               "Please make sure Dragon is running!",
-               "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error
+            CoreApplication.Instance.ShowNotifyError(
+               "Please ensure that NatSpeak is running, and that you have selected a profile.",
+               "Mouse Plot for NatSpeak Error"
             );
 
             // Kill the application
