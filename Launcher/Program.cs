@@ -18,17 +18,31 @@
 using System;
 using System.Windows.Forms;
 
+using NLog;
+
 namespace Renfrew.Launcher {
    public class Program {
+      private static Logger _logger = LogManager.GetCurrentClassLogger();
 
       [STAThread]
       public static void Main(params String[] args) {
-         Application.EnableVisualStyles();
-         Application.SetCompatibleTextRenderingDefault(true);
+         try {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(true);
 
-         Application.Run(new LauncherApplicationContext(
-            new Launcher()
-         ));
+            Application.Run(new LauncherApplicationContext(
+               new Launcher()
+            ));
+         } catch (Exception e) {
+            _logger.Fatal(e, "An unexpected exception occurred.");
+
+            MessageBox.Show(
+               "An unexpected exception occurred. Please see the log for more information.",
+               "Mouse Plot for NatSpeak",
+               MessageBoxButtons.OK, MessageBoxIcon.Error
+            );
+
+         }
       }
    }
 }
