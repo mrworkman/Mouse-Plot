@@ -103,8 +103,13 @@ String ^NatSpeakService::GetCurrentUserProfileName() {
    try {
       isrSpeaker->Query(profileName, 0, &dwNeeded);
    } catch (COMException ^e) {
+
+      // Has a user profile been selected?
+      if (e->ErrorCode == SRERR_NOUSERSELECTED)
+         return nullptr;
+
       if (!(e->ErrorCode == EVENT_E_CANT_MODIFY_OR_DELETE_CONFIGURED_OBJECT ||
-         e->ErrorCode == E_BUFFERTOOSMALL || e->ErrorCode == SRERR_NOUSERSELECTED)) {
+         e->ErrorCode == E_BUFFERTOOSMALL)) {
          throw;
       }
    }
@@ -138,8 +143,13 @@ String ^NatSpeakService::GetUserDirectory(String ^userProfile) {
    try {
       idgnSrSpeaker->GetSpeakerDirectory(user, path, 0, &dwNeeded);
    } catch (COMException ^e) {
+
+      // Has a user profile been selected?
+      if (e->ErrorCode == SRERR_NOUSERSELECTED)
+         return nullptr;
+
       if (!(e->ErrorCode == EVENT_E_CANT_MODIFY_OR_DELETE_CONFIGURED_OBJECT ||
-         e->ErrorCode == E_BUFFERTOOSMALL || e->ErrorCode == SRERR_NOUSERSELECTED)) {
+         e->ErrorCode == E_BUFFERTOOSMALL)) {
          throw;
       }
    }
