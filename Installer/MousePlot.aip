@@ -53,6 +53,7 @@
     <ROW Component="AI_CustomARPName" ComponentId="{3B784469-D995-4B90-BC4F-478F28FCE7FA}" Directory_="APPDIR" Attributes="260" KeyPath="DisplayName" Options="1"/>
     <ROW Component="AI_DisableModify" ComponentId="{FD53FE68-CEA4-431C-834A-297BB5F0FE9D}" Directory_="APPDIR" Attributes="260" KeyPath="NoModify" Options="1"/>
     <ROW Component="AI_ExePath" ComponentId="{6DB3D475-7842-410A-90ED-9EA2A48BB35D}" Directory_="APPDIR" Attributes="260" KeyPath="AI_ExePath"/>
+    <ROW Component="APPDIR" ComponentId="{03A45FC0-2031-4124-B0AD-5BECB4B1237F}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="Assets" ComponentId="{D5BF0C1A-77B6-4747-8E3D-9B8F1B61556F}" Directory_="Assets" Attributes="0"/>
     <ROW Component="Core.dll" ComponentId="{FA644441-DA01-41A6-AB76-5841B050E408}" Directory_="APPDIR" Attributes="0" KeyPath="Core.dll"/>
     <ROW Component="Core.dll.config" ComponentId="{45A522C4-9A2D-4A90-B994-953DA859A286}" Directory_="APPDIR" Attributes="0" KeyPath="Core.dll.config" Type="0"/>
@@ -67,7 +68,7 @@
     <ROW Component="Win32Interop.dll" ComponentId="{049084C7-1F04-4EB5-9D95-4342DED0D831}" Directory_="APPDIR" Attributes="0" KeyPath="Win32Interop.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="AiAppXAssets" Title="AiAppXAssets" Description="Description" Display="3" Level="0" Directory_="APPDIR" Attributes="0" Options="271"/>
+    <ROW Feature="AiAppXAssets" Title="AiAppXAssets" Description="Description" Display="3" Level="0" Directory_="APPDIR" Attributes="0" Options="271" Components="APPDIR"/>
     <ROW Feature="D7E473DF14F3E98497864847195F2" Title="Visual C++ Redistributable for Visual Studio 2015 Update 3 x86" Description="Visual C++ Redistributable for Visual Studio 2015 Update 3 x86" Display="5" Level="1" Attributes="16" Components="D7E473DF14F3E98497864847195F2"/>
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_CustomARPName AI_DisableModify AI_ExePath Assets Core.dll Core.dll.config Grammar.dll Magnifier.dll MousePlot.exe NLog.dll NatSpeakInterop.dll ProductInformation Win32Interop.dll"/>
     <ROW Feature="TileAssets_DefaultBuild" Title="TileAssets_DefaultBuild" Description="Description" Display="0" Level="1" Directory_="APPDIR" Attributes="0" Options="271" Components="MousePlot.VisualElementsManifest.xml" Builds="DefaultBuild"/>
@@ -195,6 +196,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
     <ROW Directory_="Assets" Component_="Assets" ManualDelete="false"/>
+    <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
@@ -338,7 +340,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
     <ROW PrereqKey="BE1A492345959ED6A4D5ACBD0EC0" DisplayName=".NET Framework 4.5.2" SetupFileUrl="http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe" Location="1" ExactSize="69999448" WinNTVersions="Windows XP SP3 x86, Windows Server 2003 SP2 x86, Windows 10 x86" WinNT64Versions="Windows XP SP2 x64, Windows Server 2003 SP2 x64, Windows 10 x64, Windows Server x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="ee01fc4110c73a8e5efc7cabda0f5ff7" TargetName=".NET Framework 4.5.2"/>
-    <ROW PrereqKey="D7E473DF14F3E98497864847195F2" DisplayName="Visual C++ Redistributable for Visual Studio 2015 Update 3 x86" VersionMin="14.0" SetupFileUrl="Prerequisites\Visual C++ Redistributable for Visual Studio 2015\vc2015u3_redist_x86.exe" Location="0" ExactSize="0" WinNTVersions="Windows Vista RTM x86, Windows Vista SP1 x86, Windows 7 RTM x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="0" NoUiComLine="/q /norestart" Options="fm" TargetName="Visual C++ Redistributable for Visual Studio 2015\vc2015u3_redist_x86.exe" Feature="D7E473DF14F3E98497864847195F2"/>
+    <ROW PrereqKey="D7E473DF14F3E98497864847195F2" DisplayName="Visual C++ Redistributable for Visual Studio 2015 Update 3 x86" VersionMin="14.0" SetupFileUrl="Prerequisites\Visual C++ Redistributable for Visual Studio 2015\vc2015u3_redist_x86.exe" Location="0" ExactSize="0" WinNTVersions="Windows Vista RTM x86, Windows Vista SP1 x86, Windows 7 RTM x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="0" NoUiComLine="/install /quiet /norestart" Options="fm" TargetName="Visual C++ Redistributable for Visual Studio 2015\vc2015u3_redist_x86.exe" Feature="D7E473DF14F3E98497864847195F2"/>
     <ATTRIBUTE name="PrereqsOrder" value="BE1A492345959ED6A4D5ACBD0EC0 D7E473DF14F3E98497864847195F2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
