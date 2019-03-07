@@ -20,6 +20,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using NLog;
@@ -178,11 +180,15 @@ namespace Renfrew.Core {
          InfoConsole.Instance.Focus();
       }
 
-      public void ShowNotifyError(String message, String title = "Error") {
+      public void ShowNotifyError(String message, String title = "Mouse Plot for NatSpeak") {
          _notifyIcon.ShowBalloonTip(2000, title, message, ToolTipIcon.Error);
       }
 
-      public void Start(NatSpeakService natSpeakService) {
+      public void ShowNotifyInfo(String message, String title = "Mouse Plot for NatSpeak") {
+         _notifyIcon.ShowBalloonTip(2000, title, message, ToolTipIcon.Info);
+      }
+
+      public async Task Start(NatSpeakService natSpeakService) {
          _natSpeakService = natSpeakService ?? throw new ArgumentNullException(nameof(natSpeakService));
 
          ShowConsole();
@@ -198,8 +204,35 @@ namespace Renfrew.Core {
 
          _logger.Info("Querying Dragon Naturally Speaking...");
 
-         var profileName = _natSpeakService.GetCurrentUserProfileName();
-         var profilePath = _natSpeakService.GetUserDirectory(profileName);
+         String profileName;
+         String profilePath;
+
+         for (var notified = false;; notified = true) {
+
+            profileName = _natSpeakService.GetCurrentUserProfileName();
+
+            // If a profile name could not be retrieved, then either the user
+            // hasn't selected a profile yet, or NatSpeak hasn't been started.
+            if (profileName == null) {
+
+               if (notified == false) {
+                  _logger.Info("Could not load profile. Will try again.");
+                  ShowNotifyInfo("Could not load profile. Will try again.");
+               }
+
+               // Wait for a bit.
+               await Task.Delay(2000);
+
+               // Try again...
+               continue;
+            }
+
+            // Get the file-system location of the user's profile (for informational purposes).
+            profilePath = _natSpeakService.GetUserDirectory(profileName);
+
+            // Profile found.
+            break;
+         }
 
          _logger.Info($"Dragon Profile Loaded: {profileName}");
          _logger.Info($"Dragon Profile Path: {profilePath}");

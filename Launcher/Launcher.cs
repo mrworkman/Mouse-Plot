@@ -17,6 +17,8 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 
@@ -37,7 +39,7 @@ namespace Renfrew.Launcher {
          _natSpeakService = new NatSpeakService();
       }
 
-      public void Launch() {
+      public async void Launch() {
 
          Application.ApplicationExit += OnApplicationExit;
          Application.ThreadExit      += OnApplicationExit;
@@ -52,15 +54,19 @@ namespace Renfrew.Launcher {
             _natSpeakService.Connect(_sitePtr);
 
             _logger.Debug("Starting Core Application...");
-            CoreApplication.Instance.Start(_natSpeakService);
+
+            await CoreApplication.Instance.Start(_natSpeakService);
+
          } catch (COMException e) {
 
             _logger.Fatal(e, "Could not connect to Dragon NaturallySpeaking. Is it running?");
 
             CoreApplication.Instance.ShowNotifyError(
-               "Please ensure that NatSpeak is running, and that you have selected a profile.",
-               "Mouse Plot for NatSpeak Error"
+               "Please ensure that NatSpeak is running, and that you have selected a profile."
             );
+
+            // Wait long enough for the user to see the error message.
+            Thread.Sleep(10000);
 
             // Kill the application
             Application.ExitThread();
