@@ -95,7 +95,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             try {
                SetColour(colour.ToString());
-            } catch (IOException e) {
+            } catch (IOException) {
                SetColour(DefaultColourName);
             }
          }));
