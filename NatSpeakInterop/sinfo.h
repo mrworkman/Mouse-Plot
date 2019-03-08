@@ -78,6 +78,7 @@ typedef struct {
    DWORD dwSize;
 } SDATA, *PSDATA;
 
+#pragma warning (disable: 4200)
 typedef struct {
    DWORD dwSize;
    DWORD dwWordNum;
@@ -88,6 +89,7 @@ typedef struct {
    DWORD dwSize;
    BYTE  abWords[0];
 } SRPHRASEW, *PSRPHRASEW;
+#pragma warning (default: 4200)
 
 typedef struct {
    LANGID LanguageID;
