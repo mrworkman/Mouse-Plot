@@ -149,10 +149,10 @@ namespace Renfrew.Core {
             var r = new TextRange(end, end) {
                Text = message
             };
-            
+
             r.ApplyPropertyValue(TextElement.ForegroundProperty, brush);
             r.ApplyPropertyValue(TextElement.FontWeightProperty, fontWeight);
-            
+
             RtbConsole.ScrollToEnd();
          }));
       }
@@ -183,8 +183,8 @@ namespace Renfrew.Core {
             }
 
             InfoConsole?.WriteText(
-               Layout.Render(logEvent), 
-               colour, 
+               Layout.Render(logEvent),
+               colour,
                weight
             );
          }

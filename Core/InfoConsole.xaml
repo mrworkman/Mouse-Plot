@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Renfrew.Core"
         mc:Ignorable="d"
-        Title="Console - Project Renfrew" Height="350" Width="625" MinHeight="350" MinWidth="625" Icon="Resources/ren.ico">
+        Title="Console - Project Renfrew" Height="350" Width="625" MinHeight="350" MinWidth="625" Icon="Resources/app2.ico">
     <Grid>
         <RichTextBox x:Name="RtbConsole" HorizontalAlignment="Stretch" Height="Auto" Margin="10,10,10,10" VerticalAlignment="Stretch" Width="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True">
             <FlowDocument>

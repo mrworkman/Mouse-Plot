@@ -69,7 +69,7 @@ namespace Renfrew.Core {
          _notifyIcon = new NotifyIcon();
          _notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
          _notifyIcon.Text = "Mouse Plot";
-         _notifyIcon.Icon = Resources.SystemTrayIcon;
+         _notifyIcon.Icon = Resources.app2;
 
          // Create a new context menu for the system tray icon
          _contextMenuStrip = new ContextMenuStrip();

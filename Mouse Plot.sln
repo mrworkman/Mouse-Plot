@@ -27,7 +27,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Win32Interop", "Win32Intero
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{BE54AE7E-9703-4CEC-952C-C13D26383E3C}"
 	ProjectSection(SolutionItems) = preProject
-		Installer\MousePlot.aip = Installer\MousePlot.aip
+		Installer\Mouse Plot.aip = Installer\Mouse Plot.aip
 	EndProjectSection
 EndProject
 Global

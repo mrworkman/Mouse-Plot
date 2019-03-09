@@ -187,12 +187,23 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\app.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\ren.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\app1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\app2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\app3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\app4.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\app5.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

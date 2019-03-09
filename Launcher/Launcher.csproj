@@ -38,7 +38,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>ren.ico</ApplicationIcon>
+    <ApplicationIcon>app2.ico</ApplicationIcon>
   </PropertyGroup>
   <!--<PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -47,6 +47,7 @@
     <None Include="App.config" />
     <None Include="app_release.manifest" />
     <None Include="app_debug.manifest" />
+    <Content Include="app2.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -86,9 +87,6 @@
       <Project>{0b7df2f5-d3ad-415d-8b73-b8b9b9efe75d}</Project>
       <Name>NatSpeakInterop</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ren.ico" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
