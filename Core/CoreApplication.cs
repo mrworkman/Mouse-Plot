@@ -82,7 +82,7 @@ namespace Renfrew.Core {
             ShowConsole();
          });
          _contextMenuStrip.Items.Add("-");
-         _contextMenuStrip.Items.Add("E&xit MousePlot", null, OnApplicationExit);
+         _contextMenuStrip.Items.Add("E&xit Mouse Plot", null, OnApplicationExit);
 
          _notifyIcon.Visible = true;
       }

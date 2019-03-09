@@ -11,7 +11,7 @@
             <FlowDocument>
                 <Paragraph FontWeight="Bold" FontSize="29.3333333333333" FontFamily="Calibri" Margin="0,0,0,10.67">
                     <Span Foreground="#FF4472C4">
-                        <Run Foreground="#FF4472C4" Text="MousePlot for NatSpeak"/>
+                        <Run Foreground="#FF4472C4" Text="Mouse Plot for NatSpeak"/>
                     </Span>
                 </Paragraph>
                 <Paragraph LineHeight="1">

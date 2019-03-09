@@ -61,7 +61,7 @@ namespace Renfrew.Launcher {
             _logger.Fatal(e, "");
 
             CoreApplication.Instance.ShowNotifyError(
-               "There was an unexpected error that requires MousePlot to quit. 😞 See the log for more info."
+               "There was an unexpected error that requires Mouse Plot to quit. 😞 See the log for more info."
             );
 
             // Wait long enough for the user to see the error message.
