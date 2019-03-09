@@ -57,17 +57,17 @@ namespace Renfrew.Launcher {
 
             await CoreApplication.Instance.Start(_natSpeakService);
 
-         } catch (COMException e) {
-
-            _logger.Fatal(e, "Could not connect to Dragon NaturallySpeaking. Is it running?");
+         } catch (Exception e) {
+            _logger.Fatal(e, "");
 
             CoreApplication.Instance.ShowNotifyError(
-               "Please ensure that NatSpeak is running, and that you have selected a profile."
+               "There was an unexpected error that requires MousePlot to quit. 😞 See the log for more info."
             );
 
             // Wait long enough for the user to see the error message.
             Thread.Sleep(10000);
 
+         } finally {
             // Kill the application
             Application.ExitThread();
             Environment.Exit(-1);
@@ -86,9 +86,13 @@ namespace Renfrew.Launcher {
          // Stop the application
          CoreApplication.Instance.Stop();
 
-         // Disconnect from Dragon properly
-         _natSpeakService.Disconnect();
-         _natSpeakService.ReleaseSiteObject(_sitePtr);
+         try {
+            // Disconnect from Dragon properly
+            _natSpeakService.Disconnect();
+            _natSpeakService.ReleaseSiteObject(_sitePtr);
+         } catch (Exception e) {
+            _logger.Fatal(e, "");
+         }
 
          // Prevent re-entry
          _isTerminated = true;
