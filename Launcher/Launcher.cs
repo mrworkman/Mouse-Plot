@@ -67,12 +67,12 @@ namespace Renfrew.Launcher {
             // Wait long enough for the user to see the error message.
             Thread.Sleep(10000);
 
-         } finally {
+            _logger.Debug("Exiting application.");
+
             // Kill the application
             Application.ExitThread();
             Environment.Exit(-1);
          }
-
       }
 
       private void OnApplicationExit(Object sender, EventArgs eventArgs) {
