@@ -104,7 +104,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          // Hide the overlaid grid (popup)
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             _popup.IsOpen = false;
-         }));
+         })).Wait();
       }
 
       public void SetSource(Int32 x, Int32 y, Int32 width, Int32 height) {
@@ -135,7 +135,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
             // Show the popup (the grid).
             _popup.IsOpen = true;
 
-         }));
+         })).Wait();
 
       }
    }

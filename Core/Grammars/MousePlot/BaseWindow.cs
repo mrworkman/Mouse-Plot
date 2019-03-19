@@ -33,14 +33,14 @@ namespace Renfrew.Core.Grammars.MousePlot {
       public new virtual void Close() {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.Hide();
-         }));
+         })).Wait();
       }
 
       public new void Focus() {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.Focus();
             Activate();
-         }));
+         })).Wait();
       }
 
       public new double Height {
@@ -60,13 +60,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
       public new virtual void Show() {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.Show();
-         }));
+         })).Wait();
       }
 
       public new virtual void ShowDialog() {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             base.ShowDialog();
-         }));
+         })).Wait();
       }
 
       public new double Top {
@@ -88,7 +88,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             Left = x;
             Top = y;
-         }));
+         })).Wait();
       }
 
       public virtual void SetColour(GridColour colour) {
@@ -98,7 +98,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
             } catch (IOException) {
                SetColour(DefaultColourName);
             }
-         }));
+         })).Wait();
       }
 
       private void SetColour(String c) {

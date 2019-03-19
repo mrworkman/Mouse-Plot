@@ -66,7 +66,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
             Left = x;
             Top = y;
             WindowState = WindowState.Maximized;
-         }));
+         })).Wait();
       }
    }
 }

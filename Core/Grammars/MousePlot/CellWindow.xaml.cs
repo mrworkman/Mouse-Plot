@@ -35,7 +35,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
             Width = r.Width + 4;
             Height = r.Height + 4;
-         }));
+         })).Wait();
       }
    }
 }
