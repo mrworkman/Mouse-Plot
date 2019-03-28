@@ -261,17 +261,18 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
       SRRESWORDNODE node;
 
       DWORD srWordSize = 0;
-      PSRWORDW srWord = nullptr;
+      SRWORDW srWord;
 
       // Get the word size to allocate space for it
-      isrResGraph->GetWordNode(path[i], &node, (PSRWORDW)1, 0, &srWordSize);
+      isrResGraph->GetWordNode(path[i], &node, &srWord, 0, &srWordSize);
 
       if (srWordSize == 0)
          throw gcnew InvalidStateException("Word with no size!");
 
-      srWord = (PSRWORDW) new BYTE[srWordSize];
+      // Allocate an appropriately ized struct.
+      PSRWORDW psrWord = (PSRWORDW) new BYTE[srWordSize];
 
-      isrResGraph->GetWordNode(path[i], &node, srWord, srWordSize, &srWordSize);
+      isrResGraph->GetWordNode(path[i], &node, psrWord, srWordSize, &srWordSize);
 
       // Ignore the rule number, because it's only really useful if we
       // want to invoke nested "sub-rules" directly - which we don't.
@@ -281,14 +282,14 @@ void GrammarService::PhraseFinishedCallback(UInt32 flags, Object ^grammarObj, IS
 
       Debug::WriteLine(
          "Word Number: {0}, Word: {1}, Rule: {2}",
-         srWord->dwWordNum,
-         gcnew String(srWord->szWord),
+         psrWord->dwWordNum,
+         gcnew String(psrWord->szWord),
          node.dwCFGParse
       );
 
-      spokenWords->Add(gcnew String(srWord->szWord));
+      spokenWords->Add(gcnew String(psrWord->szWord));
 
-      delete srWord;
+      delete[] psrWord;
    }
 
    delete[] path;
