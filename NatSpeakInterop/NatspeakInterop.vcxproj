@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComHelper.h" />
+    <ClInclude Include="DragonVersion.h" />
     <ClInclude Include="GrammarAlreadyLoadedException.h" />
     <ClInclude Include="GrammarException.h" />
     <ClInclude Include="GrammarExecutive.h" />

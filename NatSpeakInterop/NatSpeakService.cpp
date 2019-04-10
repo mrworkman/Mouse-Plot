@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 
+#include "DragonVersion.h"
 #include "SrNotifySink.h"
 #include "SSvcActionNotifySink.h"
 
@@ -129,6 +130,14 @@ String ^NatSpeakService::GetCurrentUserProfileName() {
    } finally {
       delete profileName;
    }
+}
+
+DragonVersion ^NatSpeakService::GetDragonVersion() {
+   WORD major, minor, patch;
+
+   _idgnSrEngineControl->GetVersion(&major, &minor, &patch);
+
+   return gcnew DragonVersion(major, minor, patch);
 }
 
 String ^NatSpeakService::GetUserDirectory(String ^userProfile) {

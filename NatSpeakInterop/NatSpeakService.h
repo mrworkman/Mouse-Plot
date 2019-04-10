@@ -72,6 +72,12 @@ namespace Renfrew::NatSpeakInterop {
       public: String ^GetCurrentUserProfileName();
 
       /// <summary>
+      /// Gets the version of Dragon.
+      /// </summary>
+      /// <returns>The dragon version.</returns>
+      public: DragonVersion ^GetDragonVersion();
+
+      /// <summary>
       /// Gets the the file system path to the specified Dragon user's profile directory.
       /// </summary>
       /// <param name="userProfile">The name of the user profile to look up.</param>
