@@ -195,7 +195,7 @@ namespace Renfrew.Core {
 
          _logger.Info("Starting...");
          _logger.Info(
-            $"Product version: {Assembly.GetExecutingAssembly().GetName().Version}"
+            $"Mouse Plot version: {Assembly.GetExecutingAssembly().GetName().Version}"
          );
 
          // Get a reference to the GrammarService instance.
@@ -203,6 +203,8 @@ namespace Renfrew.Core {
          _grammarService.GrammarSerializer = new GrammarSerializer();
 
          _logger.Info("Querying Dragon Naturally Speaking...");
+
+         _logger.Info($"Dragon Version: {_natSpeakService.GetDragonVersion()}");
 
          String profileName;
          String profilePath;
