@@ -329,6 +329,16 @@ namespace Renfrew.Grammar {
          return true;
       }
 
+      /// <summary>
+      /// Due to a problem with Dragon 15, rules we want to remain active
+      /// need to be explicitly re-activated when another is de-activated.
+      /// </summary>
+      /// <param name="name">The name of the rule</param>
+      public void ReactivateRule(String name) {
+         DeactivateRule(name);
+         ActivateRule(name);
+      }
+
       protected RuleFactory RuleFactory { get; private set; }
 
       public IReadOnlyDictionary<String, UInt32> RuleIds => _ruleIds;
