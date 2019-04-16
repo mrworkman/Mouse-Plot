@@ -223,6 +223,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
          MakeGrammarNotExclusive();
          DeactivateRule("post_plot");
 
+         // Due to a problem with Dragon 15, rules we want to remain active
+         // need to be explicitly re-activated when another is de-activated.
+         ReactivateRule("mouse_plot");
+
          CloseWindows();
 
          // Wait a short period to make sure the windows have closed
@@ -261,6 +265,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
          _markArrowWindow.Close();
 
          DeactivateRule("mouse_nudge");
+
+         // Due to a problem with Dragon 15, rules we want to remain active
+         // need to be explicitly re-activated when another is de-activated.
+         ReactivateRule("mouse_plot");
       }
 
       private void Dismiss() {
@@ -268,6 +276,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          MakeGrammarNotExclusive();
          DeactivateRule("post_plot");
+
+         // Due to a problem with Dragon 15, rules we want to remain active
+         // need to be explicitly re-activated when another is de-activated.
+         ReactivateRule("mouse_plot");
       }
 
       public void Drag() {
@@ -278,6 +290,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          MakeGrammarNotExclusive();
          DeactivateRule("post_plot");
+
+         // Due to a problem with Dragon 15, rules we want to remain active
+         // need to be explicitly re-activated when another is de-activated.
+         ReactivateRule("mouse_plot");
 
          // If no start point has been selected, then don't do anything.
          if (_dragSet == false)
@@ -394,6 +410,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          MakeGrammarNotExclusive();
          DeactivateRule("post_plot");
+
+         // Due to a problem with Dragon 15, rules we want to remain active
+         // need to be explicitly re-activated when another is de-activated.
+         ReactivateRule("mouse_plot");
 
          CloseWindows();
 
