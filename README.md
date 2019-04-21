@@ -32,7 +32,7 @@ This project is an offshoot of another in-progress project of mine: [Project Ren
 
 ## Compatibility
 
-Currently, I have only tested this project against NatSpeak 12. I do plan on testing it against 13, and 15 in the near future. It may continue to work on  13, but [from what I've read](http://handsfreecoding.org/2018/02/24/dragon-15-now-works-with-natlink-and-dragonfly/) there may be compatibility issues with 15 (This project is based on the code from [NatLink](https://qh.antenna.nl/unimacro/), so it currently has the same limitations).
+Currently, I have only tested this project against NatSpeak 12, and 15.
 
 ### Can I use MousePlot at the same time as NatLink?
 
