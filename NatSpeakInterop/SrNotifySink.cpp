@@ -34,8 +34,8 @@ void SrNotifySink::AttribChanged(DWORD) {
    Debug::WriteLine(__FUNCTION__);
 }
 
-void SrNotifySink::AttribChanged2(DWORD) {
-   Debug::WriteLine(__FUNCTION__);
+void SrNotifySink::AttribChanged2(DWORD dword) {
+   Debug::WriteLine("{0}: {1}", __FUNCTION__, dword);
 }
 
 void SrNotifySink::ErrorHappened(LPUNKNOWN) {

@@ -40,6 +40,7 @@ namespace Renfrew::NatSpeakInterop {
       private: IDgnSrEngineControl ^_idgnSrEngineControl = nullptr;
       private: IDgnSSvcOutputEvent ^_idgnSSvcOutputEvent = nullptr;
       private: IDgnSSvcInterpreter ^_idgnSSvcInterpreter = nullptr;
+      private: IDgnSSvcTracking    ^_idgnSSvcTracking    = nullptr;
 
       private: GrammarService ^_grammarService = nullptr;
 

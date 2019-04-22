@@ -53,6 +53,9 @@
     <ClCompile Include="SSvcActionNotifySink.cpp">
       <Filter>Source Files\Sinks</Filter>
     </ClCompile>
+    <ClCompile Include="SSvcAppTrackingNotifySink.cpp">
+      <Filter>Source Files\Sinks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stdafx.h">
@@ -171,6 +174,15 @@
     </ClInclude>
     <ClInclude Include="DragonVersion.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSSvcAppTrackingNotifySink.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="SSvcAppTrackingNotifySink.h">
+      <Filter>Header Files\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="IDgnSSvcTracking.h">
+      <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
