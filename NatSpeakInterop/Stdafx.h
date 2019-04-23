@@ -24,6 +24,7 @@ typedef unsigned __int64 QWORD, *PQWORD;
 
 #include "ComHelper.h"
 #include "sinfo.h"
+#include "dgnerr.h"
 
 using namespace System;
 using namespace System::Collections::Generic;
