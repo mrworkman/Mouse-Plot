@@ -20,10 +20,13 @@
 #include "DragonVersion.h"
 #include "SrNotifySink.h"
 #include "SSvcActionNotifySink.h"
+#include "SSvcAppTrackingNotifySink.h"
+#include "InvalidStateException.h"
 
 using namespace Renfrew::Helpers;
 using namespace Renfrew::NatSpeakInterop;
 using namespace Renfrew::NatSpeakInterop::Dragon::ComInterfaces;
+using namespace Renfrew::NatSpeakInterop::Exceptions;
 using namespace Renfrew::NatSpeakInterop::Sinks;
 
 #include "NatSpeakService.h"
@@ -196,15 +199,55 @@ void NatSpeakService::InitializeIsrCentral(::IServiceProvider *pServiceProvider)
 void NatSpeakService::InitializeSpeechServicesInterfaces() {
    // Speech Services
    IDgnSpeechServices ^*ptr = ComHelper::QueryService<ISpchServices^, IDgnSpeechServices^>(_piServiceProvider);
-   _idgnSpeechServices = (IDgnSpeechServices^)Marshal::GetObjectForIUnknown(IntPtr(ptr));
-   _idgnSSvcOutputEvent = (IDgnSSvcOutputEvent ^)_idgnSpeechServices;
-   _idgnSSvcInterpreter = (IDgnSSvcInterpreter ^)_idgnSSvcOutputEvent;
+   _idgnSpeechServices  = (IDgnSpeechServices ^) Marshal::GetObjectForIUnknown(IntPtr(ptr));
+   _idgnSSvcOutputEvent = (IDgnSSvcOutputEvent ^) _idgnSpeechServices;
+   _idgnSSvcInterpreter = (IDgnSSvcInterpreter ^) _idgnSSvcOutputEvent;
+   _idgnSSvcTracking    = (IDgnSSvcTracking ^) _idgnSpeechServices;
 
    Marshal::Release(IntPtr(ptr));
 }
 
 void NatSpeakService::InitializeSrEngineControlInterface() {
    _idgnSrEngineControl = (IDgnSrEngineControl ^)_isrCentral;
+}
+
+// "Pings" Dragon to check if it is "alive". We need to be able to determine if Dragon is
+// running in order to decide whether to Disconnect or not.
+bool NatSpeakService::IsDragonAlive() {
+   IDgnSSvcActionNotifySink ^playbackSink = gcnew SSvcActionNotifySink();
+   IntPtr i = Marshal::GetIUnknownForObject(playbackSink);
+
+   IDgnSSvcAppTrackingNotifySink ^appTrackingSink = gcnew SSvcAppTrackingNotifySink();
+   IntPtr appTrackingSinkPtr = Marshal::GetIUnknownForObject(appTrackingSink);
+
+   try {
+
+      // Exploit the fact that Dragon *should* already have one of these loaded. This may prove unreliable.
+      _idgnSSvcTracking->Register(i, IntPtr::Zero, appTrackingSinkPtr);
+
+      // Hitting this would be quite unexpected indeed.
+      throw gcnew InvalidStateException("Unexpected result when calling SSvcAppTrackingNotifySink::Register");
+
+   } catch (COMException ^e) {
+
+      // This appears to work since Dragon only allows one tracker to be registered,
+      // and it seems like it loads its own when it starts up. If we cannot register
+      // a new tracker and we get this HRESULT, then Dragon must be running.
+      if (e->HResult == DGNERR_ONLYONETRACKER)
+         return true;
+
+      // If we get an SERVERFAULT error, then Dragon must not be running.
+      //
+      // If we get any other HRESULT, re-throw the exception.
+      if (e->HResult != RPC_E_SERVERFAULT)
+         throw;
+
+   } finally {
+      Marshal::Release(i);
+      Marshal::Release(appTrackingSinkPtr);
+   }
+
+   return false;
 }
 
 void NatSpeakService::PlayString(String ^str) {

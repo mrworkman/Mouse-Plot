@@ -184,6 +184,9 @@
     <ClInclude Include="IDgnSSvcTracking.h">
       <Filter>Header Files\Dragon\ComInterfaces</Filter>
     </ClInclude>
+    <ClInclude Include="dgnerr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NatSpeakInterop.rc">

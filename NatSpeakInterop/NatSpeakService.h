@@ -79,6 +79,12 @@ namespace Renfrew::NatSpeakInterop {
       public: DragonVersion ^GetDragonVersion();
 
       /// <summary>
+      /// Attempts to check if Dragon is "alive" by trying to access one of its interfaces.
+      /// </summary>
+      /// <returns><b>true</b>: Dragon is running. <b>false</b>: Dragon is not running.</returns>
+      public: bool IsDragonAlive();
+
+      /// <summary>
       /// Gets the the file system path to the specified Dragon user's profile directory.
       /// </summary>
       /// <param name="userProfile">The name of the user profile to look up.</param>
