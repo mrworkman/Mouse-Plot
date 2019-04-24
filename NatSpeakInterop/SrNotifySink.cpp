@@ -32,10 +32,34 @@ SrNotifySink::SrNotifySink(Action<UInt64> ^pausedProcessingCallback) {
 
 void SrNotifySink::AttribChanged(DWORD) {
    Debug::WriteLine(__FUNCTION__);
+
+   // TODO: Can this callback be triggered?
+
 }
 
-void SrNotifySink::AttribChanged2(DWORD dword) {
-   Debug::WriteLine("{0}: {1}", __FUNCTION__, dword);
+void SrNotifySink::AttribChanged2(DWORD dwAttributes) {
+   Debug::WriteLine(__FUNCTION__);
+
+   #define DGNSRAC_BASE     1000
+   #define DGNSRAC_MICSTATE 1001
+   #define DGNSRAC_UNMUTE   1009
+   #define DGNSRAC_MUTE     1013
+
+   switch (dwAttributes) {
+      case DGNSRAC_MUTE:
+         Debug::WriteLine("Microphone muted.");
+         break;
+      case DGNSRAC_UNMUTE:
+         Debug::WriteLine("Microphone un-muted.");
+         break;
+      case DGNSRAC_MICSTATE:
+         Debug::WriteLine("Microphone state changed.");
+         break;
+      default:
+         Debug::WriteLine("Unhandled attribute(s): {0:x4}.", dwAttributes);
+         break;
+   }
+
 }
 
 void SrNotifySink::ErrorHappened(LPUNKNOWN) {
