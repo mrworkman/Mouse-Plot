@@ -22,12 +22,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using NLog;
+
 using Renfrew.Grammar.Dragon;
 using Renfrew.Grammar.FluentApi;
 using Renfrew.NatSpeakInterop;
 
 namespace Renfrew.Grammar {
    public class GrammarSerializer : IGrammarSerializer {
+
+      private static Logger _logger = LogManager.GetCurrentClassLogger();
 
       #region Speech Recognition Constants
       private const UInt32 SRHDRTYPE_CFG     = 0;
@@ -62,7 +66,7 @@ namespace Renfrew.Grammar {
             stream.Write(ruleNumber);
 
             foreach (var row in table) {
-               Debug.WriteLine(row);
+               _logger.Trace(row);
 
                stream.Write((UInt16) row.DirectiveType);
                stream.Write((UInt16) 0); // Assume probability of Zero
@@ -76,7 +80,7 @@ namespace Renfrew.Grammar {
 
             ruleNumber++;
          }
-         
+
          try {
             return memoryStream.ToArray();
          } finally {
@@ -121,7 +125,7 @@ namespace Renfrew.Grammar {
 
          return numBytes;
       }
-      
+
       public byte[] Serialize(IGrammar grammar) {
          var memoryStream = new MemoryStream();
          var stream = new BinaryWriter(memoryStream);
@@ -139,7 +143,7 @@ namespace Renfrew.Grammar {
          bytes = BuildWordsChunk(grammar.RuleIds);
          stream.Write(bytes.Length); // Chunk Size
          stream.Write(bytes);        // Chunk
-         
+
          // Words Chunk
          stream.Write(SRCKCFG_WORDS);
 
