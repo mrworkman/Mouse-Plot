@@ -35,6 +35,22 @@
 #define HOOK_F_DEFERTERMINATION  0x100 // Defer termination of PlayString until the event queue is emptied
 #define HOOK_F_SYSTEMKEYS        0x200 // Use kbd_event()/mouse_event() instead of JournalPlayback
 
+// Related to IDgnSREngineNotifySink
+#define DGNSRAC_BASE         1000
+#define DGNSRAC_MICSTATE     1001
+#define DGNSRAC_REGISTRY     1002
+#define DGNSRAC_PLAYBACKDONE 1003
+#define DGNSRAC_TOPIC        1004
+#define DGNSRAC_LEXADD       1005
+#define DGNSRAC_LEXREMOVE    1006
+                         /*? 1007*/
+                         /*? 1008*/
+#define DGNSRAC_UNMUTE       1009
+                         /*? 1010*/
+                         /*? 1011*/
+                         /*? 1012*/
+#define DGNSRAC_MUTE         1013
+
 typedef enum {
    SRGRMFMT_CFG                 = 0x0000,
    SRGRMFMT_LIMITEDDOMAIN       = 0x0001,

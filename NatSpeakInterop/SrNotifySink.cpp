@@ -40,11 +40,6 @@ void SrNotifySink::AttribChanged(DWORD) {
 void SrNotifySink::AttribChanged2(DWORD dwAttributes) {
    Debug::WriteLine(__FUNCTION__);
 
-   #define DGNSRAC_BASE     1000
-   #define DGNSRAC_MICSTATE 1001
-   #define DGNSRAC_UNMUTE   1009
-   #define DGNSRAC_MUTE     1013
-
    switch (dwAttributes) {
       case DGNSRAC_MUTE:
          Debug::WriteLine("Microphone muted.");
