@@ -18,6 +18,7 @@
 #pragma once
 
 #include "MouseButtons.h"
+#include "MouseScrollDirection.h"
 
 namespace Renfrew::Win32::Interop {
    public ref class Mouse abstract {
@@ -28,6 +29,8 @@ namespace Renfrew::Win32::Interop {
 
       public: static void Down(MouseButtons buttons);
       public: static void Up(MouseButtons buttons);
+
+      public: static void Scroll(MouseScrollDirection scrollDirection, DWORD scrollDelta);
 
       public: static void SetPosition(int x, int y);
    };

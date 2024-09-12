@@ -85,6 +85,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="MouseScrollDirection.h" />
     <ClInclude Include="Win32.h" />
     <ClInclude Include="MouseButtons.h" />
     <ClInclude Include="Mouse.h" />

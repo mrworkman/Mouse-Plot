@@ -123,3 +123,11 @@ void Mouse::Up(MouseButtons buttons) {
    mouse_event(flags, 0, 0, 0, 0);
 }
 
+void Mouse::Scroll(MouseScrollDirection scrollDirection, DWORD scrollDelta) {
+   if (scrollDirection == MouseScrollDirection::Down) {
+      mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -scrollDelta, 0);
+   }
+   if (scrollDirection == MouseScrollDirection::Up) {
+      mouse_event(MOUSEEVENTF_WHEEL, 0, 0, scrollDelta, 0);
+   }
+}
