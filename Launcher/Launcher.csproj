@@ -92,6 +92,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>powershell -Command "Set-AuthenticodeSignature -Certificate ( Get-ChildItem -Path Cert:\CurrentUser\Root | Where-Object { $_.Thumbprint -like '8941c8a43f988fb0cf2abd2a11c926e956078028'})[0] -TimestampServer http://timestamp.comodoca.com/authenticode '$(TargetPath)'"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
