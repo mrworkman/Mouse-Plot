@@ -61,7 +61,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
       }
 
       public override void Move(Double x, Double y) {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             WindowState = WindowState.Normal;
             Left = x;
             Top = y;

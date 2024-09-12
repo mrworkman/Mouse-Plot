@@ -70,11 +70,11 @@
 
       </ResourceDictionary>
    </Window.Resources>
-   <Grid>
+   <Canvas Background="Black">
       <Popup Name="_popup"
              Placement="RelativePoint"
-             HorizontalAlignment="Left"
-             VerticalAlignment="Top"
+             Canvas.Left="0"
+             Canvas.Top="0"
 
              HorizontalOffset="0"
              VerticalOffset="0"
@@ -84,7 +84,7 @@
 
              IsOpen="True"
              >
-         <Grid>
+         <Grid ZIndex="1000">
             <Canvas Margin="20,20,20,20" Name="_rearCanvas">
                <Canvas.RenderTransform>
                   <TranslateTransform X="1" Y="1"/>
@@ -119,16 +119,20 @@
                   </VisualBrush>
                </Canvas.Background>
             </Canvas>
-            <Rectangle x:Name="_screenshot" Width="312" Height="312" Fill="Transparent" Canvas.ZIndex="-10" Margin="10,10,10,20" />
+            <!--<Rectangle x:Name="_screenshot" Width="312" Height="312" Fill="Transparent" Canvas.ZIndex="10" Margin="10,10,10,20" />-->
          </Grid>
       </Popup>
+    <Grid
+        Canvas.Left="0"
+        Canvas.Top="0"
+        ZIndex="1"
+        >
       <Border
-         Name="_magnifierSurface"
-         Background="Magenta"
-         Width="300" Height="300"
-         HorizontalAlignment="Left"
-         VerticalAlignment="Top"
-         Margin="6,6,6,6"
-         />
+          Name="_magnifierSurface"
+          Background="Magenta"
+          Width="300" Height="300"
+          Margin="6,6,6,6"
+        />
     </Grid>
+  </Canvas>
 </local:BaseWindow>

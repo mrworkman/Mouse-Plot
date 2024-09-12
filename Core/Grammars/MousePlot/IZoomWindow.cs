@@ -20,6 +20,7 @@ using System.Drawing;
 
 namespace Renfrew.Core.Grammars.MousePlot {
    public interface IZoomWindow : IWindow {
+      void SetScaleMultiplier(double multiplier);
       void SetSource(Int32 x, Int32 y, Int32 width, Int32 height);
       void SetSource(Rectangle sourceRectangle);
    }

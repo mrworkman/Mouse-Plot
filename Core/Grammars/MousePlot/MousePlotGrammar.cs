@@ -17,9 +17,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using Cursor = System.Windows.Forms.Cursor;
@@ -44,6 +46,11 @@ namespace Renfrew.Core.Grammars.MousePlot {
       private IZoomWindow _zoomWindow;
 
       private Point _currentCell = Point.Empty;
+
+      // TODO: Add support for determining this from windows and setting it by configuration.
+      private readonly double _displayScaleMultiplier = 1;
+
+      private readonly uint _scrollWheelDelta = 300;
 
       private Bitmap _bitmap;
 
@@ -122,6 +129,9 @@ namespace Renfrew.Core.Grammars.MousePlot {
          { "Twelve", 12 },
       };
       #endregion
+
+      [DllImport("user32.dll", SetLastError = true)]
+      private static extern uint SendInput(uint cInputs, IntPtr pInputs, int cbSize);
 
       // For Testing
       public MousePlotGrammar(IGrammarService grammarService, IScreen screen,
@@ -212,11 +222,24 @@ namespace Renfrew.Core.Grammars.MousePlot {
             .Do(spokenWords => NudgeCursor(spokenWords.ToArray()))
          );
 
+         AddRule("scroll", e => e
+            .SayOneOf("Scroll", "Troll")
+            .Optionally(p => p
+               .SayOneOf(_numbersList.Keys)
+            )
+            .Do(spokenWords => ScrollMouse(spokenWords.ToArray()))
+         );
+
          // Load grammar into the grammar service
          Load();
-
-         // Enable the base rule
+         
          ActivateRule("mouse_plot");
+         ActivateRule("scroll");
+      }
+
+      private void ReactivateDefaultRules() {
+         ReactivateRule("mouse_plot");
+         ReactivateRule("scroll");
       }
 
       private void Click(IEnumerable<String> spokenWords) {
@@ -225,7 +248,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Due to a problem with Dragon 15, rules we want to remain active
          // need to be explicitly re-activated when another is de-activated.
-         ReactivateRule("mouse_plot");
+         ReactivateDefaultRules();
 
          CloseWindows();
 
@@ -268,7 +291,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Due to a problem with Dragon 15, rules we want to remain active
          // need to be explicitly re-activated when another is de-activated.
-         ReactivateRule("mouse_plot");
+         ReactivateDefaultRules();
       }
 
       private void Dismiss() {
@@ -279,7 +302,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Due to a problem with Dragon 15, rules we want to remain active
          // need to be explicitly re-activated when another is de-activated.
-         ReactivateRule("mouse_plot");
+         ReactivateDefaultRules();
       }
 
       public void Drag() {
@@ -293,7 +316,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Due to a problem with Dragon 15, rules we want to remain active
          // need to be explicitly re-activated when another is de-activated.
-         ReactivateRule("mouse_plot");
+         ReactivateDefaultRules();
 
          // If no start point has been selected, then don't do anything.
          if (_dragSet == false)
@@ -358,7 +381,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          if (x > _currentScreen.Bounds.Right)
             x = _currentScreen.Bounds.Right - 1;
 
-         return x;
+         return ScaleToScreen(x);
       }
 
       public Int32 GetMouseYCoord(Int32 y) {
@@ -367,7 +390,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          if (y > _currentScreen.Bounds.Bottom)
             y = _currentScreen.Bounds.Bottom - 1;
 
-         return y;
+         return ScaleToScreen(y);
       }
 
       public Int32 GetXScreenOffset(Int32 x) =>
@@ -394,14 +417,14 @@ namespace Renfrew.Core.Grammars.MousePlot {
          if (x > 8) x = 8;
 
          var subCellWidth = _cellSize.Width / 9;
-         return _currentCell.X + (subCellWidth * x) + (subCellWidth / 2);
+         return ScaleToScreen(_currentCell.X + (subCellWidth * x) + (subCellWidth / 2));
       }
 
       public Int32 GetZoomedMouseYCoord(Int32 y) {
          if (y > 8) y = 8;
 
          var subCellHeight = _cellSize.Height / 9;
-         return _currentCell.Y + (subCellHeight * y) + (subCellHeight / 2);
+         return ScaleToScreen(_currentCell.Y + (subCellHeight * y) + (subCellHeight / 2));
       }
 
       public void Mark() {
@@ -413,7 +436,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          // Due to a problem with Dragon 15, rules we want to remain active
          // need to be explicitly re-activated when another is de-activated.
-         ReactivateRule("mouse_plot");
+         ReactivateDefaultRules();
 
          CloseWindows();
 
@@ -443,7 +466,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          }
 
          _markArrowWindow.Rotate(angle);
-         _markArrowWindow.Move(offsetX, offsetY);
+         _markArrowWindow.Move(ScaleToWindow(offsetX), ScaleToWindow(offsetY));
 
          _markArrowWindow.Show();
       }
@@ -510,10 +533,10 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          var borderThickness = 4;
 
-         var left   = _cellWindow.Left + borderThickness;
-         var top    = _cellWindow.Top + borderThickness;
-         var right  = left + _cellWindow.Width - borderThickness * 2 - 1;
-         var bottom = top + _cellWindow.Height - borderThickness * 2 - 1;
+         var left   = ScaleToScreen(_cellWindow.Left + borderThickness);
+         var top    = ScaleToScreen(_cellWindow.Top + borderThickness);
+         var right  = ScaleToScreen(left + _cellWindow.Width - borderThickness * 2 - 1);
+         var bottom = ScaleToScreen(top + _cellWindow.Height - borderThickness * 2 - 1);
 
          if (x >= right)
             x = (Int32) right;
@@ -528,6 +551,27 @@ namespace Renfrew.Core.Grammars.MousePlot {
          // Move the pointer
 
          Mouse.SetPosition(x, y);
+      }
+
+      private void ScrollMouse(String[] spokenWords) {
+         String actionWord = spokenWords[0];
+         String countStr = null;
+
+         if (spokenWords.Length == 2) {
+            countStr = spokenWords[1];
+         }
+
+         Int32 count = 1;
+
+         if (countStr != null) {
+            count = _numbersList[countStr];
+         }
+
+         var direction = (actionWord == "Scroll") ? MouseScrollDirection.Down : MouseScrollDirection.Up;
+
+         for (int i = 0; i < count; i++) {
+            Mouse.Scroll(direction, _scrollWheelDelta);
+         }
       }
 
       private void SetColour(String colourName) {
@@ -600,24 +644,49 @@ namespace Renfrew.Core.Grammars.MousePlot {
          Int32 offsetX = (_cellSize.Width / 4) * 3;
          Int32 offsetY = (_cellSize.Height / 4) * 3;
 
-         if (mouseX + offsetX + _zoomWindow.Width >= _currentScreen.Bounds.Right)
+         if (mouseX + offsetX + ScaleToScreen(_zoomWindow.Width) >= _currentScreen.Bounds.Right)
             offsetX = -offsetX - (Int32) _zoomWindow.Width;
 
-         if (mouseY + offsetY + _zoomWindow.Height >= _currentScreen.Bounds.Bottom)
+         if (mouseY + offsetY + ScaleToScreen(_zoomWindow.Height) >= _currentScreen.Bounds.Bottom)
             offsetY = -offsetY - (Int32) _zoomWindow.Height;
 
          _cellWindow.Move(cellX-4, cellY-4);
          _cellWindow.Show();
 
-         _zoomWindow.SetSource(cellX, cellY, _cellSize.Width, _cellSize.Height);
+         _zoomWindow.SetScaleMultiplier(_displayScaleMultiplier);
+         _zoomWindow.SetSource(
+            ScaleToScreen(cellX),
+            ScaleToScreen(cellY),
+            ScaleToScreen(_cellSize.Width),
+            ScaleToScreen(_cellSize.Height)
+         );
 
          _zoomWindow.SetScreenBounds(_currentScreen.Bounds);
          _cellWindow.SetScreenBounds(_currentScreen.Bounds);
 
-         _zoomWindow.Move(mouseX + offsetX, mouseY + offsetY);
+         _zoomWindow.Move(
+            ScaleToWindow(mouseX) + offsetX,
+            ScaleToWindow(mouseY) + offsetY
+         );
          _zoomWindow.Show();
 
          _isZoomed = true;
+      }
+
+      private int ScaleToScreen(int value) {
+         return (int)(value * _displayScaleMultiplier);
+      }
+
+      private double ScaleToScreen(double value) {
+         return value * _displayScaleMultiplier;
+      }
+
+      private int ScaleToWindow(int value) {
+         return (int)(value / _displayScaleMultiplier);
+      }
+
+      private double ScaleToWindow(double value) {
+         return value / _displayScaleMultiplier;
       }
    }
 }

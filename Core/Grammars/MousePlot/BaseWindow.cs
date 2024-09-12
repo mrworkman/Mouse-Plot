@@ -31,13 +31,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       #region Builtins
       public new virtual void Close() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             base.Hide();
          })).Wait();
       }
 
       public new void Focus() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             base.Focus();
             Activate();
          })).Wait();
@@ -45,54 +45,54 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
       public new double Height {
          get {
-            return (double)Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Height));
+            return (double)Dispatcher.Invoke(DispatcherPriority.Send, new Func<double>(() => base.Height));
          }
          protected set => base.Height = value;
       }
 
       public new double Left {
          get {
-            return (double)Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Left));
+            return (double)Dispatcher.Invoke(DispatcherPriority.Send, new Func<double>(() => base.Left));
          }
          protected set => base.Left = value;
       }
 
       public new virtual void Show() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             base.Show();
          })).Wait();
       }
 
       public new virtual void ShowDialog() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             base.ShowDialog();
          })).Wait();
       }
 
       public new double Top {
          get {
-            return (double)Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Top));
+            return (double)Dispatcher.Invoke(DispatcherPriority.Send, new Func<double>(() => base.Top));
          }
          protected set => base.Top = value;
       }
 
       public new double Width {
          get {
-            return (double)Dispatcher.Invoke(DispatcherPriority.Background, new Func<double>(() => base.Width));
+            return (double)Dispatcher.Invoke(DispatcherPriority.Send, new Func<double>(() => base.Width));
          }
          protected set => base.Width = value;
       }
       #endregion
 
       public virtual void Move(double x, double y) {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             Left = x;
             Top = y;
          })).Wait();
       }
 
       public virtual void SetColour(GridColour colour) {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             try {
                SetColour(colour.ToString());
             } catch (IOException) {

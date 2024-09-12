@@ -32,7 +32,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
 
          var r = Rectangle.Intersect(_screenBounds, new Rectangle((Int32) Left, (Int32) Top, 108, 108));
 
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             Width = r.Width + 4;
             Height = r.Height + 4;
          })).Wait();

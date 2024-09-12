@@ -77,6 +77,11 @@ namespace Renfrew.Core {
          // Assign the context menu to the system tray icon
          _notifyIcon.ContextMenuStrip = _contextMenuStrip;
 
+
+         _notifyIcon.DoubleClick += delegate(object sender, EventArgs args) {
+            _logger.Debug($"Dragon is alive: {_natSpeakService.IsDragonAlive()}");
+         };
+
          // Add menu items to system tray icon menu
          _contextMenuStrip.Items.Add("&Show Console", null, delegate(Object sender, EventArgs e) {
             ShowConsole();

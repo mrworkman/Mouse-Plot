@@ -34,6 +34,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
       private Magnifier _magnifier;
       private Timer _timer;
       private Rectangle _sourceRectangle;
+      private double _scaleMultiplier = 1;
 
       private Rectangle _screenBounds = Rectangle.Empty;
 
@@ -47,7 +48,6 @@ namespace Renfrew.Core.Grammars.MousePlot {
       }
 
       private void Window_Loaded(Object sender, RoutedEventArgs e) {
-
          for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
 
@@ -70,24 +70,28 @@ namespace Renfrew.Core.Grammars.MousePlot {
             }
          }
 
+
          _magnifierSurface.Child = _magnifier;
-         _magnifier.Initialize();
+         _magnifier.Initialize(_scaleMultiplier);
+
+         _popup.Focus();
 
          _timer = new Timer(state => {
 
             if (_screenBounds.IsEmpty == false) {
                var r = Rectangle.Intersect(_screenBounds, _sourceRectangle);
 
-               Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-                  _magnifierSurface.Height = r.Height * 3;
-                  _magnifierSurface.Width  = r.Width * 3;
+               Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
+                  _magnifierSurface.Height = r.Height * 3 / _scaleMultiplier;
+                  _magnifierSurface.Width = r.Width * 3 / _scaleMultiplier;
                }));
             }
 
             _magnifier.Update(
                _sourceRectangle.X, _sourceRectangle.Y,
-               _sourceRectangle.Width, _sourceRectangle.Height-30
+               _sourceRectangle.Width, _sourceRectangle.Height - 30
             );
+
             _timer.Change(1, Timeout.Infinite);
          }, null, 1, Timeout.Infinite);
       }
@@ -102,9 +106,13 @@ namespace Renfrew.Core.Grammars.MousePlot {
          base.Close();
 
          // Hide the overlaid grid (popup)
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             _popup.IsOpen = false;
          })).Wait();
+      }
+
+      public void SetScaleMultiplier(double multiplier) {
+         _scaleMultiplier = multiplier;
       }
 
       public void SetSource(Int32 x, Int32 y, Int32 width, Int32 height) {
@@ -123,7 +131,7 @@ namespace Renfrew.Core.Grammars.MousePlot {
          base.Show();
 
          // Show the overlaid grid (popup)
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
 
             // Use absolute coordinates. Relative ones seem to behave oddly on some systems.
             _popup.Placement = PlacementMode.Absolute;

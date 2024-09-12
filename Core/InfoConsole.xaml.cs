@@ -105,14 +105,14 @@ namespace Renfrew.Core {
 
       /// <inheritdoc cref="Window.Close" />
       public new void Close() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             base.Close();
          }));
       }
 
       /// <inheritdoc cref="Window.Focus" />
       public new void Focus() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             base.Focus();
             Activate();
          }));
@@ -126,14 +126,14 @@ namespace Renfrew.Core {
 
       /// <inheritdoc cref="Window.Show" />
       public new void Show() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             base.Show();
          }));
       }
 
       /// <inheritdoc cref="Window.ShowDialog" />
       public new void ShowDialog() {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
             base.ShowDialog();
          }));
       }
@@ -143,7 +143,7 @@ namespace Renfrew.Core {
       /// </summary>
       /// <param name="message">The message to be printed.</param>
       private void WriteText(String message, Brush brush, FontWeight fontWeight) {
-         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+         Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
 
             var end = RtbConsole.Document.ContentEnd;
             var r = new TextRange(end, end) {
