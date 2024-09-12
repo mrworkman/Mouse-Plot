@@ -32,8 +32,8 @@ namespace Renfrew::Utility {
       protected: virtual HandleRef BuildWindowCore(HandleRef handleRef) override;
       protected: virtual void DestroyWindowCore(HandleRef handleRef) override;
 
-      public: void Initialize();
-      public: void SetMagnification(Int32 factor);
+      public: void Initialize(double scaleMultiplier);
+      public: void SetMagnification(Int32 multiplier);
       public: void Update(Int32 x, Int32 y, Int32 width, Int32 height);
    };
 

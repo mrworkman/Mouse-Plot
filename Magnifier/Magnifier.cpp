@@ -72,7 +72,7 @@ void Magnifier::DestroyWindowCore(HandleRef handleRef) {
 /// <summary>
 /// Initializes the magnifier.
 /// </summary>
-void Magnifier::Initialize() {
+void Magnifier::Initialize(double scaleMultiplier) {
    if (MagInitialize() == FALSE)
       throw gcnew Exception("Could not initialize magnification subsystem.");
 
@@ -80,8 +80,8 @@ void Magnifier::Initialize() {
       WC_MAGNIFIER, TEXT("MagnifierWindow"),
       WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE, // | MS_INVERTCOLORS,
       0, 0,
-      300,
-      300,
+      static_cast<int>(300 * scaleMultiplier),
+      static_cast<int>(300 * scaleMultiplier),
       _parentHwnd, NULL,
       _hInstance, NULL
    );
@@ -94,23 +94,23 @@ void Magnifier::Initialize() {
 }
 
 /// <summary>
-/// Sets the magnification factor.
+/// Sets the magnification multiplier.
 /// </summary>
-/// <param name="factor">The factor to multiply the zoom-level by.</param>
-void Magnifier::SetMagnification(Int32 factor) {
-   if (factor < 0)
-      throw gcnew ArgumentOutOfRangeException("factor must be a positive number!");
+/// <param name="multiplier">The multiplier for the zoom-level.</param>
+void Magnifier::SetMagnification(Int32 multiplier) {
+   if (multiplier < 0)
+      throw gcnew ArgumentOutOfRangeException("multiplier must be a positive number!");
 
    MAGTRANSFORM matrix;
    memset(&matrix, 0, sizeof(matrix));
-   matrix.v[0][0] = (float) factor;
-   matrix.v[1][1] = (float) factor;
+   matrix.v[0][0] = (float) multiplier;
+   matrix.v[1][1] = (float) multiplier;
    matrix.v[2][2] = 1.0f;
 
    if (MagSetWindowTransform(_magnifierHwnd, &matrix) == TRUE)
       return;
 
-   throw gcnew MagnifierException("Failed to set magnification factor.", GetLastError());
+   throw gcnew MagnifierException("Failed to set magnification multiplier.", GetLastError());
 }
 
 /// <summary>
