@@ -28,7 +28,7 @@ Set-AuthenticodeSignature `
       Get-ChildItem `
          -Path Cert:\CurrentUser\Root | `
             Where-Object { `
-               $_.Thumbprint -like "1ec65cd489fffa0dd5602ec95816068942750645" `
+               $_.Thumbprint -like "8941c8a43f988fb0cf2abd2a11c926e956078028" `
             })[0] `
    -TimestampServer http://timestamp.comodoca.com/authenticode `
    '.\Mouse Plot.exe'
@@ -38,7 +38,7 @@ Set-AuthenticodeSignature `
 
 ```ps1
 $thumbprint = ( `
-   Get-ChildItem -Path Cert:\CurrentUser\My | `
+   Get-ChildItem -Path Cert:\CurrentUser\Root | `
    Where-Object { $_.Subject -like "CN=mrworkman" } `
 ).Thumbprint
 ```
